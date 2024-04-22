@@ -1,0 +1,54 @@
+﻿@page "/"
+@using System.Globalization
+@inject IJSRuntime JsRuntime
+
+<h1>Source</h1>
+<!--
+<h2>Configuration</h2>
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency"/>
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+
+<h2>CSP</h2>
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />-->
+<p id="parag"></p>
+<button @onclick="DrawChart">Run Source</button>
+
+<div id="canv">
+	<canvas id="canvas"></canvas>
+</div>
+
+
+@code {
+	//private Configuration config;
+
+	private string data;
+	private Boolean plotted = false;
+
+	public Home()
+	{
+		data = DataSource.InitialiseData();
+	}
+	
+	async Task DrawChart()
+		{
+		try
+			{
+			data = DataSource.InitialiseData();
+			await JsRuntime.InvokeVoidAsync("drawChart", data, plotted);
+			plotted = true;
+		}
+		catch (Exception ex)
+			{
+			Console.WriteLine($"Error drawing chart: {ex.Message}");
+	}
+	}
+	
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
+
+</head>
+<body>
+    <h1>Hi</h1>
+    <input type="file" id="csvFileInput" accept=".csv"><br>
+    <button onclick="parseCSV()">Parse CSV</button>
+
+    <script>
+        function parseCSV() {
+            var fileInput = document.getElementById('csvFileInput');
+            
+            // Check if a file is selected
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a CSV file.');
+                return;
+            }
+            
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+
+            // Define function to handle file reading
+            reader.onload = function(event) {
+                var csvData = event.target.result;
+                var lines = csvData.split(/\r\n|\n/);
+                var result = [];
+
+                // Parse CSV data
+                var headers = lines[0].split(',');
+                for (var i = 1; i < lines.length; i++) {
+                    var obj = {};
+                    var currentLine = lines[i].split(',');
+                    for (var j = 0; j < headers.length; j++) {
+                        obj[headers[j]] = currentLine[j];
+                    }
+                    result.push(obj);
+                }
+
+                // Log the parsed data to the console
+                console.log(result);
+            };
+
+            // Read the CSV file as text
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>

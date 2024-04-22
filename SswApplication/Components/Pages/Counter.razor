@@ -1,0 +1,25 @@
+﻿@page "/counter"
+@inject IJSRuntime JsRuntime
+
+<button @onclick="DrawChart">Run Source</button>
+
+<div id="canv">
+	<canvas id="myChart"></canvas>
+</div>
+
+
+@code {
+	//private Configuration config;
+	async Task DrawChart()
+	{
+		try
+		{
+			await JsRuntime.InvokeVoidAsync("drawdraw");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error drawing chart: {ex.Message}");
+		}
+	}
+
+}

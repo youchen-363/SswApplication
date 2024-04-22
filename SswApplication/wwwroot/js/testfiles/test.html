@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <p id="hello"></p>
+    </div>
+    <script>
+        fetch('./output.json')
+        .then((response) => response.json())
+        .then((json) =>{
+            document.getElementById('hello').innerText = json['efield_db'][0]
+            console.log(JSON.stringify(json))
+            var infy = json['efield_db'][0]
+            if (infy == Number.NEGATIVE_INFINITY) {
+                document.getElementById('hello').innerText += ' infinity works in js'
+            } else {
+                document.getElementById('hello').innerText += ' not like this'
+            }
+            document.getElementById('hello').innerText += Number.NEGATIVE_INFINITY
+        } 
+        );
+    </script>
+
+
+
+</body>
+</html>

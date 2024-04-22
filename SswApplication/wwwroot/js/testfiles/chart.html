@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.bundle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link ref="stylesheet" type="text/css" href="chart.css" />
+</head>
+<body>
+    <div id="canv">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        var config = {
+            type: 'line',
+            data: {
+                labels: efield_db,
+                datasets: [{
+                    data: z_vect,
+                    fill: false,
+                    backgroundColor: "#eebcde ",
+                    borderColor: "#eebcde",
+                    borderDash: [5, 5],
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'E field (dBV/m)'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,
+                            steps: 20,
+                            stepValue: 20,
+                            stepSize: 20,
+                            max: 100
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Altitude (m)'
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'Initial field'
+                }
+            }
+        };
+        var ctx = document.getElementById("canvas").getContext("2d");
+        new Chart(ctx, config);
+    </script>
+
+</body>
+</html>
+
