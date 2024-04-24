@@ -53,8 +53,16 @@
 # @param[out] u_field (N_y,N_z)-array. Contains the initial field for 3D-SSW
 ##
 
-import numpy as np
-import csv
+#import numpy as np
+from csv import writer
+from csv import reader
+from numpy import array 
+from numpy import zeros
+from numpy import float64
+from numpy import int32
+from numpy import savetxt 
+from numpy import save 
+
 import scipy.constants as cst
 import matplotlib.pyplot as plt
 # import sys
@@ -99,26 +107,26 @@ class ConfigSource:
 # --- Reading source type --- #
 # --------------------------- #
 f_source = open(file_source, newline='')
-source_tmp = csv.reader(f_source)
+source_tmp = reader(f_source)
 for row in source_tmp:
     if row[0] == 'N_z':
-        ConfigSource.n_z = np.int32(row[1])
+        ConfigSource.n_z = int32(row[1])
     elif row[0] == 'z_step':
-        ConfigSource.z_step = np.float64(row[1])
+        ConfigSource.z_step = float64(row[1])
     elif row[0] == 'x_s':  # position along x --> must be <0
-        ConfigSource.x_s = np.float64(row[1])
+        ConfigSource.x_s = float64(row[1])
     elif row[0] == 'type':
         source_type = row[1]
     elif row[0] == 'frequency':
-        freq = np.float64(row[1])*1e6
+        freq = float64(row[1])*1e6
     elif row[0] == 'P_Tx':  # radiated power
-        ConfigSource.P_Tx = np.float64(row[1])
+        ConfigSource.P_Tx = float64(row[1])
     elif row[0] == 'G_Tx':  # antenna max gain (dBi)
-        ConfigSource.G_Tx = np.float64(row[1])
+        ConfigSource.G_Tx = float64(row[1])
     elif row[0] == 'W0':  # waist of the CSP
-        ConfigSource.W0 = np.float64(row[1])
+        ConfigSource.W0 = float64(row[1])
     elif row[0] == 'z_s':  # position along z
-        ConfigSource.z_s = np.float64(row[1])
+        ConfigSource.z_s = float64(row[1])
     elif row[0] == 'Property':  # first line
         pass
     else:
@@ -162,12 +170,12 @@ rows = [['frequency', str(freq*1e-6), 'MHz'],
 
 with open('./outputs/configuration.csv', 'w', newline='') as f:
     # using csv.writer method from CSV package
-    write = csv.writer(f)
+    write = writer(f)
     write.writerows(rows)
 
 # saving the field
-np.savetxt('./outputs/E_field.csv', e_field, delimiter=',')
-np.save('./outputs/E_field.npy', e_field)
+savetxt('./outputs/E_field.csv', e_field, delimiter=',')
+save('./outputs/E_field.npy', e_field)
 
 
 # ---------- END ----------- #
@@ -175,7 +183,7 @@ np.save('./outputs/E_field.npy', e_field)
 # -------------------------- #
 
 # --- plot --- #
-
+"""
 plt.figure()
 ax = plt.subplot(111)
 e_field_db = 20 * np.log10(np.abs(e_field))
@@ -190,3 +198,4 @@ plt.xlabel('E field (dBV/m)', fontsize=14)
 plt.ylabel('Altitude (m)', fontsize=14)
 plt.title('Initial field')
 plt.show()
+"""

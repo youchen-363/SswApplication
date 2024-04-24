@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "yfZExJmfYp6HpyNRWMXzJUfsV+gHpT/oO571gqpSaEA=",
+  "Hash": "+J80H4kr32p3rzfYfLO+RYNFuxN22iGCOk8i5EpcQvY=",
   "Source": "SswApplication",
   "BasePath": "/",
   "Mode": "Root",
@@ -188,6 +188,25 @@
       "OriginalItemSpec": "wwwroot\\js\\output.json"
     },
     {
+      "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\propagation.js",
+      "SourceId": "SswApplication",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "js/propagation.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\propagation.js"
+    },
+    {
       "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\source.js",
       "SourceId": "SswApplication",
       "SourceType": "Discovered",
@@ -205,6 +224,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\source.js"
+    },
+    {
+      "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\terrain.js",
+      "SourceId": "SswApplication",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "js/terrain.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\terrain.js"
     },
     {
       "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\testfiles\\chart.css",

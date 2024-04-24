@@ -33,8 +33,16 @@
       "PackagePath": "staticwebassets\\js\\output.json"
     },
     {
+      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\propagation.js",
+      "PackagePath": "staticwebassets\\js\\propagation.js"
+    },
+    {
       "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\source.js",
       "PackagePath": "staticwebassets\\js\\source.js"
+    },
+    {
+      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\terrain.js",
+      "PackagePath": "staticwebassets\\js\\terrain.js"
     },
     {
       "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\testfiles\\chart.css",

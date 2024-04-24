@@ -1,0 +1,93 @@
+﻿@page "/terrain"
+@inject IJSRuntime JsRuntime
+@using SswApplication.CSharp.Source
+@using SswApplication.CSharp.Terrain
+@using System.Reflection
+
+<!--
+<p>@xrelief</p>
+<p>@zrelief</p>
+
+<p>zrelief size : @zrefsize</p>
+<p>xrelief size : @xrefsize</p>
+-->
+<label for="typeTerrain">Type</label>
+<select id="typeTerrain" @bind="@config.Type">
+	<option value="Plane">Plane</option>
+	<option value="Triangle">Triangle</option>
+	<option value="Superposed">Superposed</option>
+</select>
+<br />
+<br />
+<label for="N_xTern">@config.N_x.Property</label>
+<input type="number" id="N_xTern" @bind="@config.N_x.Value" placeholder="N_x" />@config.N_x.Unit
+<br />
+<label for="X_stepTern">@config.X_step.Property</label>
+<input type="number" id="X_stepTern" @bind="@config.X_step.Value" placeholder="X_step" />@config.X_step.Unit
+<br />
+<label for="Z_max_reliefTern">@config.Z_max_relief.Property</label>
+<input type="number" id="Z_max_reliefTern" @bind="@config.Z_max_relief.Value" placeholder="Z_max_relief" />@config.Z_max_relief.Unit
+<br />
+<label for="IterationsTern">@config.Iterations.Property</label>
+<input type="number" id="IterationsTern" @bind="@config.Iterations.Value" placeholder="Iterations" />@config.Iterations.Unit
+<br />
+<label for="WidthTern">@config.Width.Property</label>
+<input type="number" id="WidthTern" @bind="@config.Width.Value" placeholder="Width" />@config.Width.Unit
+<br />
+<label for="CenterTern">@config.Center.Property</label>
+<input type="number" id="CenterTern" @bind="@config.Center.Value" placeholder="Center" />@config.Center.Unit
+<br />
+<br />
+<button @onclick="DrawLineGraph">Run Relief</button>
+<div id="canvTerrain">
+	<canvas id="canvasTerrain"></canvas>
+</div>
+
+@code {
+	private ConfigurationTerrain config;
+	private string xrelief;
+	private string zrelief;
+
+	private List<int> xref;
+	private List<double> zref;
+
+	private bool plotted;
+	private string zrefsize;
+	private string xrefsize;
+
+	private string dir;
+
+	public Terrain()
+	{
+		xrelief = string.Empty;
+		zrelief = string.Empty;
+		plotted = false;
+		config = ConfigurationTerrain.ExtractInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv");
+		xref = [];
+		zref = [];
+		xrelief = string.Empty;
+		zrelief = string.Empty;
+		xrefsize = "0";
+		zrefsize = "0";
+		dir = string.Empty;
+	}
+
+	async Task DrawLineGraph()
+	{
+		try
+		{
+			ConfigurationTerrain.WriteInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv", config);
+			FileFunctions.ExecuteExe(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain", "main_terrain.exe");
+			config = ConfigurationTerrain.ExtractInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv");
+			xref = DataTerrain.X_relief(((int)config.N_x.Value) + 1);
+			zref = DataTerrain.Z_relief(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\outputs\z_relief.csv");
+			xrefsize = xref.Count().ToString();
+			zrefsize = zref.Count().ToString();
+			await JsRuntime.InvokeVoidAsync("drawTerrain", xref, zref, plotted);
+			plotted = true;
+		} catch (Exception ex)
+		{
+			throw new Exception("Error draw line graph of terrain: " + ex);
+		}
+	}
+}

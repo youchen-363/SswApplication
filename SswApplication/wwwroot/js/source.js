@@ -1,15 +1,23 @@
-var mychart;
+var myChartSource;
 
-function initialiseData(data) {
+window.addEventListener("resize", function () {
+    let canvas = document.getElementById("canvasSource");
+    canvas.style.width = window.innerWidth;
+    canvas.style.height = window.innerHeight;
+})
+
+function initialiseDataSource(data) {
     datapoints = data.efield_db.map((x, index) => ({ x: JSON.stringify(x), y: JSON.stringify(data.z_vect[index])}));
-    filteredDataPoints = datapoints.filter(point => point.x >= data.v_min && point.x <= data.v_max);
+    //filteredDataPoints = datapoints.filter(point => point.x >= data.v_min-50 && point.x <= data.v_max+50);
     return datapoints;
-    return filteredDataPoints;
+    //console.log("in initialise data");
+    //return filteredDataPoints;
 }
 
-function draw(data, datapoints) {
+function drawGraphSource(data, datapoints) {
     //document.getElementById("parag").innerText = JSON.stringify(datapoints) + JSON.stringify(data);
-
+    console.log("in draw");
+    console.log(data.config.Z_step.Value * data.config.N_z.Value);
     try {
         var config = {
             type: 'scatter',
@@ -25,6 +33,7 @@ function draw(data, datapoints) {
                 }]
             },
             options: {
+                animation: false,
                 responsive: true,
                 scales: {
                     x: {
@@ -33,7 +42,9 @@ function draw(data, datapoints) {
                             display: true,
                             text: 'E field (dBV/m)'
                         },
-                        
+                        ticks: {
+                            stepSize: 20
+                        },
                         min: data.v_min,
                         max: data.v_max,
                     },
@@ -46,10 +57,10 @@ function draw(data, datapoints) {
                         ticks: {
                             //max: 1000, // Set maximum value for y-axis
                             beginAtZero: true,
-                            
+                            stepSize: 200
                         },
                         min: 0,
-                        max: data.config.z_step.Value * data.config.N_z
+                        max: data.config.Z_step.Value * data.config.N_z.Value
                     }
                 },
                 title: {
@@ -66,30 +77,38 @@ function draw(data, datapoints) {
                 legends: true
             }
         };
-        var ctx = document.getElementById("canvas").getContext("2d");
-        mychart = new Chart(ctx, config);
+        var ctx = document.getElementById('canvasSource').getContext('2d');
+        myChartSource = new Chart(ctx, config);
     } catch (error) {
-        alert('Error fetching data:' + error);
+        alert('Error draw:' + error);
     }
 }
 
-function drawChart(datastr, plotted) {
-    data = JSON.parse(datastr);
-    datapoints = initialiseData(data);
-    if (!plotted) {
-        alert("not plotted");
-        draw(data, datapoints);
-        plotted = true;
-    } else {
-        alert("plotted");
-        updateGraph(data, datapoints);
+function drawSource(datastr, plotted) {
+    console.log("in drawChart");
+    try {
+        data = JSON.parse(datastr);
+        datapoints = initialiseDataSource(data);
+        if (!plotted) {
+            alert("not plotted");
+            console.log("not plotted");
+            drawGraphSource(data, datapoints);
+            console.log(plotted);
+            plotted = true;
+            alert("plotted : " + plotted);
+        } else {
+            alert("plotted");
+            updateGraphSource(data, datapoints);
+        }
+    } catch (error) {
+        alert("in draw chart: "+error);
     }
 }
 
-function updateGraph(data, datapoints) {
+function updateGraphSource(data, datapoints) {
     try {
         // Update dataset in the existing chart configuration
-        mychart.data.datasets = [{
+        myChartSource.data.datasets = [{
             label: "source",
             data: datapoints,
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)', // Customize point color
@@ -99,23 +118,23 @@ function updateGraph(data, datapoints) {
         }];
 
         // Update x-axis configuration
-        mychart.options.scales.x.type = 'linear'; // Ensure x-axis type is linear
-        mychart.options.scales.x.position = 'bottom'; // Set x-axis position to bottom
-        mychart.options.scales.x.title.text = 'E field (dBV/m)'; // Update x-axis title
-        mychart.options.scales.x.min = data.v_min; // Set minimum tick value on x-axis
-        mychart.options.scales.x.max = data.v_max; // Set maximum tick value on x-axis
+        myChartSource.options.scales.x.type = 'linear'; // Ensure x-axis type is linear
+        myChartSource.options.scales.x.position = 'bottom'; // Set x-axis position to bottom
+        myChartSource.options.scales.x.title.text = 'E field (dBV/m)'; // Update x-axis title
+        myChartSource.options.scales.x.min = data.v_min; // Set minimum tick value on x-axis
+        myChartSource.options.scales.x.max = data.v_max; // Set maximum tick value on x-axis
 
         // Update y-axis configuration
-        mychart.options.scales.y.type = 'linear'; // Ensure y-axis type is linear
-        mychart.options.scales.y.position = 'left'; // Set y-axis position to left
-        mychart.options.scales.y.title.text = 'Altitude (m)'; // Update y-axis title
-        mychart.options.scales.y.max = data.config.z_step.Value * data.config.N_z; // Set maximum tick value on y-axis
+        myChartSource.options.scales.y.type = 'linear'; // Ensure y-axis type is linear
+        myChartSource.options.scales.y.position = 'left'; // Set y-axis position to left
+        myChartSource.options.scales.y.title.text = 'Altitude (m)'; // Update y-axis title
+        myChartSource.options.scales.y.max = data.config.Z_step.Value * data.config.N_z.Value; // Set maximum tick value on y-axis
 
         // Update chart title
-        mychart.options.title.text = 'Updated Field'; // Update chart title
+        myChartSource.options.title.text = 'Updated Field'; // Update chart title
 
         // Update the chart
-        mychart.update();
+        myChartSource.update();
     } catch (error) {
         alert('Error updating graph:' + error);
     }

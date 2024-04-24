@@ -182,7 +182,6 @@ C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.AssemblyInfo.cs
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.csproj.CoreCompileInputs.cache
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\XamlC.stamp
-C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.csproj.CopyComplete
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.dll
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\refint\SswApplication.dll
 C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.pdb
@@ -207,3 +206,5 @@ C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10
 C:\ENAC\SswApplication\SswApplication\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Newtonsoft.Json.dll
 C:\ENAC\SswApplication\SswApplication\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\JavaScript\output.json
 C:\ENAC\SswApplication\SswApplication\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\CsvHelper.dll
+C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswApplication.sourcelink.json
+C:\ENAC\SswApplication\SswApplication\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\SswAppli.B4FE6132.Up2Date

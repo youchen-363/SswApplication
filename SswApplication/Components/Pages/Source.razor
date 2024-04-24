@@ -1,0 +1,126 @@
+﻿@page "/"
+@using System.Globalization
+@inject IJSRuntime JsRuntime
+@inject IJSRuntime JSHost
+@using System.Text.Json
+@using System.Diagnostics;
+@using SswApplication.CSharp.Source;
+@using SswApplication.CSharp;
+
+<h1>Source</h1>
+
+<h2>Configuration</h2>
+<label for="N_zSrc">N_z</label>
+<input type="number" @bind="@config.N_z.Value" id="N_zSrc" placeholder="N_z"/>@config.N_z.Unit
+<label for="Z_stepSrc">Z_step</label>
+<input type="number" @bind="@config.Z_step.Value" id="Z_stepSrc" placeholder="Z_step" />@config.Z_step.Unit
+<br/><br/>
+
+<label for="X_sSrc">X_s</label>
+<input type="number" @bind="@config.X_s.Value" id="X_sSrc" placeholder="X_s" />@config.X_s.Unit
+<label for="FrequencySrc">Frequency</label>
+<input type="number" @bind="@config.Frequency.Value" id="FrequencySrc" placeholder="Frequency" />@config.Frequency.Unit
+<br/><br/>
+
+<label for="P_TxSrc">P_Tx</label>
+<input type="number" @bind="@config.P_Tx.Value" id="P_TxSrc" placeholder="P_Tx" />@config.P_Tx.Unit
+<label for="G_TxSrc">G_Tx</label>
+<input type="number" @bind="@config.G_Tx.Value" id="G_TxSrc" placeholder="G_Tx" />@config.G_Tx.Unit
+<br/><br/>
+
+<label for="TypeSrc">Type</label>
+<input type="text" @bind="@config.Type" id="TypeSrc" placeholder="Type" />type
+<label for="Z_sSrc">Z_s</label>
+<input type="number" @bind="@config.Z_s.Value" id="Z_sSrc" placeholder="Z_s" />@config.Z_s.Unit
+<br/><br/>
+
+<label for="W0Src">W0</label>
+<input type="number" @bind="@config.W0.Value" id="W0Src" placeholder="W0" />@config.W0.Unit
+<br/><br/>
+
+<!--
+<h2>CSP</h2>
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
+<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />-->
+<!--
+<p id="parag">@str</p>
+
+<p>@data</p>-->
+<p>@firstfn</p>
+<p>@secondfn</p>
+<p>@thirdfn</p>
+<p>@fourthfn</p>
+<p>@fifthfn</p>
+<p>@sixthfn</p>
+
+<button @onclick="DrawChart">Run Source</button>
+
+<div id="canvSource">
+	<canvas id="canvasSource"></canvas>
+</div>
+
+@code {
+	private ConfigurationSource config;
+	private string str;
+	private string data;
+	private Boolean plotted = false;
+	private string stttr;
+
+	private string firstfn = string.Empty;
+	private string secondfn = string.Empty;
+	private string thirdfn = string.Empty;
+	private string fourthfn = string.Empty;
+	private string fifthfn = string.Empty ;
+	private string sixthfn = string.Empty;
+
+	public Source()
+	{
+		data = string.Empty;
+		config = ConfigurationSource.ExtractInputCSVSource(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Source\inputs\configuration.csv");
+		str = JsonSerializer.Serialize(config);
+		//FileFunctions.ExecuteExe(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\dist\", "test.exe");
+	}
+
+	private async Task DrawChart()
+	{
+		try
+		{
+			Stopwatch stopwatch = new();
+			stopwatch.Start();
+			ConfigurationSource.WriteInputCSVSource(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Source\inputs\configuration.csv", config);
+			stopwatch.Stop();
+			firstfn = "write input data csv : " + stopwatch.Elapsed.TotalSeconds;
+
+			stopwatch = new();
+			stopwatch.Start();
+			stttr = FileFunctions.ExecuteExe(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Source", "main_source.exe");
+			stopwatch.Stop();
+			thirdfn = "execute mainsource : " + stopwatch.Elapsed.TotalSeconds;
+
+			stopwatch = new();
+			stopwatch.Start();
+			str = JsonSerializer.Serialize(config);
+			stopwatch.Stop();
+			fourthfn = "JSON serializer config : " + stopwatch.Elapsed.TotalSeconds;
+
+			stopwatch = new();
+			stopwatch.Start();
+			data = DataSource.InitialiseDataSource();
+			stopwatch.Stop();
+			fifthfn = "initialise data (efield, vmin, vmax, ...): " + stopwatch.Elapsed.TotalSeconds; 
+
+			stopwatch = new();
+			stopwatch.Start();
+			await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
+			stopwatch.Stop();
+			sixthfn = "draw chart : " + stopwatch.Elapsed.TotalSeconds;
+			plotted = true;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error drawing chart: {ex.Message}");
+		}
+	}
+	
+}

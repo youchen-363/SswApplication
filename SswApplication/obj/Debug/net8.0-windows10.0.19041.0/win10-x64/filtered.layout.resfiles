@@ -68,7 +68,9 @@ wwwroot\favicon.png
 wwwroot\index.html
 wwwroot\js\graph.js
 wwwroot\js\output.json
+wwwroot\js\propagation.js
 wwwroot\js\source.js
+wwwroot\js\terrain.js
 wwwroot\js\testfiles\chart.css
 wwwroot\js\testfiles\chart.html
 wwwroot\js\testfiles\graph.js
