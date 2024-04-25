@@ -24,38 +24,38 @@ namespace SswApplication.CSharp.Source
     internal class ConfigurationSource
     {
         //output 
-        private Measurement _n_z;
-        private Measurement _z_step;
-        private Measurement _x_s;
-        private Measurement _freq;
-        private Measurement _p_tx;
-        private Measurement _g_tx;
-        private string _type;
-        private Measurement _z_s;
-        private Measurement _w0;
+        private MeasurementNumber _n_z;
+        private MeasurementNumber _z_step;
+        private MeasurementNumber _x_s;
+        private MeasurementNumber _freq;
+        private MeasurementNumber _p_tx;
+        private MeasurementNumber _g_tx;
+        private MeasurementString _type;
+        private MeasurementNumber _z_s;
+        private MeasurementNumber _w0;
 
         public ConfigurationSource()
         {
-            _freq = new Measurement("frequency", 0, "MHz");
-            _n_z = new Measurement("N_z", 0);
-            _z_step = new Measurement("z_step", 0, "m");
-            _x_s = new Measurement("x_s", 0, "m");
-            _z_s = new Measurement("z_s", 0, "m");
+            _freq = new MeasurementNumber("frequency", 0, "MHz");
+            _n_z = new MeasurementNumber("N_z", 0);
+            _z_step = new MeasurementNumber("z_step", 0, "m");
+            _x_s = new MeasurementNumber("x_s", 0, "m");
+            _z_s = new MeasurementNumber("z_s", 0, "m");
 
-            _p_tx = new Measurement("P_Tx", 0, "W");
-            _g_tx = new Measurement("G_Tx", 0, "dBi");
-            _w0 = new Measurement("W0", 0, "m");
-            _type = "CSP";
+            _p_tx = new MeasurementNumber("P_Tx", 0, "W");
+            _g_tx = new MeasurementNumber("G_Tx", 0, "dBi");
+            _w0 = new MeasurementNumber("W0", 0, "m");
+            _type = new MeasurementString("type", "CSP");
         }
-        public Measurement N_z { get => _n_z; set => _n_z = value; }
-        public Measurement Z_step { get => _z_step; set => _z_step = value; }
-        public Measurement X_s { get => _x_s; set => _x_s = value; }
-        public Measurement Frequency { get => _freq; set => _freq = value; }
-        public Measurement P_Tx { get => _p_tx; set => _p_tx = value; }
-        public Measurement G_Tx { get => _g_tx; set => _g_tx = value; }
-        public string Type { get => _type; set => _type = value; }
-        public Measurement Z_s { get => _z_s; set => _z_s = value; }
-        public Measurement W0 { get => _w0; set => _w0 = value; }
+        public MeasurementNumber N_z { get => _n_z; set => _n_z = value; }
+        public MeasurementNumber Z_step { get => _z_step; set => _z_step = value; }
+        public MeasurementNumber X_s { get => _x_s; set => _x_s = value; }
+        public MeasurementNumber Frequency { get => _freq; set => _freq = value; }
+        public MeasurementNumber P_Tx { get => _p_tx; set => _p_tx = value; }
+        public MeasurementNumber G_Tx { get => _g_tx; set => _g_tx = value; }
+        public MeasurementString Type { get => _type; set => _type = value; }
+        public MeasurementNumber Z_s { get => _z_s; set => _z_s = value; }
+        public MeasurementNumber W0 { get => _w0; set => _w0 = value; }
 
         // configuration.csv source
         public static ConfigurationSource ExtractOutputCSVSource(string path)
@@ -63,11 +63,11 @@ namespace SswApplication.CSharp.Source
             string[][] data = FileFunctions.ReadCSV(path);
             ConfigurationSource config = new()
             {
-                Frequency = new Measurement(data[0][0], Double.Parse(data[0][1], CultureInfo.InvariantCulture), data[0][2]),
-                N_z = new Measurement(data[1][0], Double.Parse(data[1][1], CultureInfo.InvariantCulture)),
-                Z_step = new Measurement(data[2][0], Double.Parse(data[2][1], CultureInfo.InvariantCulture), data[2][2]),
-                X_s = new Measurement(data[3][0], Double.Parse(data[3][1], CultureInfo.InvariantCulture), data[3][2]),
-                Z_s = new Measurement(data[4][0], Double.Parse(data[4][1], CultureInfo.InvariantCulture), data[4][2])
+                Frequency = new MeasurementNumber(data[0][0], Double.Parse(data[0][1], CultureInfo.InvariantCulture), data[0][2]),
+                N_z = new MeasurementNumber(data[1][0], Double.Parse(data[1][1], CultureInfo.InvariantCulture)),
+                Z_step = new MeasurementNumber(data[2][0], Double.Parse(data[2][1], CultureInfo.InvariantCulture), data[2][2]),
+                X_s = new MeasurementNumber(data[3][0], Double.Parse(data[3][1], CultureInfo.InvariantCulture), data[3][2]),
+                Z_s = new MeasurementNumber(data[4][0], Double.Parse(data[4][1], CultureInfo.InvariantCulture), data[4][2])
 			};
             return config;
         }
@@ -110,7 +110,7 @@ namespace SswApplication.CSharp.Source
                     config.G_Tx.UpdateMeasurement(data);
                     break;
                 case "type":
-                    config.Type = data[1];
+                    config.Type.UpdateMeasurement(data);
                     break;
                 case "z_s":
                     config.Z_s.UpdateMeasurement(data);
@@ -124,22 +124,22 @@ namespace SswApplication.CSharp.Source
         }
 
         // configuration.csv source 
-        public static void WriteInputCSVSource(string path, ConfigurationSource config)
+        public static void WriteInputCSVSource(string dir, string file, ConfigurationSource config)
         {
             string[][] fields =
             [
                 ["Property", "Value", "Unit"],
-                Measurement.CreateField(config.N_z),
-                Measurement.CreateField(config.Z_step),
-                Measurement.CreateField(config.X_s),
-                Measurement.CreateField(config.Frequency),
-                Measurement.CreateField(config.P_Tx),
-                Measurement.CreateField(config.G_Tx),
-                ["type", config.Type, ""],
-                Measurement.CreateField(config.Z_s),
-                Measurement.CreateField(config.W0)
+                MeasurementNumber.CreateField(config.N_z),
+                MeasurementNumber.CreateField(config.Z_step),
+                MeasurementNumber.CreateField(config.X_s),
+                MeasurementNumber.CreateField(config.Frequency),
+                MeasurementNumber.CreateField(config.P_Tx),
+                MeasurementNumber.CreateField(config.G_Tx),
+                MeasurementString.CreateField(config.Type),
+                MeasurementNumber.CreateField(config.Z_s),
+                MeasurementNumber.CreateField(config.W0)
             ];
-            FileFunctions.WriteCSV(path, fields);
+            FileFunctions.WriteCSV(dir, file, fields);
         }
 
         public string ToJSON()

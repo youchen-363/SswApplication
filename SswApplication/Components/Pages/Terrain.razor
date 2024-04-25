@@ -11,8 +11,8 @@
 <p>zrelief size : @zrefsize</p>
 <p>xrelief size : @xrefsize</p>
 -->
-<label for="typeTerrain">Type</label>
-<select id="typeTerrain" @bind="@config.Type">
+<label for="typeTerrain">@config.Type.Property</label>
+<select id="typeTerrain" @bind="@config.Type.Value">
 	<option value="Plane">Plane</option>
 	<option value="Triangle">Triangle</option>
 	<option value="Superposed">Superposed</option>
@@ -76,8 +76,8 @@
 	{
 		try
 		{
-			ConfigurationTerrain.WriteInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv", config);
-			FileFunctions.ExecuteExe(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain", "main_terrain.exe");
+			ConfigurationTerrain.WriteInputCSVTerrain("CodeSource/Terrain/inputs/", "conf_terrain.csv", config);
+			FileFunctions.ExecuteExe("CodeSource/Terrain/", "main_terrain.exe");
 			config = ConfigurationTerrain.ExtractInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv");
 			xref = DataTerrain.X_relief(((int)config.N_x.Value) + 1);
 			zref = DataTerrain.Z_relief(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\outputs\z_relief.csv");

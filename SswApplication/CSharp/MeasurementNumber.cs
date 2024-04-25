@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 namespace SswApplication.CSharp
 {
     // type des attributs de configuration
-    internal class Measurement(string property, double value, string unit = "")
+    internal class MeasurementNumber(string property, double value, string unit = "")
     {
         public string Property { get; set; } = property;
         public double Value { get; set; } = value;
         public string Unit { get; set; } = unit;
-        public static string[] CreateField(Measurement measurement)
+        public static string[] CreateField(MeasurementNumber measurement)
         {
             return
             [
@@ -22,9 +22,9 @@ namespace SswApplication.CSharp
                 measurement.Unit
             ];
         }
-        public static Measurement CreateMeasurement(string[] data)
+        public static MeasurementNumber CreateMeasurement(string[] data)
         {
-            return new Measurement(data[0], Double.Parse(data[1], CultureInfo.InvariantCulture), data[2]);
+            return new MeasurementNumber(data[0], Double.Parse(data[1], CultureInfo.InvariantCulture), data[2]);
         }
 
 		public void UpdateMeasurement(string[] data)

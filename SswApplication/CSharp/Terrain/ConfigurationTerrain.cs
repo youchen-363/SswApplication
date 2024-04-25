@@ -12,47 +12,47 @@ namespace SswApplication.CSharp.Terrain
 {
     internal class ConfigurationTerrain
     {
-        private Measurement _n_x;
-        private Measurement _x_step;
-        private string _type;
-        private Measurement _z_max_relief;
-        private Measurement _iterations;
-        private Measurement _width;
-        private Measurement _center;
+        private MeasurementNumber _n_x;
+        private MeasurementNumber _x_step;
+        private MeasurementString _type;
+        private MeasurementNumber _z_max_relief;
+        private MeasurementNumber _iterations;
+        private MeasurementNumber _width;
+        private MeasurementNumber _center;
 
         public ConfigurationTerrain()
         {
-            _n_x = new Measurement("N_x", 0);
-            _x_step = new Measurement("x_step", 0, "m");
-            _type = "Superposed";
-            _z_max_relief = new Measurement("z_max_relief", 0, "m");
-            _iterations = new Measurement("iterations", 0, "for superposed terrain");
-            _width = new Measurement("width", 0, "pts");
-            _center = new Measurement("center", 0, "pts");
+            _n_x = new MeasurementNumber("N_x", 0);
+            _x_step = new MeasurementNumber("x_step", 0, "m");
+            _type = new MeasurementString ("type", "Superposed");
+            _z_max_relief = new MeasurementNumber("z_max_relief", 0, "m");
+            _iterations = new MeasurementNumber("iterations", 0, "for superposed terrain");
+            _width = new MeasurementNumber("width", 0, "pts");
+            _center = new MeasurementNumber("center", 0, "pts");
         }
 
-        public Measurement N_x { get => _n_x; set => _n_x = value; }
-        public Measurement X_step { get => _x_step; set => _x_step = value; }
-        public string Type { get => _type; set => _type = value; }
-        public Measurement Z_max_relief { get =>  _z_max_relief; set => _z_max_relief = value; }
-        public Measurement Iterations { get =>  _iterations; set => _iterations = value;}
-        public Measurement Width { get => _width; set => _width = value; }
-        public Measurement Center { get => _center; set => _center = value; }
+        public MeasurementNumber N_x { get => _n_x; set => _n_x = value; }
+        public MeasurementNumber X_step { get => _x_step; set => _x_step = value; }
+        public MeasurementString Type { get => _type; set => _type = value; }
+        public MeasurementNumber Z_max_relief { get =>  _z_max_relief; set => _z_max_relief = value; }
+        public MeasurementNumber Iterations { get =>  _iterations; set => _iterations = value;}
+        public MeasurementNumber Width { get => _width; set => _width = value; }
+        public MeasurementNumber Center { get => _center; set => _center = value; }
 
-        public static void WriteInputCSVTerrain(string path, ConfigurationTerrain config)
+        public static void WriteInputCSVTerrain(string dir, string file, ConfigurationTerrain config)
         {
             string[][] fields =
                 [
                 ["Property","Value","Unit"],
-                Measurement.CreateField(config.N_x),
-                Measurement.CreateField(config.X_step),
-                ["type", config.Type, ""],
-                Measurement.CreateField(config.Z_max_relief),
-                Measurement.CreateField(config.Iterations),
-                Measurement.CreateField(config.Width),
-                Measurement.CreateField(config.Center)
+                MeasurementNumber.CreateField(config.N_x),
+                MeasurementNumber.CreateField(config.X_step),
+                MeasurementString.CreateField(config.Type),
+                MeasurementNumber.CreateField(config.Z_max_relief),
+                MeasurementNumber.CreateField(config.Iterations),
+                MeasurementNumber.CreateField(config.Width),
+                MeasurementNumber.CreateField(config.Center)
                 ];
-            FileFunctions.WriteCSV(path, fields);
+            FileFunctions.WriteCSV(dir, file, fields);
         }
 
 		public static ConfigurationTerrain ExtractInputCSVTerrain (string path)
@@ -85,7 +85,7 @@ namespace SswApplication.CSharp.Terrain
                     config.X_step.UpdateMeasurement(data);
 					break;
                 case "type":
-                    config.Type = data[1];
+                    config.Type.UpdateMeasurement(data);
                     break;
                 case "z_max_relief":
                     config.Z_max_relief.UpdateMeasurement(data);

@@ -1,0 +1,91 @@
+﻿@page "/propagation"
+
+<h1>Propagation</h1>
+
+<label for="MethodProp">@config.Method.Property</label>
+<input type="text" id="MethodProp" @bind="@config.Method.Value" placeholder="@config.Method.Property" />@config.Method.Unit
+<br />
+<br />
+<label for="N_xProp">@config.N_x.Property</label>
+<input type="number" id="N_xProp" @bind="@config.N_x.Value" placeholder="@config.N_x.Property" />@config.N_x.Unit
+<br />
+<br />
+<label for="N_zProp">@config.N_z.Property</label>
+<input type="number" id="N_zProp" @bind="@config.N_z.Value" placeholder="@config.N_z.Property" />@config.N_z.Unit
+<br />
+<br />
+<label for="X_stepProp">@config.X_step.Property</label>
+<input type="number" id="X_stepProp" @bind="@config.X_step.Value" placeholder="@config.X_step.Property" />@config.X_step.Unit
+<br />
+<br />
+<label for="Z_stepProp">@config.Z_step.Property</label>
+<input type="number" id="Z_stepProp" @bind="@config.Z_step.Value" placeholder="@config.Z_step.Property" />@config.Z_step.Unit
+<br />
+<br />
+<label for="FrequencyProp">@config.Frequency.Property</label>
+<input type="number" id="FrequencyProp" @bind="@config.Frequency.Value" placeholder="@config.Frequency.Property" />@config.Frequency.Unit
+<br />
+<br />
+<label for="PolarisationProp">@config.Polarisation.Property</label>
+<input type="text" id="PolarisationProp" @bind="@config.Polarisation.Value" placeholder="@config.Polarisation.Property" />@config.Polarisation.Unit
+<br />
+<br />
+<label for="MaxCompressionErrorProp">@config.MaxCompressionError.Property</label>
+<input type="number" id="MaxCompressionErrorProp" @bind="@config.MaxCompressionError.Value" placeholder="@config.MaxCompressionError.Property" />@config.MaxCompressionError.Unit
+<br />
+<br />
+<label for="WaveletLevelProp">@config.WaveletLevel.Property</label>
+<input type="number" id="WaveletLevelProp" @bind="@config.WaveletLevel.Value" placeholder="@config.WaveletLevel.Property" />@config.WaveletLevel.Unit
+<br />
+<br />
+<label for="WaveletFamilyProp">@config.WaveletFamily.Property</label>
+<input type="text" id="WaveletFamilyProp" @bind="@config.WaveletFamily.Value" placeholder="@config.WaveletFamily.Property" />@config.WaveletFamily.Unit
+<br />
+<br />
+<label for="ApodisationWindowProp">@config.ApodisationWindow.Property</label>
+<input type="text" id="ApodisationWindowProp" @bind="@config.ApodisationWindow.Value" placeholder="@config.ApodisationWindow.Property" />@config.ApodisationWindow.Unit
+<br />
+<br />
+<label for="ApodisationSizeProp">@config.ApodisationSize.Property</label>
+<input type="number" id="ApodisationSizeProp" @bind="@config.ApodisationSize.Value" placeholder="@config.ApodisationSize.Property" />@config.ApodisationSize.Unit
+<br />
+<br />
+<label for="ImageSizeProp">@config.ImageSize.Property</label>
+<input type="number" id="ImageSizeProp" @bind="@config.ImageSize.Value" placeholder="@config.ImageSize.Property" />@config.ImageSize.Unit
+<br />
+<br />
+<label for="GroundProp">@config.Ground.Property</label>
+<input type="text" id="GroundProp" @bind="@config.Ground.Value" placeholder="@config.Ground.Property" />@config.Ground.Unit
+<br />
+<br />
+<label for="EpsrProp">@config.Epsr.Property</label>
+<input type="number" id="EpsrProp" @bind="@config.Epsr.Value" placeholder="@config.Epsr.Property" />@config.Epsr.Unit
+<br />
+<br />
+<label for="SigmaProp">@config.Sigma.Property</label>
+<input type="number" id="SigmaProp" @bind="@config.Sigma.Value" placeholder="@config.Sigma.Property" />@config.Sigma.Unit
+<br />
+<br />
+<label for="AtmosphereProp">@config.Atmosphere.Property</label>
+<input type="text" id="AtmosphereProp" @bind="@config.Atmosphere.Value" placeholder="@config.Atmosphere.Property" />@config.Atmosphere.Unit
+<br />
+<br />
+<label for="TurbulenceProp">@config.Turbulence.Property</label>
+<select id="TurbulanceProp" @bind="@config.Turbulence.Value">
+	<option value="Y">Y</option>
+	<option value="N">N</option>
+</select>@config.Turbulence.Unit
+<br />
+<br />
+<label for="Cn2Prop">@config.Cn2.Property</label>
+<select id="py_or_cy" @bind="@config.PyOrCy.Value">
+	<option value="Python">Python</option>
+	<option value="Cython">Cython</option>
+</select>@config.PyOrCy.Unit
+<br />
+<br />
+<button id="btnProp" @onclick="LoadData">Run Simulation</button>
+
+<div id="canvProp">
+	<canvas id="canvasProp"></canvas>
+</div>

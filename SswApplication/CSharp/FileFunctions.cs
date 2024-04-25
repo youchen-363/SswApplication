@@ -16,10 +16,11 @@ namespace SswApplication.CSharp
 	internal class FileFunctions
 	{
 		internal static readonly string[] separator = ["\r\n", "\r", "\n"];
-		public static string ExecuteExe(string currentDirectory, string filename)
+
+		public static string ExecuteExe(string dir, string filename)
 		{
 			string output = string.Empty;
-			Environment.CurrentDirectory = currentDirectory;
+			DirectoryFn.ChangeDirectory(dir);
 			try
 			{
 				Process process = new();
@@ -61,11 +62,12 @@ namespace SswApplication.CSharp
 			return data;
 		}
 
-		public static void WriteCSV(string path, string[][] data)
+		public static void WriteCSV(string dir, string file, string[][] data)
 		{
             try
-            {
-				using var writer = new StreamWriter(path);
+			{ 
+				DirectoryFn.ChangeDirectory(dir);
+				using var writer = new StreamWriter(file);
 				using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
 				foreach (string[] dataArray in data)
 				{
