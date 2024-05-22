@@ -2,92 +2,136 @@
 @inject IJSRuntime JsRuntime
 @using SswApplication.CSharp.Source
 @using SswApplication.CSharp.Terrain
+@using SswApplication.CSharp.Functions
 @using System.Reflection
 
-<!--
-<p>@xrelief</p>
-<p>@zrelief</p>
+<h2>Relief</h2>
+<h3>Configuration</h3>
+<div class="d-flex form-group">
+	<!-- Terrain -->
+	<div class="border marge">
+		<!-- Type Relief -->
+		<div class="marge">
+			<label for="typeTerrain">Relief type</label>
+			<select id="typeTerrain" @bind="@config.Type.Value" @onclick="Type">
+				<option value="Plane">Plane</option>
+				<option value="Triangle">Triangle</option>
+				<option value="Superposed">Superposed</option>
+			</select>
+		</div>
+		<!-- Max relief (z_max) -->
+		<div class="marge">
+			<label for="Z_max_reliefTern">Max relief (@config.Z_max_relief.Unit)</label>
+			<input type="number" id="Z_max_reliefTern" @bind="@config.Z_max_relief.Value" placeholder="Z_max_relief" disabled="@disabledAttr[0]" @onfocusout="ZMax"/>
+		</div>
 
-<p>zrelief size : @zrefsize</p>
-<p>xrelief size : @xrefsize</p>
--->
-<label for="typeTerrain">@config.Type.Property</label>
-<select id="typeTerrain" @bind="@config.Type.Value">
-	<option value="Plane">Plane</option>
-	<option value="Triangle">Triangle</option>
-	<option value="Superposed">Superposed</option>
-</select>
-<br />
-<br />
-<label for="N_xTern">@config.N_x.Property</label>
-<input type="number" id="N_xTern" @bind="@config.N_x.Value" placeholder="N_x" />@config.N_x.Unit
-<br />
-<label for="X_stepTern">@config.X_step.Property</label>
-<input type="number" id="X_stepTern" @bind="@config.X_step.Value" placeholder="X_step" />@config.X_step.Unit
-<br />
-<label for="Z_max_reliefTern">@config.Z_max_relief.Property</label>
-<input type="number" id="Z_max_reliefTern" @bind="@config.Z_max_relief.Value" placeholder="Z_max_relief" />@config.Z_max_relief.Unit
-<br />
-<label for="IterationsTern">@config.Iterations.Property</label>
-<input type="number" id="IterationsTern" @bind="@config.Iterations.Value" placeholder="Iterations" />@config.Iterations.Unit
-<br />
-<label for="WidthTern">@config.Width.Property</label>
-<input type="number" id="WidthTern" @bind="@config.Width.Value" placeholder="Width" />@config.Width.Unit
-<br />
-<label for="CenterTern">@config.Center.Property</label>
-<input type="number" id="CenterTern" @bind="@config.Center.Value" placeholder="Center" />@config.Center.Unit
-<br />
-<br />
-<button @onclick="DrawLineGraph">Run Relief</button>
-<div id="canvTerrain">
+		<!-- Iterations -->
+		<div class="marge">
+			<label for="IterationsTern">Iterations (@config.Iterations.Unit)</label>
+			<input type="number" id="IterationsTern" @bind="@config.Iterations.Value" placeholder="Iterations" disabled="@disabledAttr[1]" @onfocusout="Iterations" />
+		</div>
+
+		<!-- Relief Center -->
+		<div class="marge">
+			<label for="CenterTern">Relief center (@config.Center.Unit)</label>
+			<input type="number" id="CenterTern" @bind="@config.Center.Value" placeholder="Center" disabled="@disabledAttr[2]" @onfocusout="Center" />
+		</div>
+
+		<!-- Width relief -->
+		<div class="marge">
+			<label for="WidthTern">Relief width (@config.Width.Unit)</label>
+			<input type="number" id="WidthTern" @bind="@config.Width.Value" placeholder="Width" disabled="@disabledAttr[3]" @onfocusout="Width"/>
+		</div>
+	</div>
+
+	<!-- All -->
+	<div class="border marge">
+
+		<!-- x_max -->
+		<div class="marge">
+			<label for="X_maxTern">x max (km)</label>
+			<input type="number" id="X_maxTern" @bind="x_max" placeholder="x_max" @onfocusout="XMax" />
+		</div>
+
+		<!-- Delta x (x_step) -->
+		<div class="marge">
+			<label for="X_stepTern">Delta x (@config.X_step.Unit)</label>
+			<input type="number" id="X_stepTern" @bind="@config.X_step.Value" placeholder="X_step" @onfocusout="XStep" />
+		</div>
+
+		<!-- n_x -->
+		<div class="marge">
+			<label for="N_xTern">N x (pts)</label>
+			<input type="number" id="N_xTern" @bind="@config.N_x.Value" placeholder="N_x" @onfocusout="Nx" />
+		</div>
+	</div>
+</div>
+<div class="d-flex">
+	<div class="tableScroll">
+		<table class="table">
+			<tr>
+				<th></th>
+				@for (int i = 1; i <= xVals.Count; i++)
+				{
+					<th>@i</th>
+				}
+			</tr>
+			<tr>
+				<th class="p-3">x</th>
+				@for (int i = 0; i < xVals.Count; i++)
+				{
+					int index = i;
+					<td><input type="number" class="input-table" @bind="xVals[index]" @onfocusout="SortXAndZ" /></td>
+				}
+			</tr>
+			<tr>
+				<th class="p-3">y</th>
+				@for (int i = 0; i < zVals.Count; i++)
+				{
+					int index = i;
+					<td><input type="number" class="input-table" @bind="zVals[index]" @onfocusout="SortXAndZ" /></td>
+				}
+			</tr>
+		</table>
+	</div>
+	<div class="d-flex justify-content-center align-items-center p-3">
+		<button class="btn-primary" @onclick="AddColumn" disabled="@add">+</button>
+	</div>
+</div>
+<div>
+	<span class="p-2">Delete</span>
+	<input type=number @bind="col" />
+	<button class="btn-primary m-2" @onclick="DeleteColumn" OnClientClick="return confirm('Do you want Delete?');" disabled="@delete">-</button>
+	<button class="btn-primary m-2" @onclick="SaveCSV" disabled="@save">Save</button>
+	@if (!string.IsNullOrEmpty(alertMsg))
+	{
+		<div class="alert alert-danger" role="alert">
+			@alertMsg
+		</div>
+	} 
+	else if (!string.IsNullOrEmpty(successMsg))
+	{
+		<div class="alert alert-success" role="alert">
+			@successMsg
+		</div>
+	}
+</div>
+<div>
+	<button class="btn-primary m-2" @onclick="DrawTestGraph">Draw Relief</button>
+	<button class="btn-primary m-2" @onclick="DrawLineGraph">Run Relief</button>
+</div>
+@if (!string.IsNullOrEmpty(res))
+{
+	<div>
+		<h5>Result</h5>
+		<p class="border">@resultat</p>
+	</div>
+}
+<div id="canvTest" style="width:100%; height:auto;">
+	<canvas id="canvasTest"></canvas>
+</div>
+
+<div id="canvTerrain" style="width:100%; height:auto;">
 	<canvas id="canvasTerrain"></canvas>
 </div>
 
-@code {
-	private ConfigurationTerrain config;
-	private string xrelief;
-	private string zrelief;
-
-	private List<int> xref;
-	private List<double> zref;
-
-	private bool plotted;
-	private string zrefsize;
-	private string xrefsize;
-
-	private string dir;
-
-	public Terrain()
-	{
-		xrelief = string.Empty;
-		zrelief = string.Empty;
-		plotted = false;
-		config = ConfigurationTerrain.ExtractInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv");
-		xref = [];
-		zref = [];
-		xrelief = string.Empty;
-		zrelief = string.Empty;
-		xrefsize = "0";
-		zrefsize = "0";
-		dir = string.Empty;
-	}
-
-	async Task DrawLineGraph()
-	{
-		try
-		{
-			ConfigurationTerrain.WriteInputCSVTerrain("CodeSource/Terrain/inputs/", "conf_terrain.csv", config);
-			FileFunctions.ExecuteExe("CodeSource/Terrain/", "main_terrain.exe");
-			config = ConfigurationTerrain.ExtractInputCSVTerrain(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\inputs\conf_terrain.csv");
-			xref = DataTerrain.X_relief(((int)config.N_x.Value) + 1);
-			zref = DataTerrain.Z_relief(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\outputs\z_relief.csv");
-			xrefsize = xref.Count().ToString();
-			zrefsize = zref.Count().ToString();
-			await JsRuntime.InvokeVoidAsync("drawTerrain", xref, zref, plotted);
-			plotted = true;
-		} catch (Exception ex)
-		{
-			throw new Exception("Error draw line graph of terrain: " + ex);
-		}
-	}
-}

@@ -1,126 +1,94 @@
 ﻿@page "/"
 @using System.Globalization
 @inject IJSRuntime JsRuntime
-@inject IJSRuntime JSHost
-@using System.Text.Json
+@using System.Text.Json;
 @using System.Diagnostics;
 @using SswApplication.CSharp.Source;
-@using SswApplication.CSharp;
+@using SswApplication.CSharp.Functions;
+@using SswApplication.CSharp.Units;
 
-<h1>Source</h1>
+<h2>Source</h2>
+<h3>Configuration</h3>
 
-<h2>Configuration</h2>
-<label for="N_zSrc">@config.N_z.Property</label>
-<input type="number" @bind="@config.N_z.Value" id="N_zSrc" placeholder="N_z"/>@config.N_z.Unit
-<label for="Z_stepSrc">@config.Z_step.Property</label>
-<input type="number" @bind="@config.Z_step.Value" id="Z_stepSrc" placeholder="Z_step" />@config.Z_step.Unit
-<br/><br/>
+<div class="d-flex">
 
-<label for="X_sSrc">@config.X_s.Property</label>
-<input type="number" @bind="@config.X_s.Value" id="X_sSrc" placeholder="X_s" />@config.X_s.Unit
-<label for="FrequencySrc">@config.Frequency.Property</label>
-<input type="number" @bind="@config.Frequency.Value" id="FrequencySrc" placeholder="Frequency" />@config.Frequency.Unit
-<br/><br/>
+	<!-- Source -->
+	<div class="border marge">
+		<!-- Type -->
+		<div class="marge">
+			<label for="TypeSrc">@config.Type.Property</label>
+			<select @bind="@config.Type.Value" @onclick="Type">
+				<option value="CSP">Complex Source Point</option>
+			</select>
+		</div>
 
-<label for="P_TxSrc">@config.P_Tx.Property</label>
-<input type="number" @bind="@config.P_Tx.Value" id="P_TxSrc" placeholder="P_Tx" />@config.P_Tx.Unit
-<label for="G_TxSrc">@config.G_Tx.Property</label>
-<input type="number" @bind="@config.G_Tx.Value" id="G_TxSrc" placeholder="G_Tx" />@config.G_Tx.Unit
-<br/><br/>
+		<!-- Z s -->
+		<div class="marge">
+			<label for="Z_sSrc">Altitude z_s (@config.Z_s.Unit)</label>
+			<input type="number" @bind="@config.Z_s.Value" id="Z_sSrc" placeholder="Z_s" @onfocusout="Zs" />
+		</div>
 
-<label for="TypeSrc">@config.Type.Property</label>
-<input type="text" @bind="@config.Type.Value" id="TypeSrc" placeholder="Type" />@config.Type.Unit
-<label for="Z_sSrc">@config.Z_s.Property</label>
-<input type="number" @bind="@config.Z_s.Value" id="Z_sSrc" placeholder="Z_s" />@config.Z_s.Unit
-<br/><br/>
+		<!-- X s -->
+		<div class="marge">
+			<label for="X_sSrc">Distance x_s (@config.X_s.Unit)</label>
+			<input type="number" @bind="@config.X_s.Value" id="X_sSrc" placeholder="X_s" @onfocusout="Xs" />
+		</div>
 
-<label for="W0Src">@config.W0.Property</label>
-<input type="number" @bind="@config.W0.Value" id="W0Src" placeholder="W0" />@config.W0.Unit
-<br/><br/>
+		<!-- Width -->
+		<div class="marge">
+			<label for="W0Src">Width (lambda)</label>
+			<input type="number" @bind="width" id="W0Src" placeholder="W0" @onfocusout="Width"/>
+		</div>
+	</div>
 
-<!--
-<h2>CSP</h2>
-<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
-<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />
-<input type="number" value="@config.frequency" id="freq" placeholder="Frequency" />-->
-<!--
-<p id="parag">@str</p>
+	<!-- All -->
+	<div class="border marge">
+		<!-- Frequency -->
+		<div class="marge">
+			<label for="FrequencySrc">@config.Frequency.Property (@config.Frequency.Unit)</label>
+			<input type="number" @bind="@config.Frequency.Value" id="FrequencySrc" placeholder="Frequency" @onfocusout="Frequency" />
+		</div>
 
-<p>@data</p>-->
-<p>@firstfn</p>
-<p>@secondfn</p>
-<p>@thirdfn</p>
-<p>@fourthfn</p>
-<p>@fifthfn</p>
-<p>@sixthfn</p>
+		<!-- Lambda (Wavelength) -->
+		<!-- not sure if finished -->
+		<div class="marge">
+			<label for="LambdaSrc"> Lambda (m) </label>
+			<input type="number" @bind="lambda" id="LambdaSrc" placeholder="Lambda" @onfocusout="Lambda" />
+		</div>
 
-<button @onclick="DrawChart">Run Source</button>
+		<!-- N_z -->
+		<div class="marge">
+			<label for="N_zSrc">N z (pts)</label>
+			<input type="number" @bind="@config.N_z.Value" id="N_zSrc" placeholder="N_z" @onfocusout="Nz" />
+		</div>
 
-<div id="canvSource">
-	<canvas id="canvasSource"></canvas>
+		<!-- Z step // Delta z -->
+		<div class="marge">
+			<label for="Z_stepSrc">Delta z (@config.Z_step.Unit)</label>
+			<input type="number" @bind="@config.Z_step.Value" id="Z_stepSrc" placeholder="Z_step" 
+				@onfocusout="ZStep" />
+		</div>
+
+		<!-- Z max -->
+		<div class="marge">
+			<label for="Z_maxSrc">z max (m)</label>
+			<input type="number" @bind="z_max" id="Z_maxSrc" placeholder="z_max"
+					@onfocusout="ZMax" />
+		</div>
+	</div>
+</div>
+<div>
+<button class="btn-primary" @onclick="DrawChart">Run Source</button>
 </div>
 
-@code {
-	private ConfigurationSource config;
-	private string str;
-	private string data;
-	private Boolean plotted = false;
-	private string stttr;
-
-	private string firstfn = string.Empty;
-	private string secondfn = string.Empty;
-	private string thirdfn = string.Empty;
-	private string fourthfn = string.Empty;
-	private string fifthfn = string.Empty ;
-	private string sixthfn = string.Empty;
-
-	public Source()
-	{
-		data = string.Empty;
-		config = ConfigurationSource.ExtractInputCSVSource(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Source\inputs\configuration.csv");
-		str = JsonSerializer.Serialize(config);
-		//FileFunctions.ExecuteExe(@"C:\ENAC\SswApplication\SswApplication\CodeSource\Terrain\dist\", "test.exe");
-	}
-
-	private async Task DrawChart()
-	{
-		try
-		{
-			Stopwatch stopwatch = new();
-			stopwatch.Start();
-			ConfigurationSource.WriteInputCSVSource("CodeSource/Source/inputs/", "configuration.csv", config);
-			stopwatch.Stop();
-			firstfn = "write input data csv : " + stopwatch.Elapsed.TotalSeconds;
-
-			stopwatch = new();
-			stopwatch.Start();
-			stttr = FileFunctions.ExecuteExe("CodeSource/Source/", "main_source.exe");
-			stopwatch.Stop();
-			thirdfn = "execute mainsource : " + stopwatch.Elapsed.TotalSeconds;
-
-			stopwatch = new();
-			stopwatch.Start();
-			str = JsonSerializer.Serialize(config);
-			stopwatch.Stop();
-			fourthfn = "JSON serializer config : " + stopwatch.Elapsed.TotalSeconds;
-
-			stopwatch = new();
-			stopwatch.Start();
-			data = DataSource.InitialiseDataSource();
-			stopwatch.Stop();
-			fifthfn = "initialise data (efield, vmin, vmax, ...): " + stopwatch.Elapsed.TotalSeconds; 
-
-			stopwatch = new();
-			stopwatch.Start();
-			await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
-			stopwatch.Stop();
-			sixthfn = "draw chart : " + stopwatch.Elapsed.TotalSeconds;
-			plotted = true;
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Error drawing chart: {ex.Message}");
-		}
-	}
-	
+@if (!string.IsNullOrEmpty(res))
+{
+	<div>
+		<h5>Result</h5>
+		<p class="border">@resultat</p>
+	</div>
 }
+
+<div  id="canvSource">
+	<canvas id="canvasSource"></canvas>
+</div>

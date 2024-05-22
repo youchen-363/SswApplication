@@ -1,6 +1,8 @@
 Components\Layout\MainLayout.razor.css
 Components\Layout\NavMenu.razor.css
-JavaScript\output.json
+Components\Pages\Propagation.razor.css
+Components\Pages\Source.razor.css
+Components\Pages\Terrain.razor.css
 OpenSans-Regular.ttf
 appicon.ico
 appiconLargeTile.scale-100.png
@@ -66,8 +68,8 @@ wwwroot\css\bootstrap\bootstrap.min.css
 wwwroot\css\bootstrap\bootstrap.min.css.map
 wwwroot\favicon.png
 wwwroot\index.html
+wwwroot\js\final.js
 wwwroot\js\graph.js
-wwwroot\js\output.json
 wwwroot\js\propagation.js
 wwwroot\js\source.js
 wwwroot\js\terrain.js

@@ -56,18 +56,14 @@
 #import numpy as np
 from csv import writer
 from csv import reader
-from numpy import array 
-from numpy import zeros
 from numpy import float64
 from numpy import int32
 from numpy import savetxt 
 from numpy import save 
 
 import scipy.constants as cst
-import matplotlib.pyplot as plt
 # import sys
 from src.complex_source_point import complex_source_point
-from src.plane_wave_source import plane_wave_source
 
 # contains the source type
 file_source = 'inputs/configuration.csv'

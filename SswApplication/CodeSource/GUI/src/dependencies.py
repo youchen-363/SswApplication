@@ -459,6 +459,7 @@ class Dependencies(object):
         relief_center = float(self.centerReliefDoubleSpinBox.value())
         # write the center relief value in terrain file
         update_file('center', relief_center, 'terrain')
+        """Update xstep????????"""
 
     # --- relief width --- #
     def relief_width_clicked(self):
@@ -535,7 +536,7 @@ class Dependencies(object):
         # sigma
         self.sigmaDoubleSpinBox.setProperty("value", serie.loc['sigma'])
         # atmosphere type
-        self.atmTypeComboBox.setCurrentText(serie.loc['atmosphere'])
+        self.atmTypeComboBox.setCurrentText(str(serie.loc['atmosphere']))
         # c0
         self.c0DoubleSpinBox.setProperty("value", serie.loc['c0'])
         # delta

@@ -37,7 +37,6 @@
 import numpy as np
 import scipy.constants as cst
 
-
 # function complex_source_point
 def plane_wave_source(config_source):
 
@@ -91,7 +90,6 @@ def plane_wave_source(config_source):
     # max amplitude corresponds to the inputted gain and radiated power
     g_lin = 10**(config_source.G_Tx/10)
     e_field *= np.sqrt(zeta0 * config_source.P_Tx * g_lin / (2*np.pi)) / (-x_s)
-
 
     # --------------------- #
 

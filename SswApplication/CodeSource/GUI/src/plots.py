@@ -141,7 +141,7 @@ class Plots(object):
             remain_im = n_im % 2 ** wv_l
             if remain_im != 0:
                 n_im += 2 ** wv_l - remain_im
-
+        """
         # --- from wavelets to E-field --- #
         # loop on each distance step
         for ii_x in np.arange(0, n_x):  # first field is not saved
@@ -154,6 +154,7 @@ class Plots(object):
             # remove image field
             uu_x = uu_x[n_im:]
             # add the relief
+            
             if ground_type == 'PEC' or ground_type == 'Dielectric':
                 # whether ascending or descending relief, the shift is made before or after propagation
                 if diff_relief[ii_x] < 0:
@@ -161,10 +162,13 @@ class Plots(object):
                 else:
                     ii_relief = int(z_relief[ii_x] / z_step)
                 uu_x = shift_relief(uu_x, ii_relief)
+            
             x_current = -x_s + (ii_x + 1) * x_step
             e_field_total[ii_x, :] = uu_x / np.sqrt(k0 * x_current) * np.exp(-1j * k0 * x_current)
         # -------------------------------- #
-
+        """
+        
+        e_field_total = np.loadtxt('../propagation/outputs/E_total.csv', delimiter=',', dtype="complex")
         # --- 2D plot --- #
         # @todo output = Take into account P_tx and G_Tx
         output_type = self.outputComboBox.currentText()

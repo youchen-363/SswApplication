@@ -68,11 +68,11 @@
           "dependencies": {
             "CsvHelper": {
               "target": "Package",
-              "version": "[31.0.4, )"
+              "version": "[32.0.1, )"
             },
             "Microsoft.AspNetCore.Components.WebView.Maui": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -80,11 +80,11 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -99,6 +99,14 @@
             "NumSharp": {
               "target": "Package",
               "version": "[0.30.0, )"
+            },
+            "System.Composition": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "UnitsNet": {
+              "target": "Package",
+              "version": "[5.50.0, )"
             }
           },
           "imports": [
@@ -127,11 +135,11 @@
           "dependencies": {
             "CsvHelper": {
               "target": "Package",
-              "version": "[31.0.4, )"
+              "version": "[32.0.1, )"
             },
             "Microsoft.AspNetCore.Components.WebView.Maui": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -139,11 +147,11 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -158,6 +166,14 @@
             "NumSharp": {
               "target": "Package",
               "version": "[0.30.0, )"
+            },
+            "System.Composition": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "UnitsNet": {
+              "target": "Package",
+              "version": "[5.50.0, )"
             }
           },
           "imports": [
@@ -186,11 +202,11 @@
           "dependencies": {
             "CsvHelper": {
               "target": "Package",
-              "version": "[31.0.4, )"
+              "version": "[32.0.1, )"
             },
             "Microsoft.AspNetCore.Components.WebView.Maui": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -198,11 +214,11 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
@@ -217,6 +233,14 @@
             "NumSharp": {
               "target": "Package",
               "version": "[0.30.0, )"
+            },
+            "System.Composition": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "UnitsNet": {
+              "target": "Package",
+              "version": "[5.50.0, )"
             }
           },
           "imports": [
@@ -246,11 +270,11 @@
           "dependencies": {
             "CsvHelper": {
               "target": "Package",
-              "version": "[31.0.4, )"
+              "version": "[32.0.1, )"
             },
             "Microsoft.AspNetCore.Components.WebView.Maui": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
@@ -258,11 +282,11 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.7, )"
+              "version": "[8.0.21, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -271,6 +295,14 @@
             "NumSharp": {
               "target": "Package",
               "version": "[0.30.0, )"
+            },
+            "System.Composition": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "UnitsNet": {
+              "target": "Package",
+              "version": "[5.50.0, )"
             }
           },
           "imports": [

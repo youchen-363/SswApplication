@@ -25,12 +25,12 @@
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\graph.js",
-      "PackagePath": "staticwebassets\\js\\graph.js"
+      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\final.js",
+      "PackagePath": "staticwebassets\\js\\final.js"
     },
     {
-      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\output.json",
-      "PackagePath": "staticwebassets\\js\\output.json"
+      "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\graph.js",
+      "PackagePath": "staticwebassets\\js\\graph.js"
     },
     {
       "Id": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\propagation.js",

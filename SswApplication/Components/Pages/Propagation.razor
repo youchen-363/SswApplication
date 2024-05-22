@@ -1,91 +1,260 @@
 ﻿@page "/propagation"
+@using SswApplication.CSharp.Functions
+@using SswApplication.CSharp.Units
+@using System.Diagnostics;
+@inject IJSRuntime JSRuntime;
 
 <h1>Propagation</h1>
 
-<label for="MethodProp">@config.Method.Property</label>
-<input type="text" id="MethodProp" @bind="@config.Method.Value" placeholder="@config.Method.Property" />@config.Method.Unit
-<br />
-<br />
-<label for="N_xProp">@config.N_x.Property</label>
-<input type="number" id="N_xProp" @bind="@config.N_x.Value" placeholder="@config.N_x.Property" />@config.N_x.Unit
-<br />
-<br />
-<label for="N_zProp">@config.N_z.Property</label>
-<input type="number" id="N_zProp" @bind="@config.N_z.Value" placeholder="@config.N_z.Property" />@config.N_z.Unit
-<br />
-<br />
-<label for="X_stepProp">@config.X_step.Property</label>
-<input type="number" id="X_stepProp" @bind="@config.X_step.Value" placeholder="@config.X_step.Property" />@config.X_step.Unit
-<br />
-<br />
-<label for="Z_stepProp">@config.Z_step.Property</label>
-<input type="number" id="Z_stepProp" @bind="@config.Z_step.Value" placeholder="@config.Z_step.Property" />@config.Z_step.Unit
-<br />
-<br />
-<label for="FrequencyProp">@config.Frequency.Property</label>
-<input type="number" id="FrequencyProp" @bind="@config.Frequency.Value" placeholder="@config.Frequency.Property" />@config.Frequency.Unit
-<br />
-<br />
-<label for="PolarisationProp">@config.Polarisation.Property</label>
-<input type="text" id="PolarisationProp" @bind="@config.Polarisation.Value" placeholder="@config.Polarisation.Property" />@config.Polarisation.Unit
-<br />
-<br />
-<label for="MaxCompressionErrorProp">@config.MaxCompressionError.Property</label>
-<input type="number" id="MaxCompressionErrorProp" @bind="@config.MaxCompressionError.Value" placeholder="@config.MaxCompressionError.Property" />@config.MaxCompressionError.Unit
-<br />
-<br />
-<label for="WaveletLevelProp">@config.WaveletLevel.Property</label>
-<input type="number" id="WaveletLevelProp" @bind="@config.WaveletLevel.Value" placeholder="@config.WaveletLevel.Property" />@config.WaveletLevel.Unit
-<br />
-<br />
-<label for="WaveletFamilyProp">@config.WaveletFamily.Property</label>
-<input type="text" id="WaveletFamilyProp" @bind="@config.WaveletFamily.Value" placeholder="@config.WaveletFamily.Property" />@config.WaveletFamily.Unit
-<br />
-<br />
-<label for="ApodisationWindowProp">@config.ApodisationWindow.Property</label>
-<input type="text" id="ApodisationWindowProp" @bind="@config.ApodisationWindow.Value" placeholder="@config.ApodisationWindow.Property" />@config.ApodisationWindow.Unit
-<br />
-<br />
-<label for="ApodisationSizeProp">@config.ApodisationSize.Property</label>
-<input type="number" id="ApodisationSizeProp" @bind="@config.ApodisationSize.Value" placeholder="@config.ApodisationSize.Property" />@config.ApodisationSize.Unit
-<br />
-<br />
-<label for="ImageSizeProp">@config.ImageSize.Property</label>
-<input type="number" id="ImageSizeProp" @bind="@config.ImageSize.Value" placeholder="@config.ImageSize.Property" />@config.ImageSize.Unit
-<br />
-<br />
-<label for="GroundProp">@config.Ground.Property</label>
-<input type="text" id="GroundProp" @bind="@config.Ground.Value" placeholder="@config.Ground.Property" />@config.Ground.Unit
-<br />
-<br />
-<label for="EpsrProp">@config.Epsr.Property</label>
-<input type="number" id="EpsrProp" @bind="@config.Epsr.Value" placeholder="@config.Epsr.Property" />@config.Epsr.Unit
-<br />
-<br />
-<label for="SigmaProp">@config.Sigma.Property</label>
-<input type="number" id="SigmaProp" @bind="@config.Sigma.Value" placeholder="@config.Sigma.Property" />@config.Sigma.Unit
-<br />
-<br />
-<label for="AtmosphereProp">@config.Atmosphere.Property</label>
-<input type="text" id="AtmosphereProp" @bind="@config.Atmosphere.Value" placeholder="@config.Atmosphere.Property" />@config.Atmosphere.Unit
-<br />
-<br />
-<label for="TurbulenceProp">@config.Turbulence.Property</label>
-<select id="TurbulanceProp" @bind="@config.Turbulence.Value">
-	<option value="Y">Y</option>
-	<option value="N">N</option>
-</select>@config.Turbulence.Unit
-<br />
-<br />
-<label for="Cn2Prop">@config.Cn2.Property</label>
-<select id="py_or_cy" @bind="@config.PyOrCy.Value">
-	<option value="Python">Python</option>
-	<option value="Cython">Cython</option>
-</select>@config.PyOrCy.Unit
-<br />
-<br />
-<button id="btnProp" @onclick="LoadData">Run Simulation</button>
+<div class="d-flex border marge">
+	<!-- General -->
+	<div>
+		<!-- Method -->
+		<div class="marge">
+			<label for="MethodProp">Method</label>
+			<select @bind="@config.Method.Value" @onclick="Method">
+				<option value="SSF">SSF</option>
+			</select>
+		</div>
+		<!-- Language -->
+		<div class ="marge">
+			<label for="py_or_cyProp">Language</label>
+			<select id="py_or_cyProp" @bind="@config.PyOrCy.Value" @onclick="Language">
+				<option value="Python">Python</option>
+				<option value="Cython">Cython</option>
+			</select>
+		</div>
+	</div>
 
-<div id="canvProp">
-	<canvas id="canvasProp"></canvas>
+	<!-- Ground -->
+	<div>
+		<h5>Ground</h5>
+		<div class="d-flex">
+			<div>
+				<!-- Ground type -->
+				<div class="marge">
+					<label for="GroundProp">Ground type</label>
+					<select @bind="@config.Ground.Value" @onclick="GroundType">
+						<option value="None">None</option>
+						<option value="PEC">PEC</option>
+						<option value="Dielectric">Dielectric</option>
+					</select>
+				</div>
+				<!-- Image size -->
+				<div class="marge">
+					<label for="ImageSizeProp">Image size (@config.ImageSize.Unit)</label>
+					<input type="number" id="ImageSizeProp" @bind="@imageSize" placeholder="@config.ImageSize.Property" 
+							disabled="@disabledAttrGround[0]" @onfocusout="ImageSize" min="0" max="50"/>
+				</div>
+				<!-- epsr -->
+				<div class="marge">
+					<label for="EpsrProp">epsr </label>
+					<input type="number" id="EpsrProp" @bind="@config.Epsr.Value" placeholder="@config.Epsr.Property" 
+							disabled="@disabledAttrGround[1]" @onclick="Epsr" min="0" max="5000"/>
+				</div>
+			</div>
+			<div>
+				<!-- sigma -->
+				<div class="marge">
+					<label for="SigmaProp">Sigma (@config.Sigma.Unit)</label>
+					<input type="number" id="SigmaProp" @bind="@config.Sigma.Value" placeholder="@config.Sigma.Property" 
+							disabled="@disabledAttrGround[2]" @onclick="Sigma" min="0" max="1000"/>
+				</div>
+				<!-- Size image pts -->
+				<div class="marge">
+					<label for="ImageSizePtsProp">Image Size (pts)</label>
+					<input type="number" id="ImageSizePtsProp" @bind="imageSizePts" placeholder="Image Size pts" disabled min="0" max="5000000"/>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+<div class="border d-flex marge">
+	<div>
+		<h5>Atmosphere</h5>
+		<!-- Atmosphere -->
+		<div class="d-flex">
+			<div>
+				<!-- Atmosphere Type -->
+				<div class="marge">
+					<label for="AtmosphereProp">Atmosphere type</label>
+					<select id="AtmosphereProp" @bind="@config.Atmosphere.Value" @onclick="AtmosphereType">
+						<option value="Linear">Linear</option>
+					</select>
+				</div>
+				<!-- c0 -->
+				<div class="marge">
+					<label for="C0Prop">c0 (N-unit/m)</label>
+					<input type="number" id="C0Prop" @bind="@config.C0.Value" placeholder="@config.C0.Property" @onclick="C0" step="1" min="-99.0" max="0"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+		<h5>Turbulence</h5>
+		<!-- Turbulence -->
+		<div>
+			<div class="marge">
+				<label for="TurbulenceProp">Turbulence</label>
+				<select id="TurbulenceProp" @bind="@config.Turbulence.Value" @onclick="Turbulence">
+					<option value="Y">Y</option>
+					<option value="N">N</option>
+				</select>
+			</div>
+			<!-- Cn2 -->
+			<div class="marge">
+				<label for="Cn2Prop">Cn2</label>
+				<input type="number" id="Cn2Prop" @bind="@config.Cn2.Value" placeholder="@config.Cn2.Property" 
+						disabled="@disabledTurbulence[0]" @onfocusout="Cn2" min="-20.0" max="0.0"/>
+			</div>
+			<!-- L0 -->
+			<div class="marge">
+				<label for="L0Prop">L0 (@config.L0.Unit)</label>
+				<input type="number" id="L0Prop" @bind="@config.L0.Value" placeholder="@config.L0.Property" 
+						disabled="@disabledTurbulence[1]" @onfocusout="L0" min="0.1" max="10000.0"/>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="border d-flex marge">
+	<!-- Freq lambda polarisation -->
+	<div>
+		<!-- Frequency -->
+		<div class="marge">
+			<label for="FrequencyProp">Frequency (MHz)</label>
+			<input type="number" id="FrequencyProp" @bind="@config.Frequency.Value" placeholder="@config.Frequency.Property" 
+					@onfocusout="Frequency" min="0.0001" max="1000000.0"/>
+		</div>
+		<!-- Lambda -->
+		<div class="marge">
+			<label for="LambdaProp">Lambda (m)</label>
+			<input type="number" id="LambdaProp" @bind="@lambda" placeholder="Lambda" @onfocusout="Lambda" min="0.000001" max="5000.0"/>
+		</div>
+		<!-- Polarisation -->
+		<div class="marge">
+			<label for="PolarisationProp">Polarisation</label>
+			<select id="PolarisationProp" @bind="@config.Polarisation.Value" @onclick="Polarisation">
+				<option value="TE">TE</option>
+				<option value="TM">TM</option>
+			</select>
+		</div>
+	</div>
+
+	<!-- x -->
+	<div>
+		<!-- x_max -->
+		<div class="marge">
+			<label for="X_maxProp">x max (km)</label>
+			<input type="number" id="X_maxProp" @bind="x_max" placeholder="x_max" @onfocusout="Xmax" min="0.01" max="50000.0"/>
+		</div>
+		<!-- Delta x (x_step) -->
+		<div class="marge">
+			<label for="X_stepProp">Delta x (m)</label>
+			<input type="number" id="X_stepProp" @bind="@config.X_step.Value" placeholder="X_step" @onfocusout="DeltaX" min="0.01" max="500000.0"/>
+		</div>
+		<!-- n_x -->
+		<div class="marge">
+			<label for="N_xProp">N x (pts)</label>
+			<input type="number" id="N_xProp" @bind="@config.N_x.Value" placeholder="N_x" @onfocusout="Nx" min="1" max="500000"/>
+		</div>
+	</div>
+
+	<div>
+		<!-- N_z -->
+		<div class="marge">
+			<label for="N_zProp">N z (pts)</label>
+			<input type="number" @bind="@config.N_z.Value" id="N_zProp" placeholder="@config.N_z.Property" @onfocusout="Nz" min="1" max="1000000"/>
+		</div>
+		<!-- Z step // Delta z -->
+		<div class="marge">
+			<label for="Z_stepProp">Delta z (m)</label>
+			<input type="number" @bind="@config.Z_step.Value" id="Z_stepProp" placeholder="Z_step" @onfocusout="DeltaZ" min="0.0001" max="50000.0"/>
+		</div>
+		<!-- Z max -->
+		<div class="marge">
+			<label for="Z_maxProp">z max (m)</label>
+			<input type="number" @bind="z_max" id="Z_maxProp" placeholder="z_max" @onfocusout="ZMax" min="0.01" max="10000000.0"/>
+		</div>
+	</div>
+</div>
+
+<div class="border d-flex marge">
+	<!-- Apodisation -->
+	<div>
+		<!-- Apodisation -->
+		<div class="marge">
+			<label for="ApodisationWindowProp">Apodisation</label>
+			<select id="ApodisationWindowProp" @bind="@config.ApodisationWindow.Value" @onclick="ApodisationType">
+				<option value="Hanning">Hanning</option>
+			</select>
+		</div>
+		<!-- Apodisation size -->
+		<div class="marge">
+			<label for="ApodisationSizeProp">Size apo (%)</label>
+			<input type="number" id="ApodisationSizeProp" @bind="@apoSize" placeholder="@config.ApodisationSize.Property" 
+					@onfocusout="Apodisation" min="0" max="50"/>
+		</div>
+	</div>
+
+	<!-- Wavelet -->
+	<div>
+		<!-- Wavelet Family -->
+		<div class="marge">
+			<label for="WaveletFamilyProp">Wvl family</label>
+			<select id="WaveletFamilyProp" @bind="@config.WaveletFamily.Value" @onclick="WaveletFamily">
+				<option value="sym8">sym8</option>
+				<option value="sym6">sym6</option>
+			</select>
+		</div>
+		<!-- Max level -->
+		<div class="marge">
+			<label for="WaveletLevelProp">wvl max level</label>
+			<input type="number" id="WaveletLevelProp" @bind="@config.WaveletLevel.Value" placeholder="@config.WaveletLevel.Property" 
+					@onfocusout="WaveletLevel" min="1" max="50"/>
+		</div>
+		<!-- Compression -->
+		<div class="marge">
+			<label for="MaxCompressionErrorProp">Max Compress.</label>
+			<input type="number" id="MaxCompressionErrorProp" @bind="@config.MaxCompressionError.Value" placeholder="@config.MaxCompressionError.Property" 
+					@onfocusout="Compression" min="-200.0" max="0.0"/>
+		</div>
+	</div>
+
+	<!-- Other -->
+	<div>
+		<!-- Output -->
+		<div class="marge">
+			<label for="OutputProp">Output</label>
+			<select id="OutputProp" @bind="@output" @onclick="Output">
+				<option value="E (dBV/m)">E (dBV/m)</option>
+				<option value="F (dB)">F (dB)</option>
+				<option value="S (dbW/m2)">S (dbW/m2)</option>
+			</select>
+		</div>
+		<!-- Dynamic -->
+		<div class="marge">
+			<label for="DynamicProp">Dynamic (dB)</label>
+			<input type="number" id="DynamicProp" @bind="@config.Dynamic.Value" placeholder="@config.Dynamic.Property" 
+					@onfocusout="Dynamic" min="0" max="99"/>
+		</div>
+	</div>
+</div>
+<div>
+	<button class="btn-primary" id="btnProp" @onclick="LoadData">Run Simulation</button>
+</div>
+@if (!string.IsNullOrEmpty(res))
+{
+	<div>
+		<h5>Result</h5>
+		<p class="border">@resultat</p>
+	</div>
+}
+
+<div id="canvTotal"></div>
+<div id="canvFinal">
+	<canvas id="canvasFinal"></canvas>
+</div>
+
+<p>@test1</p>

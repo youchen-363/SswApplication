@@ -76,6 +76,7 @@
 # Since we import cython below, we need to add support to the python interpreter
 
 import pyximport
+from scipy import sparse
 pyximport.install()
 
 import numpy as np
@@ -131,6 +132,7 @@ e_field, config.z_s = read_source(config, file_source_config, file_E_init)
 # --- Read relief --- #
 z_relief = read_relief(config, file_relief_config, file_relief)  # relief altitude wrt. distance
 ii_vect_relief = np.round(z_relief/config.z_step).astype('int')  # relief indices wrt. distance
+
 # ------------------- #
 
 # --- Calculate u_0 from E_init (normalised in infinity norm to have max(|u_0|) = 1) --- #
@@ -138,6 +140,7 @@ k0 = 2*np.pi*config.freq/cst.c
 u_0 = e_field * np.sqrt(k0*(-config.x_s)) * np.exp(1j * k0 * (-config.x_s))
 #u_0 = e_field / np.sqrt(k0*(-config.x_s))
 u_infty = np.max(np.abs(u_0))  # norm infinity of the initial field
+print('u_infty : ', u_infty, '\n')
 u_0 /= u_infty  # put max at 1 to avoid numerical errors
 # -------------------------------------------------------------------------------------- #
 
@@ -168,6 +171,7 @@ config.V_s, config.V_p = compute_thresholds(config.N_x, config.max_compression_e
 # --- 2D Propagation --- #
 # ---------------------- #
 t_propa_s = time.process_time()
+"""
 # SSW
 if config.method == 'SSW':
     u_final, wv_total = ssw_2d(u_0, config, n_refraction, ii_vect_relief)
@@ -184,23 +188,25 @@ elif config.method == 'WWP-H':
     u_final, wv_total = wwp_h_2d(u_0, config, n_refraction, ii_vect_relief)
 # SSF
 elif config.method == 'SSF':
-    u_final, wv_total = ssf_2d(u_0, config, n_refraction, ii_vect_relief)
+    u_final, wv_total, e_total= ssf_2d(u_0, config, n_refraction, ii_vect_relief)
 else:
     raise ValueError('Unknown propagation method.')
+"""
+u_final, wv_total, e_total= ssf_2d(u_0, config, n_refraction, ii_vect_relief)
 
 t_propa_f = time.process_time()
-print('Total '+config.method+' (ms)', np.round((t_propa_f-t_propa_s)*1e3))
+print('Total '+config.method+' (ms)', np.round((t_propa_f-t_propa_s)*1e3), '\n')
 
 # --- de-normalise in infinity norm --- #
 # field: simple multiplication
 u_final *= u_infty
-
+"""
 # wavelets in 2 steps. 1/ distances from 1 to N_x
 for ii_x in np.arange(0, config.N_x):
     # 2/ all the LL+1 wavelet levels
     for ii_lvl in np.arange(0, config.wv_L+1):
         wv_total[ii_x][ii_lvl] *= u_infty
-
+"""
 # ------- END ---------- #
 # --- 2D Propagation --- #
 # ---------------------- #
@@ -210,7 +216,7 @@ for ii_x in np.arange(0, config.N_x):
 # ---------------------------- #
 # max distance of the computation domain
 x_max = config.N_x * config.x_step
-print('Distance from the source = ', -config.x_s+x_max)
+print('Distance from the source = ', -config.x_s+x_max, '\n')
 # de-normalise the reduced field
 e_field = u_final / np.sqrt(k0*(-config.x_s+x_max)) * np.exp(-1j * k0 * (-config.x_s+x_max))
 
@@ -218,10 +224,14 @@ with np.errstate(divide='ignore'):
     data_dB = 20*np.log10(np.abs(e_field))
     v_max = data_dB.max()
 
-print('max E-field at the max distance = ', np.round(v_max, 2), 'V/m')
+print('max E-field at the max distance = ', np.round(v_max, 2), 'V/m \n')
 # save the final electric field
+np.savetxt('./outputs/E_field.csv', e_field, delimiter=',')
+np.savetxt('./outputs/E_total.csv', e_total, delimiter=',')
 np.save('./outputs/E_field', e_field)
+
 # save the total normalised electric field !! necessitate a de-normalisation after wavelet recomposition
+# np.savetxt('./outputs/wv_total.csv', wv_total, delimiter=',')
 np.save('./outputs/wv_total', wv_total)
 
 # ----------- END ------------ #

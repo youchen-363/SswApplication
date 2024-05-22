@@ -25,9 +25,10 @@ import math
 def superposed(config):
     # first terrain from random
     z_terrain_naive = terrain_naive(config.N_x+1)  # N_x + 1 from 0 to N_x (included)
-
+    print(z_terrain_naive)
     # smoothing via interpolation and multiscale!
     z_terrain_interp = terrain_superposition(z_terrain_naive, iterations=config.iterations)
+    print(z_terrain_interp)
     return z_terrain_interp
 
 

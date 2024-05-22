@@ -85,3 +85,11 @@ h1:focus {
         padding-left: env(safe-area-inset-left);
     }
 }
+
+input {
+    width: 100px;
+}
+
+.marge {
+    margin: 15px;
+}

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UGrGxOC7uh84Wi3WCLnkLB2eKu46aeE41PWOcCDXjrQ=",
+  "Hash": "qsrLHAHIpMpBBhKlckuyo312IpMadIavcpnp8vgXF94=",
   "Source": "SswApplication",
   "BasePath": "/",
   "Mode": "Root",
@@ -150,6 +150,25 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
+      "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\final.js",
+      "SourceId": "SswApplication",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\",
+      "BasePath": "/",
+      "RelativePath": "js/final.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\final.js"
+    },
+    {
       "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\graph.js",
       "SourceId": "SswApplication",
       "SourceType": "Discovered",
@@ -167,25 +186,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\graph.js"
-    },
-    {
-      "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\output.json",
-      "SourceId": "SswApplication",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\",
-      "BasePath": "/",
-      "RelativePath": "js/output.json",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\output.json"
     },
     {
       "Identity": "C:\\ENAC\\SswApplication\\SswApplication\\wwwroot\\js\\propagation.js",

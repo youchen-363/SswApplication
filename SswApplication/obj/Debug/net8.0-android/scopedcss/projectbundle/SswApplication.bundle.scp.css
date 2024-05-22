@@ -178,3 +178,24 @@ main[b-laz36a7y1j] {
         overflow-y: auto;
     }
 }
+/* /Components/Pages/Propagation.razor.rz.scp.css */
+h5[b-ww3zjjs9i7] {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+/* /Components/Pages/Source.razor.rz.scp.css */
+input[b-s2o9w5l7b2] {
+    100px;
+}
+
+/* /Components/Pages/Terrain.razor.rz.scp.css */
+.tableScroll[b-xdqdznx1rf]
+{
+    overflow-x: auto; 
+    max-width : 70vw;
+}
+
+.btn-primary.disabled[b-xdqdznx1rf] {
+    background-color: grey !important;
+    border-color: grey !important;
+}

@@ -34,6 +34,8 @@
 #
 #######################################################################################################################
 
+import copy
+import math
 import numpy as np
 import time
 import scipy.constants as cst
@@ -47,18 +49,25 @@ import pywt
 from src.wavelets.wavelet_operations import sparsify  # for sparsify
 from src.propagation.ssw_2d import shift_relief
 
+# put relief below the field (upward shift of the field)
+def shift_relief_ssf(u_field, ii_relief):
+    if ii_relief == 0:
+        u_field_shifted = u_field
+    else:
+        u_field_shifted = np.zeros_like(u_field)
+        u_field_shifted[ii_relief:] = u_field[:-ii_relief]
+    return u_field_shifted
 
 def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
 
     # Simulation parameters
     n_x = config.N_x
-
+    n_z = config.N_z
     # --- Creation of the apodisation window --- # @todo Code other apodisation windows
     # along z
     n_apo_z = int(config.apo_z * config.N_z)
     apo_window_z = apodisation_window(config.apo_window, n_apo_z)
     # ------------------------------------------ #
-
     # --- Initialisations --- #
     # initial field
     u_x = apply_apodisation(u_0, apo_window_z, config)
@@ -67,18 +76,17 @@ def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
         diff_relief = np.diff(ii_vect_relief)
     # field after delta x
     u_x_dx = np.zeros_like(u_x)
+    
     # ----------------------- #
     # saved total wavelet parameters (coo matrix, for storage only)
     wv_total = [[]] * n_x
+    #e_total = [[]] * n_x
+    e_total = np.zeros((n_x, n_z), dtype='complex')
 
     # --- propagator --- %
-    print('ground')
-    print(config.ground)
     if config.ground == 'None':
-        print('I am there')
         propagator_dssf = discrete_spectral_propagator(config, config.N_z)
     elif config.ground == 'PEC':
-        print('I am here')
         propagator_dssf = discrete_spectral_propagator_sin(config, config.N_z)
 
     # Loop over the x_axis
@@ -144,11 +152,28 @@ def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
         # -------------------------------------- #
 
         # update u_x
+        # an one dimensional array 
+        # every loop i add to etotal
         u_x = u_x_dx
+        # u_x = copy.copy(u_x_dx)
+        
+        # SAVE TO E_TOTAL WITH U_X_DX  
         #!!!!! MY CHANGE on peut directement recuperer u_x YC
         
         # store field as a wavelet decomposition
-
-        wv_total[ii_x-1] = sparsify(pywt.wavedec(u_x, config.wv_family, 'per', config.wv_L))
-
-    return u_x_dx, wv_total
+        
+        #print(u_x)
+        #print(pywt.wavedec(u_x, config.wv_family, 'per', config.wv_L))
+        k0 = 2*np.pi*config.freq/cst.c
+        x_current = -config.x_s + (ii_x + 1) * config.x_step
+        
+        # PROBLEM !!!
+        # IT WORKS BUT NOT CORRECT 
+        
+        ii_relief = ii_vect_relief[ii_x]
+        u_x_dx = shift_relief(u_x_dx, ii_relief)
+        
+        e_total[ii_x-1, :] = u_x_dx / np.sqrt(k0 * x_current) * np.exp(-1j * k0 * x_current)
+        #wv_total[ii_x-1] = sparsify(pywt.wavedec(u_x_dx, config.wv_family, 'per', config.wv_L))
+        
+    return u_x_dx, wv_total, e_total
