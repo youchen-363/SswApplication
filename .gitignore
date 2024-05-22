@@ -210,6 +210,5 @@ SswApplication/bin/Debug/net8.0-windows10.0.19041.0/win10-x64/AppX/ca/Microsoft.
 SswApplication/bin/Debug/net8.0-windows10.0.19041.0/win10-x64/AppX/ar/Microsoft.Maui.Controls.resources.dll
 SswApplication/bin/Debug/net8.0-windows10.0.19041.0/win10-x64/AppX/AppxManifest.xml
 /SswApplication/CodeSource/GUI
-/SswApplication/obj
-/SswApplication/obj
-/SswApplication/obj/Debug
+/SswApplication/obj/
+/SswApplication/bin/
