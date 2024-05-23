@@ -53,12 +53,12 @@
 
 
 import numpy as np
-import scipy.constants as cst
-import matplotlib.pyplot as plt
+#mport scipy.constants as cst
+#import matplotlib.pyplot as plt
 # import sys
-from src.terrain_gen import superposed
+#from src.terrain_gen import superposed
 from src.read_config import read_config
-import shutil  # to make file copies
+#import shutil  # to make file copies
 
 
 # contains the source type

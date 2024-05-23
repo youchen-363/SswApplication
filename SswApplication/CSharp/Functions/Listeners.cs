@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace SswApplication.CSharp.Functions
+﻿namespace SswApplication.CSharp.Functions
 {
     internal class Listeners
     {

@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Numerics;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
-using SswApplication.CSharp.Source;
 
 namespace SswApplication.CSharp.Functions
 {

@@ -1,7 +1,7 @@
 var graphTerrain;
 var graphTest;
 
-window.addEventListener(" resize", function () {
+window.addEventListener("resize", function () {
     let canvas = document.getElementById("canvasTerrain");
     canvas.style.width = window.innerWidth;
     canvas.style.height = window.innerHeight;
@@ -11,18 +11,6 @@ function confirmMessage(message) {
     return confirm(message);
 }
 
-/*
-function initialiseDataSource(xrelief, zrelief) {
-    if (xrelief.length != zrelief.length) {
-        throw new Error("xrelief " + xrelief.length + "and zrelief " + zrelief.length + " have different size!");
-    }
-    let arr = [];
-    for (let i = 0; i < xrelief.length; i++) {
-        arr.push({ x: xrelief[i], y: zrelief[i] });
-    }
-    return arr;
-}
-*/
 function maxValue(arr) {
     return arr.indexOf(Math.max(...arr));
 }
@@ -33,14 +21,6 @@ function minValue(arr) {
 
 function drawTerrain(datastr, plotted) {
     data = JSON.parse(datastr);
-    /*
-    console.log(data.xVals);
-    console.log(data.deltax);
-    step = data.xVals.length/data.deltax;
-    data.xVals = data.xVals.map(value => value/step);
-    console.log('x :' + data.xVals);
-    console.log('z :' + data.zVals);
-    */
    data.xVals = data.xVals.map(value=>value*data.deltax / 1000);
     if (!plotted) {
         drawGraphTerrain(data.xVals, data.zVals, data.id);
@@ -91,13 +71,6 @@ function Config(x, z) {
                         display: true,
                         text: 'Distance (km)'
                     },
-                    /*
-                    min: 0, // start at zero
-                    max: deltax, // end at 100
-                    ticks: {
-                        stepSize: 1
-                    },
-                    */
                 },
                 y: {
                     type: 'linear',
@@ -108,13 +81,6 @@ function Config(x, z) {
                     },
                     beginAtZero: true,
                     max: 1000,
-                    /*
-                    ticks: {
-                        stepSize: 200
-                    },
-                    */
-                    //min: zrelief[0],
-                    //max: zrelief[zrelief.length - 1] // Corrected max value
                 },
             },
             plugins: {
@@ -138,39 +104,6 @@ function updateGraphTerrain(xrelief, zrelief) {
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],
     };
-    /*
-    graphTerrain.options = {
-        animation: false,
-        responsive: true,
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                title: {
-                    display: true,
-                    text: 'Distance (km)'
-                },
-                min: 0, // start at zero
-                max: deltax, // end at 100
-            },
-            y: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Altitude (m)'
-                },
-                beginAtZero: true,
-                max: 1000,
-            },
-        },
-        plugins: {
-            title: {
-                display: false
-            }
-        }
-    };
-    */
     graphTerrain.update();
 }
 
@@ -185,40 +118,5 @@ function updateGraphTest(x, z) {
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],
     };
-    /*
-    graphTest.options = {
-        animation: false,
-        responsive: true,
-        scales: {
-            x: {
-                type: 'linear',
-                position: 'bottom',
-                title: {
-                    display: true,
-                    text: 'Distance (km)'
-                },
-                min: 0, // start at zero
-                max: deltax, // end at 100
-            },
-            y: {
-                type: 'linear',
-                position: 'left',
-                title: {
-                    display: true,
-                    text: 'Altitude (m)'
-                },
-                beginAtZero: true,
-                max: 1000,
-                //min: zrelief[0],
-                //max: zrelief[zrelief.length - 1] // Corrected max value
-            },
-        },
-        plugins: {
-            title: {
-                display: false
-            }
-        }
-    }
-    */
     graphTest.update();
 }

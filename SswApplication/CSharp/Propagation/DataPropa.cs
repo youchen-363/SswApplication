@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Measurement;
@@ -304,14 +299,14 @@ namespace SswApplication.CSharp.Propagation
 			return result;
 		}
 
-
-		public static double[] LastColumnData(double[][] finalData)
+		public static double[] FinalData(double[][] finalData, double column, double xstep)
 		{
+			int col = (int) (column * 1000 / xstep);
 			double[] res = new double[finalData.Length];
 			for (int i = 0; i < finalData.Length; i++)
 			{
 				int lastIdx = finalData[i].Length - 1;
-				res[i] = finalData[i][lastIdx];
+				res[i] = finalData[i][col];
 			}
 			return res;
 		}
@@ -327,7 +322,6 @@ namespace SswApplication.CSharp.Propagation
 		/// <returns>chaine de caractères avec tous ces valeurs</returns>
 		public static string SerializeToJson(double vmin, double vmax, double[] eTotalDb, double[] zvect, ConfigPropa conf)
 		{
-
 			var data = new
 			{
 				v_min = vmin,
@@ -336,7 +330,6 @@ namespace SswApplication.CSharp.Propagation
 				z_vect = zvect,
 				config = conf
 			};
-
 			// Serialize the data object to JSON
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}

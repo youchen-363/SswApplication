@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net.NetworkInformation;
+﻿using System.Globalization;
 using System.Numerics;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.Maui;
-using System.Text.Json;
-using System.IO;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using SswApplication.CSharp.Functions;
-using SswApplication.CSharp.Propagation;
 using SswApplication.CSharp.Measurement;
 
 namespace SswApplication.CSharp.Source

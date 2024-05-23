@@ -1,16 +1,5 @@
-
-function drawTest(datastr, plotted) {
+function drawGraphPropa(datastr, plotted) {
     data = JSON.parse(datastr);
-    console.log(data);
-    /*
-    var x = Array.from({ length: 1040 }, (_, i) => i + 1);
-    var y = Array.from({ length: 500 }, (_, i) => i + 1);
-    var z = Array.from({ length: y.length }, () => Array.from({ length: x.length }, () => Math.floor(Math.random() * 100)));
-    */
-    console.log(data.x_values);
-    console.log(data.y_values);
-    console.log(data.z_values);
-    
     var data = [
         {
             z: data.z_values,
@@ -32,6 +21,6 @@ function drawTest(datastr, plotted) {
             title: 'Altitude (m)' // replace with your actual y axis title
         }
     };
-
+    
     Plotly.newPlot('canvTotal', data, layout);
 }

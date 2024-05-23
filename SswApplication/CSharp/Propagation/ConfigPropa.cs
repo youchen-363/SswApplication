@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using SswApplication.CSharp.Functions;
+﻿using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Measurement;
 
 namespace SswApplication.CSharp.Propagation

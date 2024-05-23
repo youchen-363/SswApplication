@@ -59,7 +59,7 @@ from csv import reader
 from numpy import float64
 from numpy import int32
 from numpy import savetxt 
-from numpy import save 
+#from numpy import save 
 
 import scipy.constants as cst
 # import sys
@@ -171,7 +171,7 @@ with open('./outputs/configuration.csv', 'w', newline='') as f:
 
 # saving the field
 savetxt('./outputs/E_field.csv', e_field, delimiter=',')
-save('./outputs/E_field.npy', e_field)
+#save('./outputs/E_field.npy', e_field)
 
 
 # ---------- END ----------- #

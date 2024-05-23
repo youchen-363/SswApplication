@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using NumSharp;
 using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Propagation;
 using SswApplication.CSharp.Source;
@@ -17,23 +10,20 @@ namespace SswApplication.Components.Pages
 	public partial class Propagation
 	{
 		// les constants pour le nombre de variables de désactivation 
-		private const int nbAttrAtm = 6;
-		private const int nbAttrGround = 3;
-		private const int nbAttrTurbulence = 2;
-
+		private const int nbAttrGround = 3, nbAttrTurbulence = 2;
 		private readonly ConfigPropa config = DataPropa.ExtractInputCSVPropa();
 		private readonly ConfigSrc configS = DataSrc.ExtractInputCSVSource();
-
 		// les tableaux pour les désactivation des inputs html (atmosphere, ground, turbulence)
 		private readonly bool[] disabledAttrGround = new bool[nbAttrGround], disabledTurbulence = new bool[nbAttrTurbulence];
 
 		// les variables qui ne sont pas dans la configuration mais qu'on a besoin
-		private double lambda, imageSize, z_max, x_max, width, apoSize;
+		private double lambda, imageSize, z_max, x_max, width, apoSize, xCol;
 		private int imageSizePts;
 		private string output = "E (dBV/m)", res = string.Empty;
 		private MarkupString resultat = new();
-		private string test1 = string.Empty;
-		private bool plotted = false;
+		private bool plottedGraph = false, plottedFinal = false, disabledFinal, columnDisplay = false;
+		private double[][] finalData = [];
+		private double[] lastColumn = [];
 
 		/// <summary>
 		/// Initialiser les variables qui sont nécessaires
@@ -102,46 +92,43 @@ namespace SswApplication.Components.Pages
 		private async Task LoadData()
 		{
 			DataPropa.WriteInputPropagation(config);
-			res = DataPropa.ExecutePropagation();
-			resultat = (MarkupString)res.Replace("\n", "<br>");
-			double[][] finalData = DataPropa.E_Total_Final();
-			double[] lastColumn = DataPropa.LastColumnData(finalData);
-			/*
-			string[] teststr = new string[lastColumn.Length];
-			for(int i=0;i<lastColumn.Length;i++)
-			{
-				teststr[i] = lastColumn[i].ToString(CultureInfo.InvariantCulture);
-			}
-			string[][] testwrite = [teststr];
-            FileFunctions.WriteCSV("CodeSource/propagation", "finaldata2.csv", testwrite);
-			*/
-            
+			finalData = DataPropa.E_Total_Final();
+			xCol = (finalData[0].Length-1) * config.X_step.Value / 1000;
+
+			res = DataPropa.ExecutePropagation() + xCol;
+			resultat = CommonFns.ReplaceNToBr(res);
+			columnDisplay = true;
+
 			List<double> xVals = DataPropa.XValues(config);
 			List<double> zVals = DataPropa.ZValues(config);
 			double vMaxTotal = DataPropa.VMax(finalData);
 			double vMinTotal = DataPropa.VMin(config, vMaxTotal);
 			string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
-			await JSRuntime.InvokeVoidAsync("drawTest", dataTest, plotted);
+			await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
 
+			plottedGraph = true;
+			await DrawFinal();
+		}
+
+		private async Task DrawFinal()
+		{
+			lastColumn = DataPropa.FinalData(finalData, xCol, config.X_step.Value);
 			double[] z_vect = DataPropa.GenerateValues(config, false);
 			double vMaxLast = DataPropa.VMax(lastColumn);
 			double vMinLast = DataPropa.VMin(config, vMaxLast);
 			string dataFinal = DataPropa.SerializeToJson(vMinLast, vMaxLast, lastColumn, z_vect, config);
-			await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plotted);
+			await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plottedFinal);
 
-			plotted = true;
-
-			// apres, tracer le heatmap 
-			//await JSRuntime.InvokeVoidAsync("drawGraphPropagation");
+			plottedFinal = true;
 		}
 
-		/// <summary>
-		/// Une methode pour calculer <Imagesize> de la propagation.
-		/// Pts est points (Unit de Image size)
-		/// La formule est extrait du code python du projet ssw-2d
-		/// </summary>
-		/// <returns>image points en integer</returns>
-		private int ImageSizePts()
+        /// <summary>
+        /// Une methode pour calculer la taille de l'image de la propagation.
+        /// Pts est points (Unit de Image size)
+        /// La formule est extrait du code python du projet ssw-2d
+        /// </summary>
+        /// <returns>image points en integer</returns>
+        private int ImageSizePts()
 		{
 			double wv_L = config.WaveletLevel.Value;
 			double n_z = config.N_z.Value;
@@ -156,6 +143,11 @@ namespace SswApplication.Components.Pages
 		}
 
 		//Listeners
+
+		private void CheckFinalColumn()
+		{
+			disabledFinal = xCol < 0 || xCol >= x_max;
+		}
 
 		private void Method()
 		{

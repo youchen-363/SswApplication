@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Terrain;
-
 
 namespace SswApplication.Components.Pages
 {
@@ -33,6 +27,14 @@ namespace SswApplication.Components.Pages
             delete = save = CheckSize();
             add = CheckMaxSize();
             x_max = config.X_step.Value * config.N_x.Value * 1e-3;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await DrawTestGraph();
+            }
         }
 
         private bool CheckSize()

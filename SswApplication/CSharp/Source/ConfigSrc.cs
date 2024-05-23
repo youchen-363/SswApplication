@@ -1,22 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-
-/* Unmerged change from project 'SswApplication (net8.0-windows10.0.19041.0)'
-Before:
-using CsvHelper;
-After:
-using CsvHelper;
-using SswApplication;
-using SswApplication.CSharp;
-using SswApplication.CSharp.Source;
-*/
-using SswApplication.CSharp.Functions;
+﻿using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Measurement;
 
 namespace SswApplication.CSharp.Source

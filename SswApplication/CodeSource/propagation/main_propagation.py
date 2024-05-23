@@ -76,25 +76,25 @@
 # Since we import cython below, we need to add support to the python interpreter
 
 import pyximport
-from scipy import sparse
+# from scipy import sparse
 pyximport.install()
 
 import numpy as np
 import time
 import scipy.constants as cst
 from src.wavelets.wavelet_operations import compute_thresholds
-from src.propagation.ssw_2d import ssw_2d
+#from src.propagation.ssw_2d import ssw_2d
 from src.propagation.ssf_2d import ssf_2d
-from src.propagation.wwp_2d import wwp_2d
-from src.propagation.wwp_h_2d import wwp_h_2d
+#from src.propagation.wwp_2d import wwp_2d
+#from src.propagation.wwp_h_2d import wwp_h_2d
 # from src.propa_cython.wwp_2d_cy import wwp_2d_cy # dynamically imported
 import shutil  # to make file copies
 # where config is defined
 from src.classes_and_files.read_files import read_config, read_source, read_relief
 from src.atmosphere.genere_n_profile import generate_n_profile
-import pywt
-import matplotlib.pyplot as plt
-import importlib
+#import pywt
+#import matplotlib.pyplot as plt
+#import importlib
 
 # -------------------------------------------------- #
 # --- Declare the files where inputs are written --- #
@@ -228,11 +228,11 @@ print('max E-field at the max distance = ', np.round(v_max, 2), 'V/m \n')
 # save the final electric field
 np.savetxt('./outputs/E_field.csv', e_field, delimiter=',')
 np.savetxt('./outputs/E_total.csv', e_total, delimiter=',')
-np.save('./outputs/E_field', e_field)
+# np.save('./outputs/E_field', e_field)
 
 # save the total normalised electric field !! necessitate a de-normalisation after wavelet recomposition
 # np.savetxt('./outputs/wv_total.csv', wv_total, delimiter=',')
-np.save('./outputs/wv_total', wv_total)
+# np.save('./outputs/wv_total', wv_total)
 
 # ----------- END ------------ #
 # --- save the output data --- #

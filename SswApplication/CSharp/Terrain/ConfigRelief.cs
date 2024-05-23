@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CsvHelper;
-using SswApplication.CSharp.Functions;
+﻿using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Measurement;
 
 namespace SswApplication.CSharp.Terrain
