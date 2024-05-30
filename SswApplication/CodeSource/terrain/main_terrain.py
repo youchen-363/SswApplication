@@ -53,7 +53,7 @@
 
 
 from numpy import loadtxt, interp, arange, savetxt
-from os import fsync
+from os import fsync, path, remove
 #mport scipy.constants as cst
 #import matplotlib.pyplot as plt
 # import sys
@@ -120,19 +120,15 @@ if xVals[len(xVals)-1] != config.N_x:
 """
     
 # zreliefe = interp(arange(0, config.N_x+1), x_trie, z_trie)
-zreliefe = interp(arange(0, config.N_x+1), xVals*1000/config.x_step, zVals)
+zrelief = interp(arange(0, config.N_x+1), xVals*1000/config.x_step, zVals)
 # -------------------------- #
 # --- Saving the results --- #
 # -------------------------- #
 
 # saving the terrain
-with open('./outputs/z_relief.csv', 'w') as f:
-    # Save the array to the file
-    savetxt(f, zreliefe, delimiter=',')
+# Save the array to the file
+savetxt('./outputs/z_relief.csv', zrelief, delimiter=',')
 
-    # Flush the file buffer and ensure changes are written to disk
-    f.flush()
-    fsync(f.fileno())
 #savetxt('./outputs/z_relief.csv', zreliefe, delimiter=',')
 
 # savetxt('./outputs/z_relief.csv', z_relief, delimiter=',')

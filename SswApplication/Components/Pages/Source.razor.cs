@@ -17,8 +17,6 @@ namespace SswApplication.Components.Pages
 		// les variables pour les données nécessaires mais pas dans le fichier input
 		private double z_max, lambda, width, x_s;
 
-		private string test1 = string.Empty;
-
 		/// <summary>
 		/// Initialisation des variables nécessaires
 		/// </summary>
@@ -52,8 +50,8 @@ namespace SswApplication.Components.Pages
 				*/
 				
 				List<Complex> eTotal = DataSrc.ETotal(config);
-				test1 = DataSrc.WriteETotal(eTotal);
-				test1 += "efield db : " + CommonFns.DbToStr(DataSrc.EFieldToEFieldDB());
+				DataSrc.WriteETotal(eTotal);
+				//test1 += "efield db : " + CommonFns.DbToStr(DataSrc.EFieldToEFieldDB());
 				data = DataSrc.InitialiseTestData();
 				await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
 				plotted = true;

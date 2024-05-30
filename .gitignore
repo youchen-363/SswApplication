@@ -213,7 +213,15 @@ SswApplication/bin/Debug/net8.0-windows10.0.19041.0/win10-x64/AppX/AppxManifest.
 /SswApplication/CodeSource/post_processing/
 *.idea
 /SswApplication/.vs
+SswApplication/CodeSource/propagation/build
+SswApplication/CodeSource/propagation/dir_internal
+SswApplication/CodeSource/terrain/build
+SswApplication/CodeSource/source/build
 SswApplication/CodeSource/propagation/build/main_propagation/main_propagation.exe
 SswApplication/CodeSource/propagation/main_propagation_backup.exe
 SswApplication/CodeSource/propagation/main_propagation_backup_dir.exe
 SswApplication/CodeSource/terrain/main_terrain_backup.exe
+*.spec
+/SswApplication/CodeSource/terrain/build
+/SswApplication/CodeSource/source/build
+/SswApplication/CodeSource/propagation/build

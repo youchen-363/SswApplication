@@ -94,12 +94,11 @@ namespace SswApplication.Components.Pages
 		private async Task LoadData()
 		{
 			DataPropa.WriteInputPropagation(config);
-			finalData = DataPropa.E_Total_Final();
-			xCol = (finalData[0].Length-1) * config.X_step.Value / 1000;
-
 			(string output, string error) = DataPropa.ExecutePropagation();
 			res = output + error;
 			resultat = CommonFns.ReplaceNToBr(res);
+			finalData = DataPropa.E_Total_Final();
+			xCol = (finalData[0].Length-1) * config.X_step.Value / 1000;
 
 			if (error == string.Empty)
 			{

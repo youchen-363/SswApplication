@@ -100,20 +100,10 @@ namespace SswApplication.CSharp.Source
 			return eTotal;
 		}
 
-		public static string WriteETotal(List<Complex> eTotal)
+		public static void WriteETotal(List<Complex> eTotal)
 		{
 			string[][] data = eTotal.Select(complex => new string[] { CommonFns.ComplexToString(complex) }).ToArray();
 			FileFunctions.WriteCSV("CodeSource/source/outputs", "E_field.csv", data);
-
-			string res = string.Empty;
-			foreach (string[] i in data)
-			{
-				foreach (string j in i)
-				{
-					res += j;
-				}
-			}
-			return res;
 		}
 
 		/// <summary>
