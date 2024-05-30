@@ -74,6 +74,7 @@ def complex_source_point(config_source):
 
     # compute the z_pos from the source position
     z_vect = z_step * np.arange(0, n_z) - z_s
+    
     # compute the range of the source
     rr_tilde_2_vect = x_pos ** 2 + z_vect ** 2
     rr_tilde_vect = np.sqrt(np.abs(rr_tilde_2_vect)) * np.exp(

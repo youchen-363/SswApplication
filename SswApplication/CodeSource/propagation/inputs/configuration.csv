@@ -1,10 +1,10 @@
 Property,Value,Unit
 method,SSF,
-N_x,200,Unnamed: 2
-N_z,2500,
-x_step,100,m
-z_step,0.4,m
-frequency,1000,MHz
+N_x,2000,Unnamed: 2
+N_z,700,
+x_step,10,m
+z_step,0.1,m
+frequency,330,MHz
 polarisation,TE,
 Max compression error,-10,dB
 wavelet level,2,
@@ -25,5 +25,5 @@ zb,200,m
 c2,-0.8,M-unit/m
 zt,200,m
 atm filename,toto.atm,
-dynamic,90,dB
+dynamic,99,dB
 py_or_cy,Python,'Python' or 'Cython'

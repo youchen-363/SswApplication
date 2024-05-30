@@ -7,45 +7,9 @@
 
 <h2>Relief</h2>
 <h3>Configuration</h3>
-<div class="d-flex form-group">
-	<!-- Terrain -->
-	<div class="border marge">
-		<!-- Type Relief -->
-		<div class="marge">
-			<label for="typeTerrain">Relief type</label>
-			<select id="typeTerrain" @bind="@config.Type.Value" @onclick="Type">
-				<option value="Plane">Plane</option>
-				<option value="Triangle">Triangle</option>
-				<option value="Superposed">Superposed</option>
-			</select>
-		</div>
-		<!-- Max relief (z_max) -->
-		<div class="marge">
-			<label for="Z_max_reliefTern">Max relief (@config.Z_max_relief.Unit)</label>
-			<input type="number" id="Z_max_reliefTern" @bind="@config.Z_max_relief.Value" placeholder="Z_max_relief" disabled="@disabledAttr[0]" @onfocusout="ZMax"/>
-		</div>
-
-		<!-- Iterations -->
-		<div class="marge">
-			<label for="IterationsTern">Iterations (@config.Iterations.Unit)</label>
-			<input type="number" id="IterationsTern" @bind="@config.Iterations.Value" placeholder="Iterations" disabled="@disabledAttr[1]" @onfocusout="Iterations" />
-		</div>
-
-		<!-- Relief Center -->
-		<div class="marge">
-			<label for="CenterTern">Relief center (@config.Center.Unit)</label>
-			<input type="number" id="CenterTern" @bind="@config.Center.Value" placeholder="Center" disabled="@disabledAttr[2]" @onfocusout="Center" />
-		</div>
-
-		<!-- Width relief -->
-		<div class="marge">
-			<label for="WidthTern">Relief width (@config.Width.Unit)</label>
-			<input type="number" id="WidthTern" @bind="@config.Width.Value" placeholder="Width" disabled="@disabledAttr[3]" @onfocusout="Width"/>
-		</div>
-	</div>
-	
-	<!-- All -->
-	<div class="border marge">
+<div class="form-group">
+	<!-- X -->
+	<div class="d-flex border marge">
 
 		<!-- x_max -->
 		<div class="marge">
@@ -73,7 +37,18 @@
 				<th></th>
 				@for (int i = 1; i <= xVals.Count; i++)
 				{
-					<th>@i</th>
+					if (i==xVals.Count)
+					{
+						<th>Stop</th>
+					} 
+					else if (i==1)
+					{
+						<th>Start</th>
+					}
+					else
+					{
+						<th>@i</th>
+					}
 				}
 			</tr>
 			<tr>
@@ -81,7 +56,12 @@
 				@for (int i = 0; i < xVals.Count; i++)
 				{
 					int index = i;
-					<td><input type="number" class="input-table" @bind="xVals[index]" @onfocusout="SortXAndZ" /></td>
+					<td>
+						<input type="number" class="form-control custom-input" @bind="xVals[index]" 
+							@onclick="()=>RowChosen(index)" @onfocusout="()=>CheckXValue(index)" 
+							disabled="@(index == 0 || index == xVals.Count - 1)"/>
+					</td>
+				
 				}
 			</tr>
 			<tr>
@@ -89,20 +69,35 @@
 				@for (int i = 0; i < zVals.Count; i++)
 				{
 					int index = i;
-					<td><input type="number" class="input-table" @bind="zVals[index]" @onfocusout="SortXAndZ" /></td>
+					<td>
+						<input type="number" class="form-control custom-input" @bind="zVals[index]" @onclick="()=>RowChosen(index)"/>
+					</td>
+				}
+			</tr>
+			<tr>
+				<th></th>
+				@for (int i = 0; i < xVals.Count; i++)
+				{
+					btnAddStatus = i == colAdd && i!=xVals.Count-1 ? "d-block" : "d-none";
+					btnDelStatus = i == colDel && i!=xVals.Count-1 && i!=0 ? "d-block" : "d-none";
+					<td>
+						<div>
+							<button class="btn-primary @btnAddStatus m-1" @onclick="()=>{AddColumnAfter();RowUnchosen();}">Add</button>
+							<button class="btn-primary @btnDelStatus m-1" @onclick="async () => { await DeleteColumn(); RowUnchosen(); }">Delete</button>
+						</div>
+					</td>
 				}
 			</tr>
 		</table>
 	</div>
-	<div class="d-flex justify-content-center align-items-center p-3">
-		<button class="btn-primary" @onclick="AddColumn" disabled="@add">+</button>
-	</div>
 </div>
 <div>
+	<!--
 	<span class="p-2">Delete</span>
 	<input type=number @bind="col" />
-	<button class="btn-primary m-2" @onclick="DeleteColumn" OnClientClick="return confirm('Do you want Delete?');" disabled="@delete">-</button>
-	<button class="btn-primary m-2" @onclick="SaveCSV" disabled="@save">Save</button>
+	<button class="btn-primary m-2" @onclick="DeleteColumn" OnClientClick="return confirm('Do you want to delete?');" disabled="@delete">-</button>
+	-->
+	<button class="btn-primary m-2" @onclick="SaveCSV">Save</button>
 	@if (!string.IsNullOrEmpty(alertMsg))
 	{
 		<div class="alert alert-danger" role="alert">

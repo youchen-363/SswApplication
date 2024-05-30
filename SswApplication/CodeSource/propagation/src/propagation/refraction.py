@@ -15,19 +15,19 @@
 ##
 
 
-import scipy.constants as cst
-import numpy as np
+from scipy.constants import pi, c
+from numpy import exp, arange
 from src.wavelets.wavelet_operations import q_max_calculation
 
 
 def apply_refractive_index(u_x, n_index, config):
 
-    k0 = 2*cst.pi*config.freq / cst.c
+    k0 = 2*pi*config.freq / c
 
     # apply the phase screen of one step delta_x
     # half the refraction applied before and after propagation
 
-    u_x *= np.exp(-1j * k0 * (n_index-1)/2 * config.x_step)
+    u_x *= exp(-1j * k0 * (n_index-1)/2 * config.x_step)
 
     return u_x
 
@@ -50,16 +50,16 @@ def apply_refractive_index(u_x, n_index, config):
 
 def apply_refractive_index_wavelet(w_x, n_index, config):
 
-    k0 = 2*cst.pi*config.freq / cst.c
+    k0 = 2*pi*config.freq / c
     # number of q_max per level
     q_max = q_max_calculation(config.wv_L)
     # decimation coefficient per level
     decimation = (2**config.wv_L/q_max).astype(int)
     # apply the phase screen on one step delta_x
-    for ii_l in np.arange(0, config.wv_L+1):
+    for ii_l in arange(0, config.wv_L+1):
         w_x_ll = w_x[ii_l]
         delta = decimation[ii_l]
-        w_x_ll *= np.exp(-1j * k0 * (n_index[::delta]-1) * config.x_step)
+        w_x_ll *= exp(-1j * k0 * (n_index[::delta]-1) * config.x_step)
         w_x[ii_l] = w_x_ll
 
     return w_x
@@ -83,8 +83,8 @@ def apply_phi_turbulent(u_x, phi_turbulent, config):
 
     # apply the turbulent phase screen of one step delta_x
     # half the refraction applied before and after propagation
-    k0 = 2 * cst.pi * config.freq / cst.c
-    u_x *= np.exp(-1j * phi_turbulent)
+    k0 = 2 * pi * config.freq / c
+    u_x *= exp(-1j * phi_turbulent)
 
     return u_x
 

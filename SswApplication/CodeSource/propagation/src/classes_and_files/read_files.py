@@ -17,9 +17,9 @@
 
 # where config class is defined
 from src.classes_and_files.classes import *
-import csv
-import numpy as np
-import scipy.constants as cst
+from csv import reader
+from numpy import loadtxt, round
+from scipy.constants import pi, epsilon_0
 
 
 def read_config(file_configuration):
@@ -27,7 +27,7 @@ def read_config(file_configuration):
     # --- Reading configuration --- #
     # ----------------------------- #
     f_config = open(file_configuration, newline='')
-    file_tmp = csv.reader(f_config)
+    file_tmp = reader(f_config)
     for row in file_tmp:
         if row[0] == 'method':  # SSF or SSW or WWP or WWP-H
             Config.method = row[1]
@@ -115,7 +115,7 @@ def read_config(file_configuration):
         raise (ValueError(['N_z must be multiple of', n_scaling_fct, ' = 2^L']))
 
     # epsr_effective is used
-    Config.epsr += -1j * sigma / (2*cst.pi*Config.freq*cst.epsilon_0)
+    Config.epsr += -1j * sigma / (2*pi*Config.freq*epsilon_0)
 
     return Config
 
@@ -127,7 +127,7 @@ def read_source(config, file_source_config, file_e_init):
 
     # --- Configuration first --- #
     f_source_config = open(file_source_config, newline='')
-    file_tmp = csv.reader(f_source_config)
+    file_tmp = reader(f_source_config)
     for row in file_tmp:
         # geometry must match with the source generation
         if row[0] == 'N_z':
@@ -159,7 +159,7 @@ def read_source(config, file_source_config, file_e_init):
             raise ValueError(['Output file of the source generation is not valid. Input "' + row[0] + '" not valid'])
 
     # --- The electric field itself --- #
-    e_field = np.loadtxt(file_e_init, delimiter=',', dtype="complex")
+    e_field = loadtxt(file_e_init, delimiter=',', dtype="complex")
     n_z = e_field.size
     # size of the electric field must match the geometry parameters
     if n_z != config.N_z:
@@ -180,7 +180,7 @@ def read_relief(config, file_relief_config, file_relief):
 
     # --- Configuration first --- #
     f_source_config = open(file_relief_config, newline='')
-    file_tmp = csv.reader(f_source_config)
+    file_tmp = reader(f_source_config)
     for row in file_tmp:
         # geometry must match with the relief generation
         if row[0] == 'N_x':
@@ -192,8 +192,10 @@ def read_relief(config, file_relief_config, file_relief):
             x_step = float(row[1])  # horizontal step in m
         elif row[0] == 'z_max_relief':
             z_max_relief = float(row[1])  # max relief in m
+            """
             if z_max_relief > config.z_step*config.N_z:
                 raise ValueError(['Relief is higher than the computation domain!'])
+            """
         elif row[0] == 'type':
             config.type = row[1]  #
         elif row[0] == 'iterations':
@@ -208,8 +210,8 @@ def read_relief(config, file_relief_config, file_relief):
             raise ValueError(['Output file of the relief generation is not valid. Input "' + row[0] + '" not valid'])
 
     # --- The relief itself --- #
-    z_relief = np.loadtxt(file_relief, delimiter=',', dtype="float")
+    z_relief = loadtxt(file_relief, delimiter=',', dtype="float")
     # size of the electric field must match the geometry parameters
-    z_relief = config.z_step*np.round(z_relief/config.z_step)
+    z_relief = config.z_step*round(z_relief/config.z_step)
 
     return z_relief

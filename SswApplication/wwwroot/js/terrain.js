@@ -21,21 +21,21 @@ function minValue(arr) {
 
 function drawTerrain(datastr, plotted) {
     data = JSON.parse(datastr);
-   data.xVals = data.xVals.map(value=>value*data.deltax / 1000);
+    //data.xVals = data.xVals.map(value=>value*data.deltax / 1000);
     if (!plotted) {
-        drawGraphTerrain(data.xVals, data.zVals, data.id);
+        drawGraphTerrain(data.xVals, data.zVals, data.xMax, data.zMax, data.id);
     } else {
         if (data.id == "canvasTerrain") {
-            updateGraphTerrain(data.xVals, data.zVals);
+            updateGraphTerrain(data.xVals, data.zVals, data.xMax, data.zMax);
         } else {
-            updateGraphTest(data.xVals, data.zVals);
+            updateGraphTest(data.xVals, data.zVals, data.xMax, data.zMax);
         }
     } 
 }
 
-function drawGraphTerrain(x, z, graphId) {
+function drawGraphTerrain(x, z, xMax, zMax, graphId) {
     try {
-        var config = Config(x, z);
+        var config = Config(x, z, xMax, zMax);
         var ctx = document.getElementById(graphId).getContext("2d");
         if (graphId == "canvasTerrain") {
             graphTerrain = new Chart(ctx, config);
@@ -47,7 +47,7 @@ function drawGraphTerrain(x, z, graphId) {
     }
 }
 
-function Config(x, z) {
+function Config(x, z, xmax, zmax) {
     var config = {
         type: 'line',
         data: {
@@ -71,6 +71,7 @@ function Config(x, z) {
                         display: true,
                         text: 'Distance (km)'
                     },
+                    max: xmax
                 },
                 y: {
                     type: 'linear',
@@ -80,7 +81,7 @@ function Config(x, z) {
                         text: 'Altitude (m)'
                     },
                     beginAtZero: true,
-                    max: 1000,
+                    max: zmax,
                 },
             },
             plugins: {
@@ -93,7 +94,7 @@ function Config(x, z) {
     return config;
 }
 
-function updateGraphTerrain(xrelief, zrelief) {
+function updateGraphTerrain(xrelief, zrelief, xmax, zmax) {
     graphTerrain.data = {
         labels: xrelief,
         datasets: [{
@@ -104,10 +105,12 @@ function updateGraphTerrain(xrelief, zrelief) {
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],
     };
+    graphTerrain.options.scales.y.max = zmax;
+    graphTerrain.options.scales.x.max = xmax;
     graphTerrain.update();
 }
 
-function updateGraphTest(x, z) {
+function updateGraphTest(x, z, xmax, zmax) {
     graphTest.data = {
         labels: x,
         datasets: [{
@@ -118,5 +121,7 @@ function updateGraphTest(x, z) {
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],
     };
+    graphTest.options.scales.y.max = zmax;
+    graphTest.options.scales.x.max = xmax;
     graphTest.update();
 }

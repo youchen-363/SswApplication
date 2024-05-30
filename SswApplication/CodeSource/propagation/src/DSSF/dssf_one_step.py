@@ -32,10 +32,7 @@
 #
 #################################################################################################
 
-import numpy as np
-import time
 from scipy.fft import fft, ifft, fftshift, ifftshift, dct, dst, idct, idst
-
 
 def dssf_one_step(u_x, propagator):
 

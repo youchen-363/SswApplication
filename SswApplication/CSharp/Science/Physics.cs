@@ -12,6 +12,6 @@
 		{
 			return SpeedOfLight / lambda * 1e-6;
 		}
-		
+
 	}
 }

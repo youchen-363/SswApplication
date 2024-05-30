@@ -1,7 +1,0 @@
-numpy
-scipy
-pywavelets
-matplotlib
-cython
-pandas
-PyQt5

@@ -39,6 +39,12 @@ namespace SswApplication.CSharp.Functions
 			}
 		}
 
+		public static string ComplexToString(Complex complex)
+		{
+			string sign = complex.Imaginary < 0 ? "-" : "+";
+			return string.Format(CultureInfo.InvariantCulture, "({0:0.000000000000000000e+00}{1}{2:0.000000000000000000e+00}j)", complex.Real, sign, Math.Abs(complex.Imaginary));
+		}
+
 		public static MarkupString ReplaceNToBr(string str)
 		{
 			return (MarkupString)str.Replace("\n", "<br>");
@@ -62,6 +68,16 @@ namespace SswApplication.CSharp.Functions
             }
             
 			return strrrrrr;
+        }
+
+		public static string DbToStr(double[] dtfinaldb)
+		{
+            string str = string.Empty;
+			foreach (double dt in dtfinaldb)
+			{
+				str += dt.ToString(CultureInfo.InvariantCulture) + "     ;;;     ";
+			}
+			return str;
         }
 
 

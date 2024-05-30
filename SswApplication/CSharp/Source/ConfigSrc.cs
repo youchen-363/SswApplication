@@ -35,7 +35,7 @@ namespace SswApplication.CSharp.Source
             get => n_z; 
             set 
             { 
-                ValuesExceptions.CheckNegativeNumber(value.Value);
+                ValueException.CheckNegativeNumber(value.Value);
                 n_z = value; 
             }
         }
@@ -44,7 +44,7 @@ namespace SswApplication.CSharp.Source
             get => x_s; 
             set 
             {
-                ValuesExceptions.CheckXs(value.Value);
+                ValueException.CheckXs(value.Value);
                 x_s = value;
             }  
         }
@@ -55,7 +55,7 @@ namespace SswApplication.CSharp.Source
             get => type;
             set 
             {
-                ValuesExceptions.CheckTypeSource(value.Value);
+                ValueException.CheckTypeSource(value.Value);
                 type = value;
             }  
         }

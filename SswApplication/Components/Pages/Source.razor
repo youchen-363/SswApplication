@@ -31,7 +31,7 @@
 		<!-- X s -->
 		<div class="marge">
 			<label for="X_sSrc">Distance x_s (@config.X_s.Unit)</label>
-			<input type="number" @bind="@config.X_s.Value" id="X_sSrc" placeholder="X_s" @onfocusout="Xs" />
+			<input type="number" @bind="@x_s" id="X_sSrc" placeholder="X_s" @onfocusout="Xs" />
 		</div>
 
 		<!-- Width -->
@@ -80,6 +80,8 @@
 <div>
 <button class="btn-primary" @onclick="DrawChart">Run Source</button>
 </div>
+
+<p>@test1</p>
 
 @if (!string.IsNullOrEmpty(res))
 {

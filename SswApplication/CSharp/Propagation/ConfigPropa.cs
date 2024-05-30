@@ -39,7 +39,7 @@ namespace SswApplication.CSharp.Propagation
 			get => method;
 			set
 			{
-				ValuesExceptions.CheckMethod(value.Value);
+				ValueException.CheckMethod(value.Value);
 				method = value;
 			}
 		}
@@ -47,7 +47,7 @@ namespace SswApplication.CSharp.Propagation
 			get => n_x; 
 			set 
 			{
-				ValuesExceptions.CheckNegativeNumber(value.Value);
+				ValueException.CheckNegativeNumber(value.Value);
 				n_x = value;
 			}  
 		}
@@ -55,7 +55,7 @@ namespace SswApplication.CSharp.Propagation
 			get => n_z; 
 			set {
 				double wavelet = WaveletLevel.Value;
-				ValuesExceptions.CheckNz(value.Value, wavelet);
+				ValueException.CheckNz(value.Value, wavelet);
 				n_z = value;
 			}  
 		}
@@ -65,7 +65,7 @@ namespace SswApplication.CSharp.Propagation
 		public MeasString Polarisation { 
 			get => polarisation; 
 			set {
-				ValuesExceptions.CheckPolarisation(value.Value);
+				ValueException.CheckPolarisation(value.Value);
 				polarisation = value; 
 			} 
 		}
@@ -73,42 +73,42 @@ namespace SswApplication.CSharp.Propagation
 		public MeasNumber WaveletLevel { 
 			get => waveletLevel; 
 			set {
-				ValuesExceptions.CheckNz(N_z.Value, value.Value);
+				ValueException.CheckNz(N_z.Value, value.Value);
 				waveletLevel = value;
 			}  
 		}
 		public MeasString WaveletFamily { 
 			get => waveletFamily; 
 			set {
-				ValuesExceptions.CheckWaveletFamily(value.Value);
+				ValueException.CheckWaveletFamily(value.Value);
 				waveletFamily = value;
 			} 
 		}
 		public MeasString ApodisationWindow { 
 			get => apodisationWindow; 
 			set {
-				ValuesExceptions.CheckApodisationType(value.Value);
+				ValueException.CheckApodisationType(value.Value);
 				apodisationWindow = value; 
 			} 
 		}
 		public MeasNumber ApodisationSize { 
 			get => apodisationSize; 
 			set {
-				ValuesExceptions.CheckApodisationSize(value.Value);
+				ValueException.CheckApodisationSize(value.Value);
 				apodisationSize = value;
 			}  
 		}
 		public MeasNumber ImageSize { 
 			get => imageSize; 
 			set {
-				ValuesExceptions.CheckImageLayer(value.Value);
+				ValueException.CheckImageLayer(value.Value);
 				imageSize = value;
 			}  
 		}
 		public MeasString Ground { 
 			get => ground; 
 			set {
-				ValuesExceptions.CheckGroundType(value.Value);
+				ValueException.CheckGroundType(value.Value);
 				ground = value;
 			}  
 		}
@@ -117,14 +117,14 @@ namespace SswApplication.CSharp.Propagation
 		public MeasString Atmosphere {
 			get => atmosphere; 
 			set {
-				ValuesExceptions.CheckAtmosphereType(value.Value);
+				ValueException.CheckAtmosphereType(value.Value);
 				atmosphere = value;
 			}  
 		}
 		public MeasString Turbulence { 
 			get => turbulence; 
 			set {
-				ValuesExceptions.CheckTurbulence(value.Value);
+				ValueException.CheckTurbulence(value.Value);
 				turbulence = value;
 			}  
 		}
@@ -140,7 +140,7 @@ namespace SswApplication.CSharp.Propagation
 		public MeasString PyOrCy { 
 			get => pyOrCy; 
 			set {
-				ValuesExceptions.CheckPyOrCy(value.Value);
+				ValueException.CheckPyOrCy(value.Value);
 				pyOrCy = value;
 			}  
 		}

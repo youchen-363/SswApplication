@@ -7,11 +7,11 @@ namespace SswApplication.CSharp.Terrain
 {
     internal class DataRelief
     {
-        public static List<double> X_relief(int stop)
+        public static List<double> X_relief(int stop, double deltax)
         {
             List<double> res = [];
             for (int i = 0; i<stop; i++) {
-                res.Add(i);
+                res.Add(i*deltax/1000);
             }
             return res;
         }
@@ -27,13 +27,15 @@ namespace SswApplication.CSharp.Terrain
             return res;
         }
 
-		public static string SerializeToJSON(List<double> x, List<double> z, double delta, string graphId)
+		public static string SerializeToJSON(List<double> x, List<double> z, double delta, double xmax, double zmax, string graphId)
 		{
 			var data = new 
 			{
 				xVals = x,
 				zVals = z,
+				xMax = xmax,
 				deltax = delta,
+				zMax = zmax,
 				id = graphId
 			};
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
@@ -43,7 +45,7 @@ namespace SswApplication.CSharp.Terrain
         {
             List<double> res = [];
             //string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/outputs/", "z_relief.csv");
-			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/outputs/", "coordonnees_relief.csv");
+			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/outputs/", "relief_in.csv");
 			foreach (string[] dataArray in data)
             {
                 res.Add(Double.Parse(dataArray[0], CultureInfo.InvariantCulture));
@@ -86,18 +88,18 @@ namespace SswApplication.CSharp.Terrain
 				fields[i] = [xy.Key.ToString(CultureInfo.InvariantCulture), xy.Value.ToString(CultureInfo.InvariantCulture)];
 				i++;
 			}
-			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "coordonnees_relief.csv", fields);
+			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "relief_in.csv", fields);
 		}
 
 		public static void WriteColumnsTerrain(List<double> x, List<double> y)
 		{
 			string[][] array = x.Select((value, index) => new string[] { value.ToString(CultureInfo.InvariantCulture), y[index].ToString(CultureInfo.InvariantCulture)}).ToArray();
-			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "coordonnees_relief.csv", array);
+			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "relief_in.csv", array);
 		}
 
 		public static (List<double >x, List<double> y) ExtractColumnsTerrain()
 		{
-			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/inputs", "coordonnees_relief.csv"); 
+			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/inputs", "relief_in.csv"); 
 			List<double> x = data.Select(dataArray => Double.Parse(dataArray[0], CultureInfo.InvariantCulture)).ToList();
     		List<double> y = data.Select(dataArray => Double.Parse(dataArray[1], CultureInfo.InvariantCulture)).ToList();
 			return (x, y);
@@ -119,7 +121,7 @@ namespace SswApplication.CSharp.Terrain
 			return config;
 		}
 
-		public static string ExecuteRelief()
+		public static (string, string) ExecuteRelief()
 		{
 			return FileFunctions.ExecuteExe("CodeSource/terrain/", "main_terrain.exe");
 		}
@@ -132,11 +134,11 @@ namespace SswApplication.CSharp.Terrain
 					break;
 				case "N_x":
 					data[2] = "";
-					ValuesExceptions.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.N_x.UpdateMeasurement(data);
 					break;
 				case "x_step":
-					ValuesExceptions.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.X_step.UpdateMeasurement(data);
 					break;
 				case "type":

@@ -75,20 +75,22 @@
 ##
 # Since we import cython below, we need to add support to the python interpreter
 
-import pyximport
+from pyximport import install
 # from scipy import sparse
-pyximport.install()
+install()
 
-import numpy as np
-import time
-import scipy.constants as cst
+from numpy import pi, sqrt, exp, errstate, savetxt, log10, round
+from time import process_time, perf_counter
+
+from scipy.constants import c
 from src.wavelets.wavelet_operations import compute_thresholds
+
 #from src.propagation.ssw_2d import ssw_2d
 from src.propagation.ssf_2d import ssf_2d
 #from src.propagation.wwp_2d import wwp_2d
 #from src.propagation.wwp_h_2d import wwp_h_2d
 # from src.propa_cython.wwp_2d_cy import wwp_2d_cy # dynamically imported
-import shutil  # to make file copies
+from shutil import copyfile  # to make file copies
 # where config is defined
 from src.classes_and_files.read_files import read_config, read_source, read_relief
 from src.atmosphere.genere_n_profile import generate_n_profile
@@ -99,7 +101,7 @@ from src.atmosphere.genere_n_profile import generate_n_profile
 # -------------------------------------------------- #
 # --- Declare the files where inputs are written --- #
 # ---------------- DO NOT MODIFY ------------------- #
-
+s = perf_counter()
 # input: main configuration file
 file_configuration = './inputs/configuration.csv'
 # input: the source information
@@ -115,33 +117,52 @@ file_relief = '../terrain/outputs/z_relief.csv'
 
 # copy the configuration
 file_output_config = './outputs/configuration.csv'
-shutil.copyfile(file_configuration, file_output_config)
+copyfile(file_configuration, file_output_config)
+e = perf_counter()
+
+print('file : ', e-s)
 
 # -------------------- END ------------------------- #
 # --- Declare the files where inputs are written --- #
 # ---------------- DO NOT MODIFY ------------------- #
 
 # --- Define and fill the config variable that contains all the simulation parameters --- #
+s = perf_counter()
 config = read_config(file_configuration)
+e = perf_counter()
+print('config : ', e-s)
 # --------------------------------------------------------------------------------------- #
 
 # --- Read initial field --- #
+s = perf_counter()
 e_field, config.z_s = read_source(config, file_source_config, file_E_init)
+e = perf_counter()
+print('read source : ', e-s)
 # -------------------------- #
 
 # --- Read relief --- #
+s = perf_counter()
 z_relief = read_relief(config, file_relief_config, file_relief)  # relief altitude wrt. distance
-ii_vect_relief = np.round(z_relief/config.z_step).astype('int')  # relief indices wrt. distance
-
+ii_vect_relief = round(z_relief/config.z_step).astype('int')  # relief indices wrt. distance
+print('relief : ', z_relief)
+e = perf_counter()
+print('read relief : ', e-s)
+print()
 # ------------------- #
 
 # --- Calculate u_0 from E_init (normalised in infinity norm to have max(|u_0|) = 1) --- #
-k0 = 2*np.pi*config.freq/cst.c
-u_0 = e_field * np.sqrt(k0*(-config.x_s)) * np.exp(1j * k0 * (-config.x_s))
-#u_0 = e_field / np.sqrt(k0*(-config.x_s))
-u_infty = np.max(np.abs(u_0))  # norm infinity of the initial field
-print('u_infty : ', u_infty, '\n')
+
+s = perf_counter()
+k0 = 2*pi*config.freq/c
+u_0 = e_field * sqrt(k0*(-config.x_s)) * exp(1j * k0 * (-config.x_s))
+#u_0 = e_field / sqrt(k0*(-config.x_s))
+u_infty = max(abs(u_0))  # norm infinity of the initial field
+print('u_infty : ', u_infty)
 u_0 /= u_infty  # put max at 1 to avoid numerical errors
+e = perf_counter()
+print('calculate u0 from enit : ', e-s)
+print()
+
 # -------------------------------------------------------------------------------------- #
 
 '''# Wavelet test
@@ -154,9 +175,12 @@ u_0 = pywt.waverec(UU_0, config.wv_family, 'per')'''
 # ----------------------------------------- #
 # --- Creating refraction phase screens --- #
 # ----------------------------------------- #
-# n_refraction = np.ones(config.N_z)
-n_refraction = generate_n_profile(config)
+# n_refraction = ones(config.N_z)
 
+s = perf_counter()
+n_refraction = generate_n_profile(config)
+e = perf_counter()
+print('generate n profile : ', e-s)
 # -------------- END ---------------------- #
 # --- Creating refraction phase screens --- #
 # ----------------------------------------- #
@@ -164,13 +188,22 @@ n_refraction = generate_n_profile(config)
 # --- Computing wavelet thresholds --- #
 # following Bonnafont et al. IEEE TAP, 2021, eqs .(35) and (36)
 # calculation of the compression thresholds. Inf norm of u_0 is not necessary (=1 because of normalisation)
+s = perf_counter()
+
 config.V_s, config.V_p = compute_thresholds(config.N_x, config.max_compression_err)  # threshold on signal and library
 # ------------------------------------ #
-
+e = perf_counter()
+print('compute thresholds : ', e-s)
+print()
 # ---------------------- #
 # --- 2D Propagation --- #
 # ---------------------- #
-t_propa_s = time.process_time()
+s = perf_counter()
+t_propa_s = process_time()
+e = perf_counter()
+print('process time : ', e-s)
+print()
+
 """
 # SSW
 if config.method == 'SSW':
@@ -192,19 +225,34 @@ elif config.method == 'SSF':
 else:
     raise ValueError('Unknown propagation method.')
 """
+s = perf_counter()
 u_final, wv_total, e_total= ssf_2d(u_0, config, n_refraction, ii_vect_relief)
+e = perf_counter()
+print('process time : ', e-s)
+print()
 
-t_propa_f = time.process_time()
-print('Total '+config.method+' (ms)', np.round((t_propa_f-t_propa_s)*1e3), '\n')
+s = perf_counter()
+t_propa_f = process_time()
+print('Total '+config.method+' (ms)', round((t_propa_f-t_propa_s)*1e3))
 
+e = perf_counter()
+print('process time : ', e-s)
+print()
+
+s = perf_counter()
 # --- de-normalise in infinity norm --- #
 # field: simple multiplication
 u_final *= u_infty
+e = perf_counter()
+print('ufinal uinfty : ', e-s)
+print()
+
+
 """
 # wavelets in 2 steps. 1/ distances from 1 to N_x
-for ii_x in np.arange(0, config.N_x):
+for ii_x in arange(0, config.N_x):
     # 2/ all the LL+1 wavelet levels
-    for ii_lvl in np.arange(0, config.wv_L+1):
+    for ii_lvl in arange(0, config.wv_L+1):
         wv_total[ii_x][ii_lvl] *= u_infty
 """
 # ------- END ---------- #
@@ -215,24 +263,34 @@ for ii_x in np.arange(0, config.N_x):
 # --- save the output data --- #
 # ---------------------------- #
 # max distance of the computation domain
+s = perf_counter()
 x_max = config.N_x * config.x_step
-print('Distance from the source = ', -config.x_s+x_max, '\n')
+print('Distance from the source = ', -config.x_s+x_max)
 # de-normalise the reduced field
-e_field = u_final / np.sqrt(k0*(-config.x_s+x_max)) * np.exp(-1j * k0 * (-config.x_s+x_max))
+e_field = u_final / sqrt(k0*(-config.x_s+x_max)) * exp(-1j * k0 * (-config.x_s+x_max))
+e = perf_counter()
+print('dist from source : ', e-s)
+print()
 
-with np.errstate(divide='ignore'):
-    data_dB = 20*np.log10(np.abs(e_field))
+s = perf_counter()
+with errstate(divide='ignore'):
+    data_dB = 20*log10(abs(e_field))
     v_max = data_dB.max()
 
-print('max E-field at the max distance = ', np.round(v_max, 2), 'V/m \n')
+e = perf_counter()
+print('data db et vmax : ', e-s)
+print()
+
+
+print('max E-field at the max distance = ', round(v_max, 2), 'V/m')
 # save the final electric field
-np.savetxt('./outputs/E_field.csv', e_field, delimiter=',')
-np.savetxt('./outputs/E_total.csv', e_total, delimiter=',')
-# np.save('./outputs/E_field', e_field)
+savetxt('./outputs/E_field.csv', e_field, delimiter=',')
+savetxt('./outputs/E_total.csv', e_total, delimiter=',')
+# save('./outputs/E_field', e_field)
 
 # save the total normalised electric field !! necessitate a de-normalisation after wavelet recomposition
-# np.savetxt('./outputs/wv_total.csv', wv_total, delimiter=',')
-# np.save('./outputs/wv_total', wv_total)
+# savetxt('./outputs/wv_total.csv', wv_total, delimiter=',')
+# save('./outputs/wv_total', wv_total)
 
 # ----------- END ------------ #
 # --- save the output data --- #
@@ -244,14 +302,14 @@ u_final = wavelet_propagation(u_0,config)
 # de-normalise in infinity norm
 u_final *= u_infty
 
-# e_field2 = u_final * (k0*np.sqrt(-x_s)) * np.exp(1j * k0 * (-x_s+x_max))
-e_field2 = u_final * np.exp(-1j * k0 * x_max)
-data_dB = 20*np.log10(np.abs(e_field2))
+# e_field2 = u_final * (k0*sqrt(-x_s)) * exp(1j * k0 * (-x_s+x_max))
+e_field2 = u_final * exp(-1j * k0 * x_max)
+data_dB = 20*log10(abs(e_field2))
 v_max = data_dB.max()
 print('max field = ', v_max)
 
-u_infty = np.max(np.abs(e_field2))
+u_infty = max(abs(e_field2))
 E_diff = (e_field - e_field2)/u_infty
 
-np.save('./outputs/e_field', e_field2)'''
+save('./outputs/e_field', e_field2)'''
 

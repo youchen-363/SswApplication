@@ -4,7 +4,15 @@
     max-width : 70vw;
 }
 
-.btn-primary.disabled {
+.btn-primary.disabled 
+{
     background-color: grey !important;
     border-color: grey !important;
+}
+
+.custom-input 
+{
+    width: 100px;
+    height: 40px;
+    /*margin-top: 20px;*/
 }

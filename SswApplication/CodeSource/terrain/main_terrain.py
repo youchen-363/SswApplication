@@ -52,7 +52,8 @@
 ##
 
 
-import numpy as np
+from numpy import loadtxt, interp, arange, savetxt
+from os import fsync
 #mport scipy.constants as cst
 #import matplotlib.pyplot as plt
 # import sys
@@ -71,12 +72,12 @@ print('Width : ', config.width)
 # no relief = Plane relief
 if config.type == 'Plane':
     # no relief
-    z_relief = np.zeros(config.N_x+1)  # N_x + 1 from 0 to N_x (included)
+    z_relief = zeros(config.N_x+1)  # N_x + 1 from 0 to N_x (included)
 
 # multiscale random relief
 elif config.type == 'Superposed':
     # create the multiscale relief by superposition
-    z_relief = np.array(superposed(config))
+    z_relief = array(superposed(config))
     # scale the relief between 0 and max relief
     z_relief -= z_relief.min()
     z_relief *= config.z_max_relief / z_relief.max()
@@ -84,7 +85,7 @@ elif config.type == 'Superposed':
 # triangle relief
 elif config.type == 'Triangle':
     # scale the relief between 0 and max relief
-    z_relief = np.zeros(config.N_x+1)
+    z_relief = zeros(config.N_x+1)
     triangle_start = int((config.center-config.width/2) / config.x_step)
     triangle_end = int((config.center+config.width/2) / config.x_step)
     triangle_top = int(config.center / config.x_step)
@@ -92,16 +93,18 @@ elif config.type == 'Triangle':
     x_tri = [0, triangle_start, triangle_top, triangle_end, config.N_x]
     z_tri = [0, 0, config.z_max_relief, 0, 0]
     
-    z_relief = np.interp(np.arange(0, config.N_x+1), x_tri, z_tri)
+    z_relief = interp(arange(0, config.N_x+1), x_tri, z_tri)
 
 # other terrains are not coded (yet?)
 else:
-    z_relief = np.zeros(config.N_x+1)
+    z_relief = zeros(config.N_x+1)
     raise (ValueError(['terrain type not coded']))
 """
 
 # MY CODE YC 
-xVals, zVals = np.loadtxt('./inputs/coordonnees_relief.csv', delimiter=',', unpack=True)
+xVals, zVals = loadtxt('./inputs/relief_in.csv', delimiter=',', unpack=True)
+
+"""
 x_trie = []
 z_trie = []
 if xVals[0] != 0:
@@ -114,15 +117,25 @@ z_trie.extend(zVals)
 if xVals[len(xVals)-1] != config.N_x:
     x_trie.append(config.N_x)
     z_trie.append(0)
-zreliefe = np.interp(np.arange(0, config.N_x+1), x_trie, z_trie)
-
+"""
+    
+# zreliefe = interp(arange(0, config.N_x+1), x_trie, z_trie)
+zreliefe = interp(arange(0, config.N_x+1), xVals*1000/config.x_step, zVals)
 # -------------------------- #
 # --- Saving the results --- #
 # -------------------------- #
 
 # saving the terrain
-np.savetxt('./outputs/z_relief.csv', zreliefe, delimiter=',')
-# np.savetxt('./outputs/z_relief.csv', z_relief, delimiter=',')
+with open('./outputs/z_relief.csv', 'w') as f:
+    # Save the array to the file
+    savetxt(f, zreliefe, delimiter=',')
+
+    # Flush the file buffer and ensure changes are written to disk
+    f.flush()
+    fsync(f.fileno())
+#savetxt('./outputs/z_relief.csv', zreliefe, delimiter=',')
+
+# savetxt('./outputs/z_relief.csv', z_relief, delimiter=',')
 
 # ---------- END ----------- #
 # --- Saving the results --- #
@@ -131,7 +144,7 @@ np.savetxt('./outputs/z_relief.csv', zreliefe, delimiter=',')
 """
 plt.figure()
 ax = plt.subplot(111)
-x_relief = np.arange(config.N_x+1)
+x_relief = arange(config.N_x+1)
 plt.plot(x_relief, z_relief)
 
 # fill in js  

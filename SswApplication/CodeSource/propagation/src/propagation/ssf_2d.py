@@ -34,30 +34,39 @@
 #
 #######################################################################################################################
 
-import copy
-import math
-import numpy as np
-import time
-import scipy.constants as cst
+from numpy import zeros_like, diff, zeros, arange, pi, sqrt, exp
+from scipy.constants import c
 from src.propagation.apodisation import apply_apodisation, apodisation_window
 from src.atmosphere.genere_n_profile import genere_phi_turbulent
-from src.DSSF.dmft import dmft_parameters, u2w, w2u, surface_wave_propagation
 from src.propagation.refraction import apply_refractive_index, apply_phi_turbulent
-from src.DSSF.propa_discrete_spectral_domain import discrete_spectral_propagator, discrete_spectral_propagator_sin
+from src.DSSF.propa_discrete_spectral_domain import discrete_spectral_propagator_sin
 from src.DSSF.dssf_one_step import dssf_one_step, dssf_one_step_cos, dssf_one_step_sin
-import pywt
-from src.wavelets.wavelet_operations import sparsify  # for sparsify
-from src.propagation.ssw_2d import shift_relief
+# from src.propagation.ssw_2d import shift_relief
 
+
+def shift_relief(arr, num):
+    result = zeros_like(arr)
+    if num > 0:  # upward
+        # result[:num] = fill_value
+        result[num:] = arr[:-num]
+
+    elif num < 0:  # downward
+        # result[num:] = fill_value
+        result[:num] = arr[-num:]
+
+    else:
+        result[:] = arr
+    return result
+"""
 # put relief below the field (upward shift of the field)
 def shift_relief_ssf(u_field, ii_relief):
     if ii_relief == 0:
         u_field_shifted = u_field
     else:
-        u_field_shifted = np.zeros_like(u_field)
+        u_field_shifted = zeros_like(u_field)
         u_field_shifted[ii_relief:] = u_field[:-ii_relief]
     return u_field_shifted
-
+"""
 def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
 
     # Simulation parameters
@@ -71,26 +80,32 @@ def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
     # --- Initialisations --- #
     # initial field
     u_x = apply_apodisation(u_0, apo_window_z, config)
+    """
     if config.ground == 'Dielectric' or config.ground == 'PEC':
         # derivative of the relief calculated once for all
-        diff_relief = np.diff(ii_vect_relief)
+        diff_relief = diff(ii_vect_relief)
+    """
+    diff_relief = diff(ii_vect_relief)
     # field after delta x
-    u_x_dx = np.zeros_like(u_x)
+    u_x_dx = zeros_like(u_x)
     
     # ----------------------- #
     # saved total wavelet parameters (coo matrix, for storage only)
     wv_total = [[]] * n_x
     #e_total = [[]] * n_x
-    e_total = np.zeros((n_x, n_z), dtype='complex')
+    e_total = zeros((n_x, n_z), dtype='complex')
 
     # --- propagator --- %
+    """
     if config.ground == 'None':
         propagator_dssf = discrete_spectral_propagator(config, config.N_z)
     elif config.ground == 'PEC':
         propagator_dssf = discrete_spectral_propagator_sin(config, config.N_z)
-
+    """
+    propagator_dssf = discrete_spectral_propagator_sin(config, config.N_z)
+    
     # Loop over the x_axis
-    for ii_x in np.arange(1, n_x+1):
+    for ii_x in arange(1, n_x+1):
         if ii_x % 100 == 0:
             print('Iteration', ii_x, '/', n_x, '. Distance =', ii_x*config.x_step)
         # --- apodisation --- #
@@ -164,7 +179,7 @@ def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
         
         #print(u_x)
         #print(pywt.wavedec(u_x, config.wv_family, 'per', config.wv_L))
-        k0 = 2*np.pi*config.freq/cst.c
+        k0 = 2*pi*config.freq/c
         x_current = -config.x_s + (ii_x + 1) * config.x_step
         
         # PROBLEM !!!
@@ -173,7 +188,7 @@ def ssf_2d(u_0, config, n_refraction, ii_vect_relief):
         ii_relief = ii_vect_relief[ii_x]
         u_x_dx = shift_relief(u_x_dx, ii_relief)
         
-        e_total[ii_x-1, :] = u_x_dx / np.sqrt(k0 * x_current) * np.exp(-1j * k0 * x_current)
+        e_total[ii_x-1, :] = u_x_dx / sqrt(k0 * x_current) * exp(-1j * k0 * x_current)
         #wv_total[ii_x-1] = sparsify(pywt.wavedec(u_x_dx, config.wv_family, 'per', config.wv_L))
         
     return u_x_dx, wv_total, e_total

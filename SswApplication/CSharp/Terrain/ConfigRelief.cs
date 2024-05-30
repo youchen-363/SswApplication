@@ -28,7 +28,7 @@ namespace SswApplication.CSharp.Terrain
             get => n_x; 
             set 
             {
-                ValuesExceptions.CheckNegativeNumber(value.Value);
+                ValueException.CheckNegativeNumber(value.Value);
                 n_x = value;
             }  
         }
@@ -36,14 +36,14 @@ namespace SswApplication.CSharp.Terrain
             get => x_step;
             set
             {
-                ValuesExceptions.CheckNegativeNumber(value.Value);
+                ValueException.CheckNegativeNumber(value.Value);
                 x_step = value;
             }
         }
         public MeasString Type { 
             get => type; 
             set {
-                ValuesExceptions.CheckTerrainType(value.Value);
+                ValueException.CheckTerrainType(value.Value);
                 type = value;
             }  
         }

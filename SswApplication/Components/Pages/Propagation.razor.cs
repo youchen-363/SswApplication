@@ -15,10 +15,9 @@ namespace SswApplication.Components.Pages
 		private readonly ConfigSrc configS = DataSrc.ExtractInputCSVSource();
 		// les tableaux pour les désactivation des inputs html (atmosphere, ground, turbulence)
 		private readonly bool[] disabledAttrGround = new bool[nbAttrGround], disabledTurbulence = new bool[nbAttrTurbulence];
-
 		// les variables qui ne sont pas dans la configuration mais qu'on a besoin
-		private double lambda, imageSize, z_max, x_max, width, apoSize, xCol;
-		private int imageSizePts;
+		private double lambda, z_max, x_max, width, apoSize, xCol;
+		// private int imageSizePts;
 		private string output = "E (dBV/m)", res = string.Empty;
 		private MarkupString resultat = new();
 		private bool plottedGraph = false, plottedFinal = false, disabledFinal, columnDisplay = false;
@@ -35,8 +34,11 @@ namespace SswApplication.Components.Pages
 			 * J'ai donc créé une nouvelle configuration pour les données sources
 			 * Pas d'inquiétude concernant la mémoire, car C# gère automatiquement la gestion de la mémoire pour nous
 			 */
+			 
+			/*
 			imageSize = config.ImageSize.Value * 100;
 			imageSizePts = ImageSizePts();
+			*/
 			SetGroundAttr();
 			SetTurbulenceAttr();
 			lambda = Physics.Lambda(config.Frequency.Value);
@@ -95,19 +97,23 @@ namespace SswApplication.Components.Pages
 			finalData = DataPropa.E_Total_Final();
 			xCol = (finalData[0].Length-1) * config.X_step.Value / 1000;
 
-			res = DataPropa.ExecutePropagation() + xCol;
+			(string output, string error) = DataPropa.ExecutePropagation();
+			res = output + error;
 			resultat = CommonFns.ReplaceNToBr(res);
-			columnDisplay = true;
 
-			List<double> xVals = DataPropa.XValues(config);
-			List<double> zVals = DataPropa.ZValues(config);
-			double vMaxTotal = DataPropa.VMax(finalData);
-			double vMinTotal = DataPropa.VMin(config, vMaxTotal);
-			string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
-			await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
+			if (error == string.Empty)
+			{
+				columnDisplay = true;
+				List<double> xVals = DataPropa.XValues(config);
+				List<double> zVals = DataPropa.ZValues(config);
+				double vMaxTotal = DataPropa.VMax(finalData);
+				double vMinTotal = DataPropa.VMin(config, vMaxTotal);
+				string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
+				await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
 
-			plottedGraph = true;
-			await DrawFinal();
+				plottedGraph = true;
+				await DrawFinal();
+			}
 		}
 
 		private async Task DrawFinal()
@@ -121,6 +127,8 @@ namespace SswApplication.Components.Pages
 
 			plottedFinal = true;
 		}
+
+		/*
 
         /// <summary>
         /// Une methode pour calculer la taille de l'image de la propagation.
@@ -141,6 +149,7 @@ namespace SswApplication.Components.Pages
             }
 			return n_im;
 		}
+		*/
 
 		//Listeners
 
@@ -148,29 +157,29 @@ namespace SswApplication.Components.Pages
 		{
 			disabledFinal = xCol < 0 || xCol >= x_max;
 		}
-
+		/*
 		private void Method()
 		{
-			ValuesExceptions.CheckMethod(config.Method.Value);
+			ValueException.CheckMethod(config.Method.Value);
 			Listeners.UpdatePropagation(config.Method.Property, config.Method.Value);		
 		}
 
 		private void Language()
 		{
-			ValuesExceptions.CheckPyOrCy(config.PyOrCy.Value);
+			ValueException.CheckPyOrCy(config.PyOrCy.Value);
 			Listeners.UpdatePropagation(config.PyOrCy.Property, config.PyOrCy.Value);
 		}
-		
+		*/
 		private void GroundType()
 		{
-			ValuesExceptions.CheckGroundType(config.Ground.Value);
+			ValueException.CheckGroundType(config.Ground.Value);
 			SetGroundAttr(); 
 			Listeners.UpdatePropagation(config.Ground.Property, config.Ground.Value);		
 		}
-
+		/*
 		private void ImageSize()
 		{
-			ValuesExceptions.CheckImageLayer(config.ImageSize.Value);
+			ValueException.CheckImageLayer(config.ImageSize.Value);
 			imageSizePts = ImageSizePts();
 			Listeners.UpdatePropagation(config.ImageSize.Property, imageSize/100);
 		}
@@ -184,10 +193,10 @@ namespace SswApplication.Components.Pages
 		{
 			Listeners.UpdatePropagation(config.Sigma.Property, config.Sigma.Value);
 		}
-
+		*/
 		private void AtmosphereType()
 		{
-			ValuesExceptions.CheckAtmosphereType(config.Atmosphere.Value);
+			ValueException.CheckAtmosphereType(config.Atmosphere.Value);
 			Listeners.UpdatePropagation(config.Atmosphere.Property, config.Atmosphere.Value);
 		}
 
@@ -198,7 +207,7 @@ namespace SswApplication.Components.Pages
 
 		private void Turbulence()
 		{
-			ValuesExceptions.CheckTurbulence(config.Turbulence.Value);
+			ValueException.CheckTurbulence(config.Turbulence.Value);
 			SetTurbulenceAttr();
 			Listeners.UpdatePropagation(config.Turbulence.Property, config.Turbulence.Value);
 		}
@@ -215,7 +224,7 @@ namespace SswApplication.Components.Pages
 
 		private void Frequency()
 		{
-			ValuesExceptions.CheckFrequency(config.Frequency.Value);
+			ValueException.CheckFrequency(config.Frequency.Value);
 			lambda = Physics.Lambda(config.Frequency.Value);
 			Listeners.UpdateSource(configS.W0.Property, width * lambda); 
 			UpdateFrequency();
@@ -224,7 +233,7 @@ namespace SswApplication.Components.Pages
 		private void Lambda()
 		{
 			config.Frequency.Value = Physics.Frequency(lambda);	
-			ValuesExceptions.CheckFrequency(config.Frequency.Value);
+			ValueException.CheckFrequency(config.Frequency.Value);
 			UpdateFrequency();
 		}
 
@@ -236,27 +245,27 @@ namespace SswApplication.Components.Pages
 
 		private void Polarisation()
 		{
-			ValuesExceptions.CheckPolarisation(config.Polarisation.Value);
+			ValueException.CheckPolarisation(config.Polarisation.Value);
 			Listeners.UpdatePropagation(config.Polarisation.Property, config.Polarisation.Value);
 		}
 
 		private void Xmax()
 		{
-			ValuesExceptions.CheckNegativeNumber(config.X_step.Value);
+			ValueException.CheckNegativeNumber(config.X_step.Value);
 			config.N_x.Value = (int) Math.Round(x_max * 1e3 / config.X_step.Value);
 			UpdateNx();
 		}
 
 		private void DeltaX()
 		{
-			ValuesExceptions.CheckNegativeNumber(config.X_step.Value);
+			ValueException.CheckNegativeNumber(config.X_step.Value);
 			config.N_x.Value = (int) Math.Round(x_max * 1e3 / config.X_step.Value);
 			UpdateNxXStep();
 		}
 
 		private void Nx()
 		{
-			ValuesExceptions.CheckNegativeNumber(config.N_x.Value);
+			ValueException.CheckNegativeNumber(config.N_x.Value);
 			config.X_step.Value = x_max * 1e3 / config.N_x.Value;
 			UpdateNxXStep();
 		}
@@ -281,14 +290,14 @@ namespace SswApplication.Components.Pages
 
 		private void Nz()
 		{
-			ValuesExceptions.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
 			config.Z_step.Value = z_max / config.N_z.Value;
 			UpdateNzZstep();
 		}
 
 		private void DeltaZ()
 		{
-			ValuesExceptions.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
 			config.N_z.Value = (int) Math.Round(z_max/config.Z_step.Value);
 			UpdateNzZstep();
 		}
@@ -325,19 +334,19 @@ namespace SswApplication.Components.Pages
 		private void Apodisation()
 		{
 			config.ApodisationSize.Value = apoSize / 100;
-            ValuesExceptions.CheckApodisationSize(config.ApodisationSize.Value);
+            ValueException.CheckApodisationSize(config.ApodisationSize.Value);
             Listeners.UpdatePropagation(config.ApodisationSize.Property, config.ApodisationSize.Value);
 		}
-
+		/*
 		private void WaveletFamily()
 		{
-			ValuesExceptions.CheckWaveletFamily(config.WaveletFamily.Value);
+			ValueException.CheckWaveletFamily(config.WaveletFamily.Value);
 			Listeners.UpdatePropagation(config.WaveletFamily.Property, config.WaveletFamily.Value);
 		}
 
 		private void WaveletLevel()
 		{
-			ValuesExceptions.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
 			imageSizePts = ImageSizePts();
 			Listeners.UpdatePropagation(config.WaveletLevel.Property, config.WaveletLevel.Value);
 		}
@@ -346,10 +355,10 @@ namespace SswApplication.Components.Pages
 		{
 			Listeners.UpdatePropagation(config.MaxCompressionError.Property, config.MaxCompressionError.Value);
 		}
-
+		*/
 		private void Output()
 		{
-			ValuesExceptions.CheckOutputType(output);
+			ValueException.CheckOutputType(output);
 		}
 
 		private void Dynamic()

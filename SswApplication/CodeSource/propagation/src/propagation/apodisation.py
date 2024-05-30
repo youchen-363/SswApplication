@@ -15,8 +15,7 @@
 # @warning apodisation type Hanning is the only one coded
 ##
 
-import numpy as np
-import time
+from numpy import arange, cos, pi
 from src.wavelets.wavelet_operations import q_max_calculation
 
 
@@ -48,8 +47,8 @@ def apodisation_window(apo_window, n_apo):
     # Hanning window
     if apo_window == 'Hanning':
         # compute the Hanning window on N_apo points
-        apo_vect = np.arange(0, n_apo)
-        apo_window = (1.0 + np.cos(np.pi * apo_vect / n_apo)) / 2.0
+        apo_vect = arange(0, n_apo)
+        apo_window = (1.0 + cos(pi * apo_vect / n_apo)) / 2.0
     else:
         raise 'ERROR : NOT CODED YET'
 
@@ -75,7 +74,7 @@ def apply_apodisation_wavelet(w_x, apo_window_z, config):
     n_apo_z = apo_window_z.size
 
     # apodisation on each level
-    for ii_l in np.arange(0, config.wv_L + 1):
+    for ii_l in arange(0, config.wv_L + 1):
         w_x_ll = w_x[ii_l]
         delta = decimation[ii_l]
         n_apo_z_delta = int(n_apo_z/delta)

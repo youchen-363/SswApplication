@@ -21,8 +21,8 @@
 # @param[out] coeffs_t
 ##
 
-import pywt
-import numpy as np
+from pywt import coeffs_to_array, array_to_coeffs
+from numpy import zeros, arange, asmatrix, squeeze, asarray
 from scipy.sparse import coo_matrix, dok_array  # for sparsify
 
 
@@ -31,13 +31,13 @@ from scipy.sparse import coo_matrix, dok_array  # for sparsify
 
 def thresholding(coeffs, threshold):
     # Obtain an array of the wavelet coefficient
-    coeffs_arr, coeffs_slice = pywt.coeffs_to_array(coeffs)
+    coeffs_arr, coeffs_slice = coeffs_to_array(coeffs)
 
     # Apply the threshold on the array
-    coeffs_arr = pywt.threshold(coeffs_arr, threshold, mode='hard')
+    coeffs_arr = threshold(coeffs_arr, threshold, mode='hard')
     # coeffs_arr_dok = dok_matrix(coeffs_arr)
     # Change the array to a wavelet coeffs list of array form
-    coeffs_t = pywt.array_to_coeffs(coeffs_arr, coeffs_slice, output_format='wavedec')
+    coeffs_t = array_to_coeffs(coeffs_arr, coeffs_slice, output_format='wavedec')
 
     return coeffs_t
 
@@ -55,8 +55,8 @@ def thresholding(coeffs, threshold):
 
 
 def q_max_calculation(ll):
-    q_max_list = np.zeros(ll + 1, dtype=int)  # L wavelets + 1 scaling function
-    for ii_lvl in np.arange(0, ll + 1):
+    q_max_list = zeros(ll + 1, dtype=int)  # L wavelets + 1 scaling function
+    for ii_lvl in arange(0, ll + 1):
         level = ii_lvl
         if ii_lvl == 0:  # level 0 (scaling function) corresponds to level 1 in equation below
             level = + 1
@@ -84,7 +84,7 @@ def sparsify(wv_x):
     wv_x_sparse = [[]] * (ll + 1)
     # fill the scaling function
     # fill the wavelet levels
-    for ii_lvl in np.arange(0, ll + 1):
+    for ii_lvl in arange(0, ll + 1):
         wv_x_sparse[ii_lvl] = coo_matrix(wv_x[ii_lvl])
     return wv_x_sparse
 
@@ -108,8 +108,8 @@ def sparsify_dok(wv_x):
     wv_x_sparse = [[]] * (ll + 1)
     # fill the scaling function
     # fill the wavelet levels
-    for ii_lvl in np.arange(0, ll + 1):
-        uu = np.asmatrix(wv_x[ii_lvl])
+    for ii_lvl in arange(0, ll + 1):
+        uu = asmatrix(wv_x[ii_lvl])
         wv_x_sparse[ii_lvl] = dok_array(uu)
     return wv_x_sparse
 
@@ -133,8 +133,8 @@ def unsparsify_dok(wv_x_sparse):
     wv_x = [[]] * (ll + 1)
     # fill the scaling function
     # fill the wavelet levels
-    for ii_lvl in np.arange(0, ll + 1):
-        wv_x[ii_lvl] = np.squeeze(np.asarray(wv_x_sparse[ii_lvl].todense()))
+    for ii_lvl in arange(0, ll + 1):
+        wv_x[ii_lvl] = squeeze(asarray(wv_x_sparse[ii_lvl].todense()))
     return wv_x
 
 
@@ -186,7 +186,7 @@ def remove_image_coef(w_x, config):
     q_max = q_max_calculation(ll)
     dilation = 2 ** ll / q_max
     # on each level (including scaling), fill appropriately
-    for ii_l in np.arange(0, ll + 1):
+    for ii_l in arange(0, ll + 1):
         # take into account the dilation at level ii_l
         p_im = int(n_im / dilation[ii_l])
         # remove the useless part (size = N_im --> remove image and top layers)
@@ -218,7 +218,7 @@ def hybrid_ssw_wwp(w_ssw_x, w_wwp_x, config):
     q_max = q_max_calculation(ll)
     dilation = 2 ** ll / q_max
     # on each level (including scaling), fill appropriately
-    for ii_l in np.arange(0, ll + 1):
+    for ii_l in arange(0, ll + 1):
         # take into account the dilation at level ii_l
         p_im = int(n_im / dilation[ii_l])
         # copy the WWP coefficients in SSW
@@ -251,7 +251,7 @@ def extract_ssw(w_ssw, w_x, config):
     q_max = q_max_calculation(ll)
     dilation = 2 ** ll / q_max
     # on each level (including scaling), fill appropriately
-    for ii_l in np.arange(0, ll + 1):
+    for ii_l in arange(0, ll + 1):
         # take into account the dilation at level ii_l
         p_im = int(n_im / dilation[ii_l])
         # copy the WWP coefficients in SSW (total size = image layer + 2 * image layer size)
@@ -285,7 +285,7 @@ def assemble_ssw_wwp(w_x, w_ssw, w_wwp, config):
     q_max = q_max_calculation(ll)
     dilation = 2 ** ll / q_max
     # on each level (including scaling), fill appropriately
-    for ii_l in np.arange(0, ll + 1):
+    for ii_l in arange(0, ll + 1):
         # take into account the dilation at level ii_l
         p_im = int(n_im / dilation[ii_l])
         # 1/ fill the SSW part (layer image + SSW part of same size)
@@ -320,7 +320,7 @@ def disassemble_ssw_wwp(w_x, w_ssw, w_wwp, config):
     q_max = q_max_calculation(ll)
     dilation = 2 ** ll / q_max
     # on each level (including scaling), fill appropriately
-    for ii_l in np.arange(0, ll + 1):
+    for ii_l in arange(0, ll + 1):
         # take into account the dilation at level ii_l
         p_im = int(n_im / dilation[ii_l])
         # copy the WWP-H coefficients in SSW (total size = image layer + 2 * image layer size)

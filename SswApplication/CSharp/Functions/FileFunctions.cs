@@ -8,9 +8,10 @@ namespace SswApplication.CSharp.Functions
     {
         internal static readonly string[] separator = ["\r\n", "\r", "\n"];
 
-        internal static string ExecuteExe(string dir, string filename)
+        internal static (string, string) ExecuteExe(string dir, string filename)
         {
             string output = string.Empty;
+            string error = string.Empty;
             DirectoryFn.ChangeDirectory(dir);
             try 
             {
@@ -19,16 +20,18 @@ namespace SswApplication.CSharp.Functions
                 process.StartInfo.Arguments = null;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
 
                 process.Start();
                 output = process.StandardOutput.ReadToEnd();
+                error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
-            return output;
+            return (output, error);
         }
 
         // Lire donnees de csv
@@ -62,6 +65,13 @@ namespace SswApplication.CSharp.Functions
                 DirectoryFn.ChangeDirectory(dir);
                 using var writer = new StreamWriter(file);
                 using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+                CsvHelper.Configuration.CsvConfiguration conf = new(CultureInfo.InvariantCulture)
+                {
+                    // Add any desired configuration settings here
+                    ShouldQuote = (field) => false
+                };
+
                 foreach (string[] dataArray in data)
                 {
                     foreach (string str in dataArray)

@@ -54,11 +54,8 @@
 ##
 
 #import numpy as np
-from csv import writer
-from csv import reader
-from numpy import float64
-from numpy import int32
-from numpy import savetxt 
+from csv import writer, reader
+from numpy import float64, int32, savetxt
 #from numpy import save 
 
 import scipy.constants as cst
@@ -67,7 +64,6 @@ from src.complex_source_point import complex_source_point
 
 # contains the source type
 file_source = 'inputs/configuration.csv'
-
 
 # ------------------------ #
 # --- Defining classes --- #
@@ -161,8 +157,6 @@ rows = [['frequency', str(freq*1e-6), 'MHz'],
         ['z_step', str(ConfigSource.z_step), 'm'],
         ['x_s', str(ConfigSource.x_s), 'm'],
         ['z_s', str(ConfigSource.z_s), 'm']]
-
-# INTEGRER EN BLAZOR 
 
 with open('./outputs/configuration.csv', 'w', newline='') as f:
     # using csv.writer method from CSV package

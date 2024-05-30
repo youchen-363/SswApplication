@@ -40,8 +40,10 @@ function drawGraphFinal(data, datapoints) {
                         ticks: {
                             stepSize: 20
                         },
+                        /*
                         min: data.v_min,
                         max: data.v_max,
+                        */
                     },
                     y: {
                         position: 'left',
@@ -52,10 +54,12 @@ function drawGraphFinal(data, datapoints) {
                         ticks: {
                             //max: 1000, // Set maximum value for y-axis
                             beginAtZero: true,
-                            stepSize: 200
+                            stepSize: 10
                         },
+                        /*
                         min: 0,
                         max: data.config.Z_step.Value * data.config.N_z.Value
+                        */
                     }
                 },
                 title: {

@@ -13,15 +13,13 @@
 # @params[out] n_profile : vertical profile of n or m (modified) refractive index
 ##
 
-import numpy as np
-import scipy.constants as cst
-import matplotlib.pyplot as plt
-
+from numpy import ones, linspace, zeros_like, where, log, pi, sin, random, sqrt, fft, sum, abs
+from scipy.constants import c
 
 def generate_n_profile(config):
     # choice of the atmospheric profile type
     if config.atmosphere == 'Homogeneous':  # constant n (vacuum)
-        n_refractive_index = np.ones(config.N_z)
+        n_refractive_index = ones(config.N_z)
     elif config.atmosphere == 'Linear':  # constant slope
         n_refractive_index = linear_atmosphere(config.N_z, config.z_step, config.c0)
     elif config.atmosphere == 'Evaporation':  # log then constant slope
@@ -49,7 +47,7 @@ def genere_phi_turbulent(config):
 # standard atmosphere
 def linear_atmosphere(n_z, z_step, c0):
     # vector of vertical positions
-    z_vect = np.linspace(0, z_step*n_z, n_z, endpoint=False)
+    z_vect = linspace(0, z_step*n_z, n_z, endpoint=False)
     # refractivity
     # mean M0 is 330 at the ground level
     n_refractivity = 330 + z_vect*c0
@@ -61,16 +59,16 @@ def linear_atmosphere(n_z, z_step, c0):
 # evaporation duct
 def evaporation_duct(n_z, z_step, c0, delta):
     # vector of vertical positions
-    z_vect = np.linspace(0, z_step*n_z, n_z, endpoint=False)
-    n_refractivity = np.zeros_like(z_vect)
+    z_vect = linspace(0, z_step*n_z, n_z, endpoint=False)
+    n_refractivity = zeros_like(z_vect)
     # z0
     z0 = 1.5e-4
     # separating in and above the duct (where renders tuples)
-    indices_z_inf = np.where(z_vect <= 2*delta)
-    indices_z_sup = np.where(z_vect > 2*delta)
+    indices_z_inf = where(z_vect <= 2*delta)
+    indices_z_sup = where(z_vect > 2*delta)
     # in the duct: refractivity following Paulus-Jeske model
     n_refractivity[indices_z_inf] = 330 + 0.125*(z_vect[indices_z_inf] -
-                                    delta*np.log((z_vect[indices_z_inf]+z0) / z0))
+                                    delta*log((z_vect[indices_z_inf]+z0) / z0))
     # above the duct: standard atm
     n_refractivity[indices_z_sup] = 330 + z_vect[indices_z_sup]*c0
     # ensuring continuity
@@ -93,8 +91,8 @@ def evaporation_duct(n_z, z_step, c0, delta):
 # def bilinear_profile(n_z, z_step, c0, c2, zt):
 #     raise ValueError(['bilinear_profile duct must be validated'])
 #     # vector of vertical positions
-#     z_vect = np.linspace(0, z_step*n_z, n_z, endpoint=False)
-#     n_refractivity = np.zeros_like(z_vect)
+#     z_vect = linspace(0, z_step*n_z, n_z, endpoint=False)
+#     n_refractivity = zeros_like(z_vect)
 #     # --- refractivity --- #
 #     # mean M0 is 330 at the ground level
 #     # in the duct
@@ -109,19 +107,19 @@ def evaporation_duct(n_z, z_step, c0, delta):
 # trilinear profile
 def trilinear_profile(n_z, z_step, c0, zb, c2, zt):
     # vector of vertical positions
-    z_vect = np.linspace(0, z_step * n_z, n_z, endpoint=False)
-    n_refractivity = np.zeros_like(z_vect)
+    z_vect = linspace(0, z_step * n_z, n_z, endpoint=False)
+    n_refractivity = zeros_like(z_vect)
     # z0
     z0 = 1.5e-4
     # print(indices_z_inf)
     # below the duct
-    indices_zb = np.where(z_vect <= zb)  # below the duct
+    indices_zb = where(z_vect <= zb)  # below the duct
     n_refractivity[indices_zb] = 330 + z_vect[indices_zb] * c0
     # in the duct
-    indices_zt = np.where(z_vect > zb)
+    indices_zt = where(z_vect > zb)
     n_refractivity[indices_zt] = 330 + zb * c0 + (z_vect[indices_zt] - zb) * c2
     # above the duct
-    indices_above = np.where(z_vect > zt + zb)  # above the duct
+    indices_above = where(z_vect > zt + zb)  # above the duct
     n_refractivity[indices_above] = 330 + zb * c0 + zt * c2 + (z_vect[indices_above] - zb - zt) * c0
     # --- refractive index --- #
     n_refractive_index = 1 + n_refractivity*1e-6
@@ -148,30 +146,30 @@ def read_file_profile(n_z, z_step, atm_filename):
 # convention of orthonormal normalization used in all the code. (see future REF)
 
 def turbulent(n_z, z_step, x_step, Los, Cn2_exponent,f):
-    k0 = 2*np.pi*f / cst.c
-    Kos = 2*np.pi/Los
+    k0 = 2*pi*f / c
+    Kos = 2*pi/Los
     # Compute spectral discretization
-    #q_z = np.linspace(0,n_z-1, num=n_z, endpoint = True)
-    q_z = np.linspace(-n_z/2, n_z/2 - 1, num=n_z, endpoint=True)
-    k_z = (2/z_step) * np.sin(np.pi*q_z/(n_z)) #version DSSF
-    #k_z = (2*np.pi)/(n_z*z_step)*q_z #version SSF
+    #q_z = linspace(0,n_z-1, num=n_z, endpoint = True)
+    q_z = linspace(-n_z/2, n_z/2 - 1, num=n_z, endpoint=True)
+    k_z = (2/z_step) * sin(pi*q_z/(n_z)) #version DSSF
+    #k_z = (2*pi)/(n_z*z_step)*q_z #version SSF
     # Define Von Karman Kolmogorov (VKK) spectrum
-    S_Phi2D = (2*np.pi)* k0**2*x_step*0.055*10**(Cn2_exponent)*(k_z**2+Kos**2)**(-4/3) #normalization of VKK spectrum by S*n_z
+    S_Phi2D = (2*pi)* k0**2*x_step*0.055*10**(Cn2_exponent)*(k_z**2+Kos**2)**(-4/3) #normalization of VKK spectrum by S*n_z
     # Generate random gaussian white noise filtred by a VKK spectrum
 
-    #a = np.random.normal(0,np.sqrt((2*np.pi)/(n_z*z_step))*np.sqrt(S_Phi2D),n_z) #SSF
-    #b = np.random.normal(0,np.sqrt((2*np.pi)/(n_z*z_step))*np.sqrt(S_Phi2D),n_z) #SSF
+    #a = random.normal(0,sqrt((2*pi)/(n_z*z_step))*sqrt(S_Phi2D),n_z) #SSF
+    #b = random.normal(0,sqrt((2*pi)/(n_z*z_step))*sqrt(S_Phi2D),n_z) #SSF
 
-    a = np.random.normal(0,np.sqrt((2/z_step)*np.sin(np.pi/n_z))*np.sqrt(S_Phi2D),n_z) #DSSF
-    b = np.random.normal(0,np.sqrt((2/z_step)*np.sin(np.pi/n_z))*np.sqrt(S_Phi2D),n_z) #DSSF
+    a = random.normal(0,sqrt((2/z_step)*sin(pi/n_z))*sqrt(S_Phi2D),n_z) #DSSF
+    b = random.normal(0,sqrt((2/z_step)*sin(pi/n_z))*sqrt(S_Phi2D),n_z) #DSSF
     gauss = (a + 1j*b)
-    print('energy gauss', np.sum(np.abs(gauss)**2))
+    print('energy gauss', sum(abs(gauss)**2))
     #fft shift to remove symmetry
     #G = gauss #DSSF
-    G = np.fft.fftshift(gauss) #SSF
+    G = fft.fftshift(gauss) #SSF
     # --- turbulent phase screen --- #
-    Phi=n_z*(np.fft.ifft(G).real)
-    #Phi=(G*np.exp(2*np.pi*1j*q_z/n_z)).real
+    Phi=n_z*(fft.ifft(G).real)
+    #Phi=(G*exp(2*pi*1j*q_z/n_z)).real
     #take the real part
-    print('energy phi',np.sum(np.abs(Phi)**2)/n_z)
+    print('energy phi',sum(abs(Phi)**2)/n_z)
     return Phi

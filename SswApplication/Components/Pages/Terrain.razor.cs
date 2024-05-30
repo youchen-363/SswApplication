@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Data.Common;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SswApplication.CSharp.Functions;
+using SswApplication.CSharp.Source;
 using SswApplication.CSharp.Terrain;
 
 namespace SswApplication.Components.Pages
@@ -8,12 +10,13 @@ namespace SswApplication.Components.Pages
     public partial class Terrain
     {
         private readonly ConfigRelief config = DataRelief.ExtractInputCSVTerrain();
+        private readonly ConfigSrc configS = DataSrc.ExtractInputCSVSource();
         private List<double> xVals = [], zVals = [];
         private double x_max;
-		private bool plottedGraph = false, plottedTest = false, delete = false, save = false, add = false;
+		private bool plottedGraph = false, plottedTest = false;
 		private readonly bool[] disabledAttr = new bool[4];
-        private int col;
-        private string alertMsg = string.Empty, successMsg = string.Empty, res = string.Empty;
+        private int colDel = -1, colAdd = -1;
+        private string alertMsg = string.Empty, successMsg = string.Empty, res = string.Empty, btnAddStatus = "d-none", btnDelStatus = "d-none";
         private MarkupString resultat = new();
         /// <summary>
         /// Initialiser toutes les variables nécessaires
@@ -22,11 +25,12 @@ namespace SswApplication.Components.Pages
         {
             // initialise le tableau en fonction du type dans le fichier input relief 
 			SetDisabledValues(config.Type.Value);
-            (xVals, zVals) = DataRelief.ExtractColumnsTerrain();
-            SortXAndZ();
-            delete = save = CheckSize();
-            add = CheckMaxSize();
+            //(xVals, zVals) = DataRelief.ExtractColumnsTerrain();
             x_max = config.X_step.Value * config.N_x.Value * 1e-3;
+            xVals.Add(0);
+            zVals.Add(0);
+            xVals.Add(x_max);
+            zVals.Add(0);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,43 +41,60 @@ namespace SswApplication.Components.Pages
             }
         }
 
-        private bool CheckSize()
+        private void AddColumnAfter()
         {
-            return !(xVals.Count>0);
-        }
-
-        private bool CheckMaxSize()
-        {
-            return xVals.Count >= config.N_x.Value;
-        }
-
-        private void AddColumn()
-        {
-            xVals.Add(0);
-            zVals.Add(0);
-            delete = save = CheckSize();
-            add = CheckMaxSize();
+            xVals.Insert(colAdd+1, (xVals[colAdd]+xVals[colAdd+1])/2);
+            zVals.Insert(colAdd+1, 0);
             alertMsg = string.Empty;
             successMsg = $"Column successfully added!";
         }
 
+        private void RowChosen(int index)
+        {
+            colAdd = index;
+            colDel = index;
+        }
+
+        private void RowUnchosen()
+        {
+            colAdd = -1;
+            colDel = -1;
+        }
+        
+/*
+        private void AddColumn()
+        {
+            xVals.Add(0);
+            zVals.Add(0);
+            delete = CheckSize();
+            add = CheckMaxSize();
+            alertMsg = string.Empty;
+            successMsg = $"Column successfully added!";
+        }
+*/
         private async Task DeleteColumn()
         {
-            if (await Confirm($"Do you want to delete column {col}?"))
+            if (await Confirm($"Do you want to delete column {colDel+1}?"))
             {
-                if (col > xVals.Count || col <= 0)
+                xVals.RemoveAt(colDel);
+                zVals.RemoveAt(colDel);
+                //delete = CheckSize();
+                alertMsg = string.Empty;
+                successMsg = $"Column {colDel} successfully deleted!";
+            }
+        }
+
+        private void CheckXValue(int idx)
+        {
+            if (idx > 0 && idx < xVals.Count-1)
+            {
+                double x0 = xVals[idx-1];
+                double x1 = xVals[idx];
+                double x2 = xVals[idx+1];
+                if (x1 < x0 || x1 > x2)
                 {
-                    successMsg = string.Empty;
-                    alertMsg = "Index out of range!";
-                }
-                else
-                {
-                    xVals.RemoveAt(col - 1);
-                    zVals.RemoveAt(col - 1);
-                    delete = save = CheckSize();
-                    add = CheckMaxSize();
-                    alertMsg = string.Empty;
-                    successMsg = $"Column {col} successfully deleted!";
+                    xVals[idx] = (x0 + x2) /2;
+                    alertMsg = $"X{idx} value must be between {x0} and {x2}!";
                 }
             }
         }
@@ -83,13 +104,15 @@ namespace SswApplication.Components.Pages
             return await JsRuntime.InvokeAsync<bool>("confirmMessage", message);
         }
 
-        private void SaveCSV()
+        private async Task SaveCSV()
         {
+            await Confirm($"Do you want to save the data?");
             DataRelief.WriteColumnsTerrain(xVals, zVals);
             alertMsg = string.Empty;
             successMsg = $"Data successfully saved!";            
         }
 
+        /*
         private void SortXAndZ()
         {
             // Pair the xVals and zVals together
@@ -102,6 +125,7 @@ namespace SswApplication.Components.Pages
             xVals = pairs.Select(pair => pair.x).ToList();
             zVals = pairs.Select(pair => pair.z).ToList();
         }
+        */
 
 		/// <summary>
 		/// Affecte les valeurs de désactivation pour modifier l'état de grisage des éléments HTML input en fonction du type spécifié 
@@ -139,26 +163,31 @@ namespace SswApplication.Components.Pages
             {
                 // Mise a jour des données dans le fichier input du relief
                 DataRelief.WriteInputCSVTerrain(config);
+                /*
                 Dictionary<double, double> xyDict = DataRelief.XZValues(xVals, zVals);
                 for (int i = 0; i < xVals.Count; i++)
                 {
                     xyDict[xVals[i]] = zVals[i];
                 }
-
                 DataRelief.WriteInputCSVTerrain(xyDict);
-                // Execute main_terrain.exe
-                res = DataRelief.ExecuteRelief();
-                resultat = CommonFns.ReplaceNToBr(res);
-
-                // extraire les données de l'axes x 
-                List<double> xref = DataRelief.X_relief(((int)config.N_x.Value) + 1);
-                // extraire les données de l'axes y qui est dans le fichier output 
-                List<double> zref = DataRelief.Z_relief();
+                */
                 
-                string data = DataRelief.SerializeToJSON(xref, zref, config.X_step.Value, "canvasTerrain");
-                // dessine le graphe en appellant la fonction drawTerrain() avec JSInterop en passant les données nécessaires
-                await JsRuntime.InvokeVoidAsync("drawTerrain", data, plottedGraph);
-                plottedGraph = true;
+                // Execute main_terrain.exe
+                (string output, string error) = DataRelief.ExecuteRelief();
+                res = output + '\n' + error;
+                resultat = CommonFns.ReplaceNToBr(res);
+                if (error == string.Empty)
+                {
+                    // extraire les données de l'axes x 
+                    List<double> xref = DataRelief.X_relief(((int)config.N_x.Value) + 1, config.X_step.Value);
+                    // extraire les données de l'axes y qui est dans le fichier output 
+                    List<double> zref = DataRelief.Z_relief();
+                    
+                    string data = DataRelief.SerializeToJSON(xref, zref, config.X_step.Value, x_max, configS.Z_step.Value * configS.N_z.Value, "canvasTerrain");
+                    // dessine le graphe en appellant la fonction drawTerrain() avec JSInterop en passant les données nécessaires
+                    await JsRuntime.InvokeVoidAsync("drawTerrain", data, plottedGraph);
+                    plottedGraph = true;
+                }
             }
             catch (Exception ex)
             {
@@ -168,83 +197,66 @@ namespace SswApplication.Components.Pages
 
         private async Task DrawTestGraph()
         {
-            (List<double> x, List<double>z) = DataGraph();
-            string data = DataRelief.SerializeToJSON(x, z, config.X_step.Value, "canvasTest");
+            string data = DataRelief.SerializeToJSON(xVals, zVals, config.X_step.Value, x_max, configS.Z_step.Value * configS.N_z.Value, "canvasTest");
             await JsRuntime.InvokeVoidAsync("drawTerrain", data, plottedTest);
             plottedTest = true;
         }
 
-        private (List<double>, List<double>) DataGraph()
-        {
-            List<double> x = new(xVals);
-            List<double> z = new(zVals);
-            if (x[0] != 0)
-            {
-                x.Insert(0, 0);
-                z.Insert(0, 0);
-            }
-            if (x[^1] != config.N_x.Value)
-            {
-                x.Add(config.N_x.Value);
-                z.Add(0);
-            }
-            return (x,z);
-        } 
-
+        /*
         private void Type()
         {
-            ValuesExceptions.CheckTerrainType(config.Type.Value);
+            ValueException.CheckTerrainType(config.Type.Value);
             Listeners.UpdateRelief(config.Type.Property, config.Type.Value);
             SetDisabledValues(config.Type.Value);
         }
 
         private void ZMax()
         {
-            ValuesExceptions.CheckZMaxTerrain(config.Z_max_relief.Value);
+            ValueException.CheckZMaxTerrain(config.Z_max_relief.Value);
             Listeners.UpdateRelief(config.Z_max_relief.Property, config.Z_max_relief.Value);
         }
 
         private void Iterations()
         {
-            ValuesExceptions.CheckIterations((int)config.Iterations.Value);
+            ValueException.CheckIterations((int)config.Iterations.Value);
             Listeners.UpdateRelief(config.Iterations.Property, config.Iterations.Value);        
         }    
 
         private void Center()
         {
-            ValuesExceptions.CheckCenter(config.Center.Value);
+            ValueException.CheckCenter(config.Center.Value);
             Listeners.UpdateRelief(config.Center.Property, config.Center.Value);
         }            
 
         private void Width()
         {
-            ValuesExceptions.CheckWidth(config.Width.Value);
+            ValueException.CheckWidth(config.Width.Value);
             Listeners.UpdateRelief(config.Width.Property, config.Width.Value);
             Listeners.UpdateRelief(config.X_step.Property, config.X_step.Value);
         }
-
+        */
         private void XMax()
         {
-            ValuesExceptions.CheckXStep(config.X_step.Value);
+            ValueException.CheckXStep(config.X_step.Value);
             config.N_x.Value = (int) Math.Round(x_max * 1e3 / config.X_step.Value);
+            xVals[^1] = x_max;
             UpdateNx();
         }
 
         private void XStep()
         {
-            ValuesExceptions.CheckXStep(config.X_step.Value);
+            ValueException.CheckXStep(config.X_step.Value);
             config.N_x.Value = (int) Math.Round(x_max * 1e3 / config.X_step.Value);
-            ValuesExceptions.CheckNx(config.N_x.Value);
+            ValueException.CheckNx(config.N_x.Value);
             UpdateXStep();
             UpdateNx();
         }
 
         private void Nx()
         {
-            ValuesExceptions.CheckNegativeNumber(config.N_x.Value);
+            ValueException.CheckNegativeNumber(config.N_x.Value);
             config.X_step.Value = x_max * 1e3 / config.N_x.Value;
-            ValuesExceptions.CheckXStep(config.X_step.Value);
-            add = CheckMaxSize();
+            ValueException.CheckXStep(config.X_step.Value);
             UpdateXStep();
             UpdateNx();
         }

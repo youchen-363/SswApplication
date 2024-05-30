@@ -39,15 +39,15 @@ namespace SswApplication.CSharp.Propagation
 				case "Property":
 					break;
 				case "method":
-					ValuesExceptions.CheckMethod(data[1]);
+					ValueException.CheckMethod(data[1]);
 					config.Method.UpdateMeasurement(data);
 					break;
 				case "N_x":
-					ValuesExceptions.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckNegativeNumber(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.N_x.UpdateMeasurement(data);
 					break;
 				case "N_z":
-					ValuesExceptions.CheckNz(double.Parse(data[1], CultureInfo.InvariantCulture), config.WaveletLevel.Value);
+					ValueException.CheckNz(double.Parse(data[1], CultureInfo.InvariantCulture), config.WaveletLevel.Value);
 					config.N_z.UpdateMeasurement(data);
 					break;
 				case "x_step":
@@ -60,34 +60,34 @@ namespace SswApplication.CSharp.Propagation
 					config.Frequency.UpdateMeasurement(data);
 					break;
 				case "polarisation":
-					ValuesExceptions.CheckPolarisation(data[1]);
+					ValueException.CheckPolarisation(data[1]);
 					config.Polarisation.UpdateMeasurement(data);
 					break;
 				case "Max compression error":
 					config.MaxCompressionError.UpdateMeasurement(data);
 					break;
 				case "wavelet level":
-					ValuesExceptions.CheckNz(config.N_z.Value, double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckNz(config.N_z.Value, double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.WaveletLevel.UpdateMeasurement(data);
 					break;
 				case "wavelet family":
-					ValuesExceptions.CheckWaveletFamily(data[1]);
+					ValueException.CheckWaveletFamily(data[1]);
 					config.WaveletFamily.UpdateMeasurement(data);
 					break;
 				case "apodisation window":
-					ValuesExceptions.CheckApodisationType(data[1]);
+					ValueException.CheckApodisationType(data[1]);
 					config.ApodisationWindow.UpdateMeasurement(data);
 					break;
 				case "apodisation size":
-					ValuesExceptions.CheckApodisationSize(double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckApodisationSize(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.ApodisationSize.UpdateMeasurement(data);
 					break;
 				case "image size":
-					ValuesExceptions.CheckImageLayer(double.Parse(data[1], CultureInfo.InvariantCulture));
+					ValueException.CheckImageLayer(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.ImageSize.UpdateMeasurement(data);
 					break;
 				case "ground":
-					ValuesExceptions.CheckGroundType(data[1]);
+					ValueException.CheckGroundType(data[1]);
 					config.Ground.UpdateMeasurement(data);
 					break;
 				case "epsr":
@@ -97,11 +97,11 @@ namespace SswApplication.CSharp.Propagation
 					config.Sigma.UpdateMeasurement(data);
 					break;
 				case "atmosphere":
-					ValuesExceptions.CheckAtmosphereType(data[1]);
+					ValueException.CheckAtmosphereType(data[1]);
 					config.Atmosphere.UpdateMeasurement(data);
 					break;
 				case "turbulence":
-					ValuesExceptions.CheckTurbulence(data[1]);
+					ValueException.CheckTurbulence(data[1]);
 					config.Turbulence.UpdateMeasurement(data);
 					break;
 				case "Cn2":
@@ -132,7 +132,7 @@ namespace SswApplication.CSharp.Propagation
 					config.Dynamic.UpdateMeasurement(data);
 					break;
 				case "py_or_cy":
-					ValuesExceptions.CheckPyOrCy(data[1]);
+					ValueException.CheckPyOrCy(data[1]);
 					config.PyOrCy.UpdateMeasurement(data);
 					break;
 				default:
@@ -143,7 +143,7 @@ namespace SswApplication.CSharp.Propagation
 		/// <summary>
 		/// Execute le fichier executable de propagation
 		/// </summary>
-		public static string ExecutePropagation()
+		public static (string, string) ExecutePropagation()
 		{
 			return FileFunctions.ExecuteExe("CodeSource/propagation/", "main_propagation.exe");
 		}
@@ -316,7 +316,6 @@ namespace SswApplication.CSharp.Propagation
 		/// </summary>
 		/// <param name="vmin"></param>
 		/// <param name="vmax"></param>
-		/// <param name="efielddb"></param>
 		/// <param name="zvect"></param>
 		/// <param name="conf"></param>
 		/// <returns>chaine de caractères avec tous ces valeurs</returns>

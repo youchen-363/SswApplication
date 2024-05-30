@@ -18,6 +18,8 @@ function drawGraphSource(data, datapoints) {
     //document.getElementById("parag").innerText = JSON.stringify(datapoints) + JSON.stringify(data);
     console.log("in draw");
     console.log(data.config.Z_step.Value * data.config.N_z.Value);
+    console.log("efield : \n"+ data.efield_db);
+    console.log("zvect : \n"+ data.z_vect);
     try {
         var config = {
             type: 'scatter',
@@ -42,11 +44,18 @@ function drawGraphSource(data, datapoints) {
                             display: true,
                             text: 'E field (dBV/m)'
                         },
+                        /*
                         ticks: {
                             stepSize: 20
                         },
+                        */
+                       // IL FAUT CHANGER A DYNAMIQUEMENT 
+                        min: -60,
+                        max: -20
+                        /*
                         min: data.v_min,
                         max: data.v_max,
+                        */
                     },
                     y: {
                         position: 'left',
@@ -57,10 +66,12 @@ function drawGraphSource(data, datapoints) {
                         ticks: {
                             //max: 1000, // Set maximum value for y-axis
                             beginAtZero: true,
-                            stepSize: 200
+                            stepSize: 10
+                            // stepSize: 200
                         },
-                        min: 0,
-                        max: data.config.Z_step.Value * data.config.N_z.Value
+                        //max: data.config.Z_step.Value * data.config.N_z.Value
+                        //min: 0,
+                        //max: data.config.Z_step.Value * data.config.N_z.Value
                     }
                 },
                 title: {
@@ -85,19 +96,13 @@ function drawGraphSource(data, datapoints) {
 }
 
 function drawSource(datastr, plotted) {
-    console.log("in drawChart");
     try {
         data = JSON.parse(datastr);
         datapoints = initialiseDataSource(data);
         if (!plotted) {
-            alert("not plotted");
-            console.log("not plotted");
             drawGraphSource(data, datapoints);
-            console.log(plotted);
             plotted = true;
-            alert("plotted : " + plotted);
         } else {
-            alert("plotted");
             updateGraphSource(data, datapoints);
         }
     } catch (error) {
