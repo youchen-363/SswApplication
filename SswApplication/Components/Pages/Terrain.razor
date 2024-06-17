@@ -6,14 +6,14 @@
 @using System.Reflection
 
 <h2>Relief</h2>
-<h3>Configuration</h3>
+
 <div class="form-group">
 	<!-- X -->
 	<div class="d-flex border marge">
 
 		<!-- x_max -->
 		<div class="marge">
-			<label for="X_maxTern">x max (km)</label>
+			<label for="X_maxTern">X max (km)</label>
 			<input type="number" id="X_maxTern" @bind="x_max" placeholder="x_max" @onfocusout="XMax" />
 		</div>
 
@@ -58,7 +58,7 @@
 					int index = i;
 					<td>
 						<input type="number" class="form-control custom-input" @bind="xVals[index]" 
-							@onclick="()=>RowChosen(index)" @onfocusout="()=>CheckXValue(index)" 
+							@onclick="()=>RowChosen(index)" @onfocusout="()=>{CheckXValue(index); DrawTestGraph();}" 
 							disabled="@(index == 0 || index == xVals.Count - 1)"/>
 					</td>
 				
@@ -70,7 +70,7 @@
 				{
 					int index = i;
 					<td>
-						<input type="number" class="form-control custom-input" @bind="zVals[index]" @onclick="()=>RowChosen(index)"/>
+						<input type="number" class="form-control custom-input" @bind="zVals[index]" @onclick="()=>RowChosen(index)" @onfocusout="DrawTestGraph"/>
 					</td>
 				}
 			</tr>
@@ -111,10 +111,11 @@
 		</div>
 	}
 </div>
+<!--
 <div>
-	<button class="btn-primary m-2" @onclick="DrawTestGraph">Draw Relief</button>
-	<button class="btn-primary m-2" @onclick="DrawLineGraph">Run Relief</button>
+	<button class="btn-primary m-2" @onclick="DrawTestGraph">Draw Test</button>
 </div>
+-->
 @if (!string.IsNullOrEmpty(res))
 {
 	<div>
@@ -126,7 +127,11 @@
 	<canvas id="canvasTest"></canvas>
 </div>
 
+<div>
+	<button class="btn-primary m-2" @onclick="DrawLineGraph">Draw Relief</button>
+</div>
 <div id="canvTerrain" style="width:100%; height:auto;">
 	<canvas id="canvasTerrain"></canvas>
 </div>
+
 

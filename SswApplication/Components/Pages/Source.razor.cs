@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SswApplication.CSharp.Functions;
@@ -16,6 +17,8 @@ namespace SswApplication.Components.Pages
 
 		// les variables pour les données nécessaires mais pas dans le fichier input
 		private double z_max, lambda, width, x_s;
+
+		private string resData = string.Empty;
 
 		/// <summary>
 		/// Initialisation des variables nécessaires
@@ -38,6 +41,7 @@ namespace SswApplication.Components.Pages
 			{
 				// Mettre a jour les données dans le fichier CSV input config
 				DataSrc.WriteInputCSVSource(config);
+				DataSrc.WriteOutputConfigSource(config);
 				/*
 				// Execute main_source.exe
 				res = DataSrc.ExecuteSource();
@@ -52,7 +56,7 @@ namespace SswApplication.Components.Pages
 				List<Complex> eTotal = DataSrc.ETotal(config);
 				DataSrc.WriteETotal(eTotal);
 				//test1 += "efield db : " + CommonFns.DbToStr(DataSrc.EFieldToEFieldDB());
-				data = DataSrc.InitialiseTestData();
+				data = DataSrc.InitialiseTestData(config);
 				await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
 				plotted = true;
 				
@@ -64,11 +68,13 @@ namespace SswApplication.Components.Pages
 		}
 
 		// Listener
+		/*
 		private void Type()
 		{
 			ValueException.CheckTypeSource(config.Type.Value);
 			Listeners.UpdateSource(config.Type.Property, config.Type.Value);
 		}
+		*/
 
 		private void Zs()
 		{
@@ -83,12 +89,14 @@ namespace SswApplication.Components.Pages
 			Listeners.UpdateSource(config.X_s.Property, config.X_s.Value);
 		}
 
+		/*
 		private void Width()
 		{
 			ValueException.CheckNegativeNumber(lambda);
 			config.W0.Value = width * lambda;
 			Listeners.UpdateSource(config.W0.Property, width * lambda); 
 		}
+		*/
 
 		private void Frequency()
 		{
@@ -114,18 +122,17 @@ namespace SswApplication.Components.Pages
 
 		private void Nz()
 		{
-			ValueException.CheckNzValue(config.N_z.Value);
+			////ValueException.CheckNz(config.N_z.Value);
 			config.Z_step.Value = z_max / config.N_z.Value;
-			ValueException.CheckZStep(config.Z_step.Value, config.N_z.Value);
 			UpdateNz();
 			UpdateZStep();
 		}
 
 		private void ZStep()
 		{
-			ValueException.CheckZStep(config.Z_step.Value, config.N_z.Value);
+			ValueException.CheckZStep(config.Z_step.Value);
 			config.N_z.Value = (int) Math.Round(z_max/config.Z_step.Value);
-			ValueException.CheckNzValue(config.N_z.Value);
+			//ValueException.CheckNz(config.N_z.Value);
 			UpdateNz();
 			UpdateZStep();
 		}
@@ -133,7 +140,7 @@ namespace SswApplication.Components.Pages
 		private void ZMax()
 		{
 			config.N_z.Value = (int) Math.Round(z_max / config.Z_step.Value);
-			ValueException.CheckNzValue(config.N_z.Value);
+			//ValueException.CheckNz(config.N_z.Value);
 			UpdateNz();	
 		}
 

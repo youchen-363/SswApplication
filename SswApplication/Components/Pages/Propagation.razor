@@ -4,117 +4,100 @@
 @using System.Diagnostics;
 @inject IJSRuntime JSRuntime;
 
-<h1>Propagation</h1>
+<h2>Propagation</h2>
 
 <div class="d-flex border marge">
-	<!-- Ground -->
 	<div>
-		<h5>Ground</h5>
-		<div class="d-flex">
-			<!-- Ground type -->
-			<div class="marge">
-				<label for="GroundProp">Ground type</label>
-				<select @bind="@config.Ground.Value" @onclick="GroundType">
-					<option value="PEC">PEC</option>
-				</select>
-			</div>
+		<!-- Ground type -->
+		<div class="marge">
+			<label for="GroundProp">Ground type</label>
+			<select @bind="@config.Ground.Value" @onclick="GroundType">
+				<option value="PEC">PEC</option>
+			</select>
+		</div>
+		<!-- Polarisation -->
+		<div class="marge">
+			<label for="PolarisationProp">Polarisation</label>
+			<select id="PolarisationProp" @bind="@config.Polarisation.Value" @onclick="Polarisation">
+				<option value="TE">TE</option>
+			</select>
 		</div>
 	</div>
-	<!-- Polarisation -->
+	
+	<!-- Apodisation -->
 	<div>
-		<h5>Polarisation</h5>
-		<label for="PolarisationProp">Polarisation</label>
-		<select id="PolarisationProp" @bind="@config.Polarisation.Value" @onclick="Polarisation">
-			<option value="TE">TE</option>
-		</select>
-	</div>
-	<div class="border d-flex marge">
 		<!-- Apodisation -->
-		<div>
-			<!-- Apodisation -->
-			<div class="marge">
-				<label for="ApodisationWindowProp">Apodisation</label>
-				<select id="ApodisationWindowProp" @bind="@config.ApodisationWindow.Value" @onclick="ApodisationType">
-					<option value="Hanning">Hanning</option>
-				</select>
-			</div>
-			<!-- Apodisation size -->
-			<div class="marge">
-				<label for="ApodisationSizeProp">Size apo (%)</label>
-				<input type="number" id="ApodisationSizeProp" @bind="@apoSize" placeholder="@config.ApodisationSize.Property" 
-						@onfocusout="Apodisation" min="0" max="50"/>
-			</div>
+		<div class="marge">
+			<label for="ApodisationWindowProp">Apodisation</label>
+			<select id="ApodisationWindowProp" @bind="@config.ApodisationWindow.Value" @onclick="ApodisationType">
+				<option value="Hanning">Hanning</option>
+			</select>
 		</div>
+		<!-- Apodisation size -->
+		<div class="marge">
+			<label for="ApodisationSizeProp">Size apo (%)</label>
+			<input type="number" id="ApodisationSizeProp" @bind="@apoSize" placeholder="@config.ApodisationSize.Property" 
+					@onfocusout="Apodisation" min="0" max="50"/>
+		</div>
+	</div>
 
-		<!-- Other -->
-		<div>
-			<!-- Output -->
-			<div class="marge">
-				<label for="OutputProp">Output</label>
-				<select id="OutputProp" @bind="@output" @onclick="Output">
-					<option value="E (dBV/m)">E (dBV/m)</option>
-				</select>
-			</div>
-			<!-- Dynamic -->
-			<div class="marge">
-				<label for="DynamicProp">Dynamic (dB)</label>
-				<input type="number" id="DynamicProp" @bind="@config.Dynamic.Value" placeholder="@config.Dynamic.Property" 
-						@onfocusout="Dynamic" min="0" max="99"/>
-			</div>
+	<!-- Other -->
+	<div>
+		<!-- Output -->
+		<div class="marge">
+			<label for="OutputProp">Output</label>
+			<select id="OutputProp" @bind="@output" @onclick="Output">
+				<option value="E (dBV/m)">E (dBV/m)</option>
+			</select>
+		</div>
+		<!-- Dynamic -->
+		<div class="marge">
+			<label for="DynamicProp">Dynamic (dB)</label>
+			<input type="number" id="DynamicProp" @bind="@config.Dynamic.Value" placeholder="@config.Dynamic.Property" 
+					@onfocusout="Dynamic" min="0" max="99"/>
 		</div>
 	</div>
 </div>
 
 <div class="border d-flex marge">
-	<div>
-		<h5>Atmosphere</h5>
-		<!-- Atmosphere -->
-		<div class="d-flex">
-			<!-- Atmosphere Type -->
-			<div class="marge">
-				<label for="AtmosphereProp">Atmosphere type</label>
-				<select id="AtmosphereProp" @bind="@config.Atmosphere.Value" @onclick="AtmosphereType">
-					<option value="Linear">Linear</option>
-				</select>
-			</div>
-			<!-- c0 -->
-			<div class="marge">
-				<label for="C0Prop">c0 (N-unit/m)</label>
-				<input type="number" id="C0Prop" @bind="@config.C0.Value" placeholder="@config.C0.Property" @onclick="C0" step="1" min="-99.0" max="0"/>
-			</div>
-		</div>
+	<!-- Atmosphere Type -->
+	<div class="marge">
+		<label for="AtmosphereProp">Atmosphere type</label>
+		<select id="AtmosphereProp" @bind="@config.Atmosphere.Value" @onclick="AtmosphereType">
+			<option value="Linear">Linear</option>
+		</select>
 	</div>
-	<div>
-		<h5>Turbulence</h5>
-		<!-- Turbulence -->
-		<div class="d-flex">
-			<div class="marge">
-				<label for="TurbulenceProp">Turbulence</label>
-				<select id="TurbulenceProp" @bind="@config.Turbulence.Value" @onclick="Turbulence">
-					<option value="Y">Y</option>
-					<option value="N">N</option>
-				</select>
-			</div>
-			<!-- Cn2 -->
-			<div class="marge">
-				<label for="Cn2Prop">Cn2</label>
-				<input type="number" id="Cn2Prop" @bind="@config.Cn2.Value" placeholder="@config.Cn2.Property" 
-						disabled="@disabledTurbulence[0]" @onfocusout="Cn2" min="-20.0" max="0.0"/>
-			</div>
-			<!-- L0 -->
-			<div class="marge">
-				<label for="L0Prop">L0 (@config.L0.Unit)</label>
-				<input type="number" id="L0Prop" @bind="@config.L0.Value" placeholder="@config.L0.Property" 
-						disabled="@disabledTurbulence[1]" @onfocusout="L0" min="0.1" max="10000.0"/>
-			</div>
-		</div>
+	<!-- c0 -->
+	<div class="marge">
+		<label for="C0Prop">C0 (N-unit/m)</label>
+		<input type="number" id="C0Prop" @bind="@config.C0.Value" placeholder="@config.C0.Property" @onclick="C0" step="1" min="-99.0" max="0"/>
+	</div>
+		
+	<div class="marge">
+		<label for="TurbulenceProp">Turbulence</label>
+		<select id="TurbulenceProp" @bind="@config.Turbulence.Value" @onclick="Turbulence">
+			<option value="Y">Y</option>
+			<option value="N">N</option>
+		</select>
+	</div>
+	<!-- Cn2 -->
+	<div class="marge">
+		<label for="Cn2Prop">Cn2</label>
+		<input type="number" id="Cn2Prop" @bind="@config.Cn2.Value" placeholder="@config.Cn2.Property" 
+				disabled="@disabledTurbulence[0]" @onfocusout="Cn2" min="-20.0" max="0.0"/>
+	</div>
+	<!-- L0 -->
+	<div class="marge">
+		<label for="L0Prop">L0 (@config.L0.Unit)</label>
+		<input type="number" id="L0Prop" @bind="@config.L0.Value" placeholder="@config.L0.Property" 
+				disabled="@disabledTurbulence[1]" @onfocusout="L0" min="0.1" max="10000.0"/>
 	</div>
 </div>
-
 
 <div>
 	<button class="btn-primary" id="btnProp" @onclick="LoadData">Run Simulation</button>
 </div>
+
 @if (!string.IsNullOrEmpty(res))
 {
 	<div>
@@ -127,6 +110,7 @@
 <div id="canvFinal">
 	<canvas id="canvasFinal"></canvas>
 </div>
+
 @if (columnDisplay)
 {
 	<div class="m-3">

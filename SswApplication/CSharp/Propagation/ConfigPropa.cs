@@ -54,8 +54,7 @@ namespace SswApplication.CSharp.Propagation
 		public MeasNumber N_z { 
 			get => n_z; 
 			set {
-				double wavelet = WaveletLevel.Value;
-				ValueException.CheckNz(value.Value, wavelet);
+				//ValueException.CheckNz(value.Value);
 				n_z = value;
 			}  
 		}
@@ -73,14 +72,13 @@ namespace SswApplication.CSharp.Propagation
 		public MeasNumber WaveletLevel { 
 			get => waveletLevel; 
 			set {
-				ValueException.CheckNz(N_z.Value, value.Value);
 				waveletLevel = value;
 			}  
 		}
 		public MeasString WaveletFamily { 
 			get => waveletFamily; 
 			set {
-				ValueException.CheckWaveletFamily(value.Value);
+				//ValueException.CheckWaveletFamily(value.Value);
 				waveletFamily = value;
 			} 
 		}
@@ -140,7 +138,7 @@ namespace SswApplication.CSharp.Propagation
 		public MeasString PyOrCy { 
 			get => pyOrCy; 
 			set {
-				ValueException.CheckPyOrCy(value.Value);
+				//ValueException.CheckPyOrCy(value.Value);
 				pyOrCy = value;
 			}  
 		}

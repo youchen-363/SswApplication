@@ -93,38 +93,54 @@ namespace SswApplication.Components.Pages
 		/// </summary>
 		private async Task LoadData()
 		{
-			DataPropa.WriteInputPropagation(config);
-			(string output, string error) = DataPropa.ExecutePropagation();
-			res = output + error;
-			resultat = CommonFns.ReplaceNToBr(res);
-			finalData = DataPropa.E_Total_Final();
-			xCol = (finalData[0].Length-1) * config.X_step.Value / 1000;
-
-			if (error == string.Empty)
+			await JSRuntime.InvokeVoidAsync("setCursorLoading");
+			try
 			{
-				columnDisplay = true;
-				List<double> xVals = DataPropa.XValues(config);
-				List<double> zVals = DataPropa.ZValues(config);
-				double vMaxTotal = DataPropa.VMax(finalData);
-				double vMinTotal = DataPropa.VMin(config, vMaxTotal);
-				string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
-				await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
+				DataPropa.WriteInputPropagation(config);
+				(string output, string error) = DataPropa.ExecutePropagation();
+				res = output + error;
+				resultat = CommonFns.ReplaceNToBr(res);
+				finalData = DataPropa.E_Total_Final();
+				xCol = (finalData[0].Length - 1) * config.X_step.Value / 1000;
 
-				plottedGraph = true;
-				await DrawFinal();
+				if (error == string.Empty)
+				{
+					columnDisplay = true;
+					List<double> xVals = DataPropa.XValues(config);
+					List<double> zVals = DataPropa.ZValues(config);
+					double vMaxTotal = DataPropa.VMax(finalData);
+					double vMinTotal = DataPropa.VMin(config, vMaxTotal);
+					string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
+					await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
+
+					plottedGraph = true;
+					await DrawFinal();
+				}
+			}
+			finally
+			{
+				await JSRuntime.InvokeVoidAsync("resetCursor");
 			}
 		}
 
 		private async Task DrawFinal()
 		{
-			lastColumn = DataPropa.FinalData(finalData, xCol, config.X_step.Value);
-			double[] z_vect = DataPropa.GenerateValues(config, false);
-			double vMaxLast = DataPropa.VMax(lastColumn);
-			double vMinLast = DataPropa.VMin(config, vMaxLast);
-			string dataFinal = DataPropa.SerializeToJson(vMinLast, vMaxLast, lastColumn, z_vect, config);
-			await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plottedFinal);
+			await JSRuntime.InvokeVoidAsync("setCursorLoading");
+			try
+			{
+				lastColumn = DataPropa.FinalData(finalData, xCol, config.X_step.Value);
+				double[] z_vect = DataPropa.GenerateValues(config, false);
+				double vMaxLast = DataPropa.VMax(lastColumn);
+				double vMinLast = DataPropa.VMin(config, vMaxLast);
+				string dataFinal = DataPropa.SerializeToJson(vMinLast, vMaxLast, lastColumn, z_vect, config);
+				await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plottedFinal);
 
-			plottedFinal = true;
+				plottedFinal = true;
+			}
+			finally
+			{
+				await JSRuntime.InvokeVoidAsync("resetCursor");
+			}
 		}
 
 		/*
@@ -289,14 +305,14 @@ namespace SswApplication.Components.Pages
 
 		private void Nz()
 		{
-			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			////ValueException.CheckNz(config.N_z.Value);
 			config.Z_step.Value = z_max / config.N_z.Value;
 			UpdateNzZstep();
 		}
 
 		private void DeltaZ()
 		{
-			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			////ValueException.CheckNz(config.N_z.Value);
 			config.N_z.Value = (int) Math.Round(z_max/config.Z_step.Value);
 			UpdateNzZstep();
 		}
@@ -345,7 +361,7 @@ namespace SswApplication.Components.Pages
 
 		private void WaveletLevel()
 		{
-			ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
+			//ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
 			imageSizePts = ImageSizePts();
 			Listeners.UpdatePropagation(config.WaveletLevel.Property, config.WaveletLevel.Value);
 		}

@@ -1,5 +1,5 @@
-frequency,330.0,MHz
-N_z,700
-z_step,0.1,m
-x_s,-20.0,m
+N_z,1600,
+z_step,0.5,m
+x_s,-20,m
+frequency,330,MHz
 z_s,4.3,m

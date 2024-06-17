@@ -1,10 +1,10 @@
 Property,Value,Unit
-N_z,700,
-z_step,0.1,m
+N_z,1600,
+z_step,0.5,m
 x_s,-20,m
 frequency,330,MHz
 P_Tx,1,W
 G_Tx,0,dBi
 type,CSP,
 z_s,4.3,m
-W0,18.16924,m
+W0,0,m

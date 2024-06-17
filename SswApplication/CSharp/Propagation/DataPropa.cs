@@ -47,7 +47,7 @@ namespace SswApplication.CSharp.Propagation
 					config.N_x.UpdateMeasurement(data);
 					break;
 				case "N_z":
-					ValueException.CheckNz(double.Parse(data[1], CultureInfo.InvariantCulture), config.WaveletLevel.Value);
+					//ValueException.CheckNz(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.N_z.UpdateMeasurement(data);
 					break;
 				case "x_step":
@@ -67,11 +67,10 @@ namespace SswApplication.CSharp.Propagation
 					config.MaxCompressionError.UpdateMeasurement(data);
 					break;
 				case "wavelet level":
-					ValueException.CheckNz(config.N_z.Value, double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.WaveletLevel.UpdateMeasurement(data);
 					break;
 				case "wavelet family":
-					ValueException.CheckWaveletFamily(data[1]);
+					//ValueException.CheckWaveletFamily(data[1]);
 					config.WaveletFamily.UpdateMeasurement(data);
 					break;
 				case "apodisation window":
@@ -132,7 +131,7 @@ namespace SswApplication.CSharp.Propagation
 					config.Dynamic.UpdateMeasurement(data);
 					break;
 				case "py_or_cy":
-					ValueException.CheckPyOrCy(data[1]);
+					//ValueException.CheckPyOrCy(data[1]);
 					config.PyOrCy.UpdateMeasurement(data);
 					break;
 				default:

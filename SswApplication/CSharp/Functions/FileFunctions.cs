@@ -87,7 +87,6 @@ namespace SswApplication.CSharp.Functions
             }
         }
 
-		// marche pas 
 		public static void UpdateCSV(string dir, string file, string name, string value)
         {
             string[][] data = ReadCSV(dir, file);
@@ -96,12 +95,12 @@ namespace SswApplication.CSharp.Functions
                 if (string.Equals(data[i][0], name))
                 {
                     data[i][1] = value;
+                    break;
                 }
             }
 			FileFunctions.WriteCSV(dir, file, data);
 		}
 
-		// marche pas 
 		public static void UpdateCSV(string dir, string file, string name, double value)
         {
             string[][] data = ReadCSV(dir, file);
@@ -114,20 +113,5 @@ namespace SswApplication.CSharp.Functions
             }
             FileFunctions.WriteCSV(dir, file, data);
         }
-
-        /*
-        public static string ConvertCsvDataToString(string[][] data)
-        {
-            if (data == null) return "";
-            StringBuilder sb = new();
-            foreach (string[] row in data)
-            {
-                string line = string.Join(",", row);
-                sb.AppendLine(line);
-            }
-            return sb.ToString();
-        }
-        */
-
 	}
 }

@@ -225,3 +225,8 @@ SswApplication/CodeSource/terrain/main_terrain_backup.exe
 /SswApplication/CodeSource/terrain/build
 /SswApplication/CodeSource/source/build
 /SswApplication/CodeSource/propagation/build
+/.vs
+/SswApplication/.vscode
+SswApplication/CodeSource/propagation/outputs/E_field.csv
+SswApplication/CodeSource/propagation/outputs/E_total.csv
+SswApplication/CodeSource/propagation/outputs/E_total.csv

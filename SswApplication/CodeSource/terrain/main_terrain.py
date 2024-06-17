@@ -66,7 +66,6 @@ from src.read_config import read_config
 file_terrain = './inputs/conf_terrain.csv'
 # read the inputs
 config = read_config(file_terrain)
-print('Width : ', config.width)
 
 """
 # no relief = Plane relief

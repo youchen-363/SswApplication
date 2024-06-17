@@ -24,7 +24,7 @@ namespace SswApplication.Components.Pages
         protected override void OnInitialized()
         {
             // initialise le tableau en fonction du type dans le fichier input relief 
-			SetDisabledValues(config.Type.Value);
+			//SetDisabledValues(config.Type.Value);
             //(xVals, zVals) = DataRelief.ExtractColumnsTerrain();
             x_max = config.X_step.Value * config.N_x.Value * 1e-3;
             xVals.Add(0);
@@ -106,11 +106,13 @@ namespace SswApplication.Components.Pages
 
         private async Task SaveCSV()
         {
-            await Confirm($"Do you want to save the data?");
-            DataRelief.WriteColumnsTerrain(xVals, zVals);
-            alertMsg = string.Empty;
-            successMsg = $"Data successfully saved!";            
-        }
+            if (await Confirm($"Do you want to save the data?"))
+            {
+				alertMsg = string.Empty;
+				successMsg = $"Data successfully saved!";
+			}
+			DataRelief.WriteColumnsTerrain(xVals, zVals);
+		}
 
         /*
         private void SortXAndZ()
@@ -127,6 +129,7 @@ namespace SswApplication.Components.Pages
         }
         */
 
+        /*
 		/// <summary>
 		/// Affecte les valeurs de désactivation pour modifier l'état de grisage des éléments HTML input en fonction du type spécifié 
 		/// </summary>
@@ -151,6 +154,7 @@ namespace SswApplication.Components.Pages
                     throw new Exception("Type invalide");
             }
         }
+        */
 
 		/// <summary>
 		/// Dessine un graphique de ligne représentant le relief.
@@ -212,7 +216,7 @@ namespace SswApplication.Components.Pages
 
         private void ZMax()
         {
-            ValueException.CheckZMaxTerrain(config.Z_max_relief.Value);
+            ValueException.CheckZMax(config.Z_max_relief.Value);
             Listeners.UpdateRelief(config.Z_max_relief.Property, config.Z_max_relief.Value);
         }
 

@@ -8,23 +8,15 @@
 @inject IJSRuntime JsRuntime
 
 <h2>Source</h2>
-<h3>Configuration</h3>
 
 <div class="d-flex">
 
 	<!-- Source -->
 	<div class="border marge">
-		<!-- Type -->
-		<div class="marge">
-			<label for="TypeSrc">@config.Type.Property</label>
-			<select @bind="@config.Type.Value" @onclick="Type">
-				<option value="CSP">Complex Source Point</option>
-			</select>
-		</div>
 
 		<!-- Z s -->
 		<div class="marge">
-			<label for="Z_sSrc">Altitude z_s (@config.Z_s.Unit)</label>
+			<label for="Z_sSrc">Hauteur (@config.Z_s.Unit)</label>
 			<input type="number" @bind="@config.Z_s.Value" id="Z_sSrc" placeholder="Z_s" @onfocusout="Zs" />
 		</div>
 
@@ -34,18 +26,12 @@
 			<input type="number" @bind="@x_s" id="X_sSrc" placeholder="X_s" @onfocusout="Xs" />
 		</div>
 
-		<!-- Width -->
-		<div class="marge">
-			<label for="W0Src">Width (lambda)</label>
-			<input type="number" @bind="width" id="W0Src" placeholder="W0" @onfocusout="Width"/>
-		</div>
 	</div>
 
-	<!-- All -->
 	<div class="border marge">
 		<!-- Frequency -->
 		<div class="marge">
-			<label for="FrequencySrc">@config.Frequency.Property (@config.Frequency.Unit)</label>
+			<label for="FrequencySrc">Frequency (@config.Frequency.Unit)</label>
 			<input type="number" @bind="@config.Frequency.Value" id="FrequencySrc" placeholder="Frequency" @onfocusout="Frequency" />
 		</div>
 
@@ -55,7 +41,9 @@
 			<label for="LambdaSrc"> Lambda (m) </label>
 			<input type="number" @bind="lambda" id="LambdaSrc" placeholder="Lambda" @onfocusout="Lambda" />
 		</div>
-
+	</div>
+	
+	<div class="border marge">
 		<!-- N_z -->
 		<div class="marge">
 			<label for="N_zSrc">N z (pts)</label>
@@ -71,14 +59,14 @@
 
 		<!-- Z max -->
 		<div class="marge">
-			<label for="Z_maxSrc">z max (m)</label>
+			<label for="Z_maxSrc">Z max (m)</label>
 			<input type="number" @bind="z_max" id="Z_maxSrc" placeholder="z_max"
 					@onfocusout="ZMax" />
 		</div>
 	</div>
 </div>
 <div>
-<button class="btn-primary" @onclick="DrawChart">Run Source</button>
+	<button class="btn-primary" @onclick="DrawChart">Run Source</button>
 </div>
 
 @if (!string.IsNullOrEmpty(res))

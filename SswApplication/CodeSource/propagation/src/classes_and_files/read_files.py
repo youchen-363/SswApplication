@@ -103,17 +103,16 @@ def read_config(file_configuration):
     # ----------------------------- #
 
     # check apodisation window
-    if Config.apo_window == 'Hanning':
-        print('Hanning apodisation window')
-    else:
+    if Config.apo_window != 'Hanning':
         raise (ValueError([Config.apo_window, 'is not a valid apodisation type']))
 
     # --- Check the size of the vectors, multiple of 2^n --- #
     n_scaling_fct = 2 ** Config.wv_L
     modulo_nz = Config.N_z % n_scaling_fct
+    """
     if modulo_nz != 0:
         raise (ValueError(['N_z must be multiple of', n_scaling_fct, ' = 2^L']))
-
+    """
     # epsr_effective is used
     Config.epsr += -1j * sigma / (2*pi*Config.freq*epsilon_0)
 

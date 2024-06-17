@@ -55,7 +55,7 @@ function Config(x, z, xmax, zmax) {
             datasets: [{
                 label: 'Relief', // Assuming 'Relief' as the label string
                 data: z,
-                fill: true,
+                fill: false,
                 pointRadius: 0,
                 pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
             }],
@@ -100,7 +100,7 @@ function updateGraphTerrain(xrelief, zrelief, xmax, zmax) {
         datasets: [{
             label: 'Relief', // Assuming 'Relief' as the label string
             data: zrelief,
-            fill: true,
+            fill: false,
             pointRadius: 0,
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],
@@ -116,7 +116,7 @@ function updateGraphTest(x, z, xmax, zmax) {
         datasets: [{
             label: 'Relief', // Assuming 'Relief' as the label string
             data: z,
-            fill: true,
+            fill: false,
             pointRadius: 0,
             pointBackgroundColor: 'rgba(75, 192, 192, 0.8)',
         }],

@@ -4,7 +4,7 @@
     {
         private static readonly string exe_dir = AppDomain.CurrentDomain.BaseDirectory;
         public static string project_dir = exe_dir[..exe_dir.IndexOf("bin")];
-        public static string current_dir = Environment.CurrentDirectory;
+        //public static string current_dir = Environment.CurrentDirectory;
 
         public static void ChangeDirectory(string dir)
         {

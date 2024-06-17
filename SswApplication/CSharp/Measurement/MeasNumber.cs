@@ -30,6 +30,7 @@ namespace SswApplication.CSharp.Measurement
             Unit = data[2];
         }
 
+        /*
         /// <summary>
 		/// Passer cet objet à une chaine de caracteres contenant tous les attributs et valeurs
 		/// </summary>
@@ -39,5 +40,6 @@ namespace SswApplication.CSharp.Measurement
         {
             return $"name={Property}, value={Value}, unit={Unit}";
         }
+        */
     }
 }

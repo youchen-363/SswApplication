@@ -27,10 +27,9 @@ namespace SswApplication.CSharp.Source
             return json;
         }
 
-		public static string InitialiseTestData()
+		public static string InitialiseTestData(ConfigSrc config)
 		{
-            // pas passe
-            ConfigSrc config = ExtractOutputCSVSource();
+            //ConfigSrc config = ExtractOutputCSVSource();
 			ConfigPropa configP = DataPropa.ExtractInputCSVPropa();
 			double[] etotal = EFieldToEFieldDB();
 			//double[] etotal = eField.Select(x => x.Real + x.Imaginary).ToArray();
@@ -91,10 +90,10 @@ namespace SswApplication.CSharp.Source
 		{
 			double zmax = config.ZMax();
 			List<Complex> eTotal = [];
-			for (double i = 0; i < zmax; i+=config.Z_step.Value)
+			for (int i = 0; i < config.N_z.Value; i++)
 			{
-				Complex e1 = E1(config, R1(config, i));
-				Complex e2 = E2(config, R2(config, i));
+				Complex e1 = E1(config, R1(config, i*config.Z_step.Value));
+				Complex e2 = E2(config, R2(config, i*config.Z_step.Value));
 				eTotal.Add(e1 + e2);
 			}
 			return eTotal;
@@ -314,5 +313,19 @@ namespace SswApplication.CSharp.Source
 			];
 			FileFunctions.WriteCSV("CodeSource/source/inputs/", "configuration.csv", fields);
 		}
+
+		public static void WriteOutputConfigSource(ConfigSrc config)
+		{
+			string[][] fields =
+			[
+				MeasNumber.CreateField(config.N_z),
+				MeasNumber.CreateField(config.Z_step),
+				MeasNumber.CreateField(config.X_s),
+				MeasNumber.CreateField(config.Frequency),
+				MeasNumber.CreateField(config.Z_s)
+			];
+			FileFunctions.WriteCSV("CodeSource/source/outputs/", "configuration.csv", fields);
+		}
+
 	}
 }

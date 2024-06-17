@@ -1,16 +1,16 @@
 Property,Value,Unit
 method,SSF,
-N_x,2000,Unnamed: 2
-N_z,700,
+N_x,1500,Unnamed: 2
+N_z,1600,
 x_step,10,m
-z_step,0.1,m
+z_step,0.5,m
 frequency,330,MHz
 polarisation,TE,
 Max compression error,-10,dB
 wavelet level,2,
 wavelet family,sym6,
 apodisation window,Hanning,
-apodisation size,0.2,% of N_z
+apodisation size,0.5,% of N_z
 image size,0.05,% of N_z
 ground,PEC,
 epsr,15,

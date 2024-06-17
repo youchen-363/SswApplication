@@ -101,7 +101,7 @@ from src.atmosphere.genere_n_profile import generate_n_profile
 # -------------------------------------------------- #
 # --- Declare the files where inputs are written --- #
 # ---------------- DO NOT MODIFY ------------------- #
-s = perf_counter()
+
 # input: main configuration file
 file_configuration = './inputs/configuration.csv'
 # input: the source information
@@ -118,50 +118,32 @@ file_relief = '../terrain/outputs/z_relief.csv'
 # copy the configuration
 file_output_config = './outputs/configuration.csv'
 copyfile(file_configuration, file_output_config)
-e = perf_counter()
-
-print('file : ', e-s)
 
 # -------------------- END ------------------------- #
 # --- Declare the files where inputs are written --- #
 # ---------------- DO NOT MODIFY ------------------- #
 
 # --- Define and fill the config variable that contains all the simulation parameters --- #
-s = perf_counter()
 config = read_config(file_configuration)
-e = perf_counter()
-print('config : ', e-s)
 # --------------------------------------------------------------------------------------- #
 
 # --- Read initial field --- #
-s = perf_counter()
 e_field, config.z_s = read_source(config, file_source_config, file_E_init)
-e = perf_counter()
-print('read source : ', e-s)
 # -------------------------- #
 
 # --- Read relief --- #
-s = perf_counter()
 z_relief = read_relief(config, file_relief_config, file_relief)  # relief altitude wrt. distance
 ii_vect_relief = round(z_relief/config.z_step).astype('int')  # relief indices wrt. distance
-print('relief : ', z_relief)
-e = perf_counter()
-print('read relief : ', e-s)
-print()
 # ------------------- #
 
 # --- Calculate u_0 from E_init (normalised in infinity norm to have max(|u_0|) = 1) --- #
 
-s = perf_counter()
 k0 = 2*pi*config.freq/c
 u_0 = e_field * sqrt(k0*(-config.x_s)) * exp(1j * k0 * (-config.x_s))
 #u_0 = e_field / sqrt(k0*(-config.x_s))
 u_infty = max(abs(u_0))  # norm infinity of the initial field
 print('u_infty : ', u_infty)
 u_0 /= u_infty  # put max at 1 to avoid numerical errors
-e = perf_counter()
-print('calculate u0 from enit : ', e-s)
-print()
 
 # -------------------------------------------------------------------------------------- #
 
@@ -177,10 +159,8 @@ u_0 = pywt.waverec(UU_0, config.wv_family, 'per')'''
 # ----------------------------------------- #
 # n_refraction = ones(config.N_z)
 
-s = perf_counter()
 n_refraction = generate_n_profile(config)
-e = perf_counter()
-print('generate n profile : ', e-s)
+
 # -------------- END ---------------------- #
 # --- Creating refraction phase screens --- #
 # ----------------------------------------- #
@@ -188,21 +168,14 @@ print('generate n profile : ', e-s)
 # --- Computing wavelet thresholds --- #
 # following Bonnafont et al. IEEE TAP, 2021, eqs .(35) and (36)
 # calculation of the compression thresholds. Inf norm of u_0 is not necessary (=1 because of normalisation)
-s = perf_counter()
 
 config.V_s, config.V_p = compute_thresholds(config.N_x, config.max_compression_err)  # threshold on signal and library
 # ------------------------------------ #
-e = perf_counter()
-print('compute thresholds : ', e-s)
-print()
+
 # ---------------------- #
 # --- 2D Propagation --- #
 # ---------------------- #
-s = perf_counter()
 t_propa_s = process_time()
-e = perf_counter()
-print('process time : ', e-s)
-print()
 
 """
 # SSW
@@ -225,28 +198,14 @@ elif config.method == 'SSF':
 else:
     raise ValueError('Unknown propagation method.')
 """
-s = perf_counter()
 u_final, wv_total, e_total= ssf_2d(u_0, config, n_refraction, ii_vect_relief)
-e = perf_counter()
-print('process time : ', e-s)
-print()
 
-s = perf_counter()
 t_propa_f = process_time()
 print('Total '+config.method+' (ms)', round((t_propa_f-t_propa_s)*1e3))
 
-e = perf_counter()
-print('process time : ', e-s)
-print()
-
-s = perf_counter()
 # --- de-normalise in infinity norm --- #
 # field: simple multiplication
 u_final *= u_infty
-e = perf_counter()
-print('ufinal uinfty : ', e-s)
-print()
-
 
 """
 # wavelets in 2 steps. 1/ distances from 1 to N_x
@@ -263,23 +222,14 @@ for ii_x in arange(0, config.N_x):
 # --- save the output data --- #
 # ---------------------------- #
 # max distance of the computation domain
-s = perf_counter()
 x_max = config.N_x * config.x_step
 print('Distance from the source = ', -config.x_s+x_max)
 # de-normalise the reduced field
 e_field = u_final / sqrt(k0*(-config.x_s+x_max)) * exp(-1j * k0 * (-config.x_s+x_max))
-e = perf_counter()
-print('dist from source : ', e-s)
-print()
 
-s = perf_counter()
 with errstate(divide='ignore'):
     data_dB = 20*log10(abs(e_field))
     v_max = data_dB.max()
-
-e = perf_counter()
-print('data db et vmax : ', e-s)
-print()
 
 
 print('max E-field at the max distance = ', round(v_max, 2), 'V/m')
