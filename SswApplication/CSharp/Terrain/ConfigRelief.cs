@@ -60,12 +60,5 @@ namespace SswApplication.CSharp.Terrain
         {
             return N_x.Value * X_step.Value / 1000;
         }
-
-        override 
-        public string ToString()
-        {
-            return $" [ N_x={N_x}, x_step={X_step}, type={Type}, z_max_relief={Z_max_relief}, iterations={Iterations}, width={Width}, center={Center} ]";
-        }
-
     }
 }

@@ -16,9 +16,7 @@
 ##
 
 # where config class is defined
-import csv
-import numpy as np
-
+from csv import reader  
 
 # ------------------------ #
 # --- Defining classes --- #
@@ -42,7 +40,7 @@ def read_config(file_configuration):
     # --- Reading configuration --- #
     # ----------------------------- #
     f_config = open(file_configuration, newline='')
-    file_tmp = csv.reader(f_config)
+    file_tmp = reader(f_config)
     for row in file_tmp:
         if row[0] == 'N_x':
             Config.N_x = int(row[1])

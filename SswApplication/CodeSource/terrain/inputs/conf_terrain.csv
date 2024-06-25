@@ -1,5 +1,5 @@
 Property,Value,Unit
-N_x,1500,
+N_x,500,
 x_step,10,m
 type,Triangle,
 z_max_relief,10000,m

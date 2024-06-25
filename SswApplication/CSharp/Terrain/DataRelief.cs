@@ -41,28 +41,6 @@ namespace SswApplication.CSharp.Terrain
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}
 
-		public static List<double> Z_relief_Test()
-        {
-            List<double> res = [];
-            //string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/outputs/", "z_relief.csv");
-			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/outputs/", "relief_in.csv");
-			foreach (string[] dataArray in data)
-            {
-                res.Add(Double.Parse(dataArray[0], CultureInfo.InvariantCulture));
-            }
-            return res;
-        }
-
-		public static Dictionary<double, double> XZValues(List<double> x, List<double> z)
-		{
-			Dictionary<double, double> xyDict = [];
-			for (int i = 0; i < x.Count; i++)
-			{
-				xyDict[x[i]] = z[i];
-			}
-			return xyDict;
-		}
-
 		public static void WriteInputCSVTerrain(ConfigRelief config)
 		{
 			string[][] fields =
@@ -79,30 +57,10 @@ namespace SswApplication.CSharp.Terrain
 			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "conf_terrain.csv", fields);
 		}
 
-		public static void WriteInputCSVTerrain(Dictionary<double, double> values)
-		{
-			string[][] fields = new string[values.Count][];
-			int i = 0;
-			foreach (KeyValuePair<double, double> xy in values)
-			{
-				fields[i] = [xy.Key.ToString(CultureInfo.InvariantCulture), xy.Value.ToString(CultureInfo.InvariantCulture)];
-				i++;
-			}
-			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "relief_in.csv", fields);
-		}
-
 		public static void WriteColumnsTerrain(List<double> x, List<double> y)
 		{
 			string[][] array = x.Select((value, index) => new string[] { value.ToString(CultureInfo.InvariantCulture), y[index].ToString(CultureInfo.InvariantCulture)}).ToArray();
 			FileFunctions.WriteCSV("CodeSource/terrain/inputs/", "relief_in.csv", array);
-		}
-
-		public static (List<double >x, List<double> y) ExtractColumnsTerrain()
-		{
-			string[][] data = FileFunctions.ReadCSV("CodeSource/terrain/inputs", "relief_in.csv"); 
-			List<double> x = data.Select(dataArray => Double.Parse(dataArray[0], CultureInfo.InvariantCulture)).ToList();
-    		List<double> y = data.Select(dataArray => Double.Parse(dataArray[1], CultureInfo.InvariantCulture)).ToList();
-			return (x, y);
 		}
 
 		public static ConfigRelief ExtractInputCSVTerrain()
@@ -123,7 +81,7 @@ namespace SswApplication.CSharp.Terrain
 
 		public static (string, string) ExecuteRelief()
 		{
-			return FileFunctions.ExecuteExe("CodeSource/terrain/", "main_terrain.exe");
+			return FileFunctions.ExecuteExe("CodeSource/terrain/", "./dist/main_terrain/main_terrain.exe");
 		}
 
 		private static void AssignValues(ConfigRelief config, string[] data)

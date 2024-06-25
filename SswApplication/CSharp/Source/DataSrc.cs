@@ -10,24 +10,8 @@ namespace SswApplication.CSharp.Source
 {
     internal class DataSrc
     {
-        /// <summary>
-        /// Initialiser les données nécessaires pour tracer le graphe en format json
-        /// </summary>
-        /// <returns>données en string format json</returns>
-        public static string InitialiseDataSrc()
-        {
-            // pas passe
-            ConfigSrc config = ExtractOutputCSVSource();
-			ConfigPropa configP = DataPropa.ExtractInputCSVPropa();
-            double[] efield_db = EFieldToEFieldDB();
-            double v_max = MaxInArray(efield_db);
-            double v_min = VMin(v_max, configP.Dynamic.Value);
-            double[] z_vect = GenerateValues(config, false);
-            string json = SerializeToJson(v_min, v_max, efield_db, z_vect, config);
-            return json;
-        }
 
-		public static string InitialiseTestData(ConfigSrc config)
+		public static string InitialiseData(ConfigSrc config)
 		{
             //ConfigSrc config = ExtractOutputCSVSource();
 			ConfigPropa configP = DataPropa.ExtractInputCSVPropa();
@@ -84,7 +68,6 @@ namespace SswApplication.CSharp.Source
 			Complex e = 1/r * Complex.Exp(-j * ((twoPi * r / lambda) + Math.PI));
 			return e;
 		}
-		
 
 		public static List<Complex> ETotal (ConfigSrc config)
 		{
@@ -326,6 +309,5 @@ namespace SswApplication.CSharp.Source
 			];
 			FileFunctions.WriteCSV("CodeSource/source/outputs/", "configuration.csv", fields);
 		}
-
 	}
 }

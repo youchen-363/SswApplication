@@ -34,11 +34,6 @@ namespace SswApplication.Components.Pages
 			 * J'ai donc créé une nouvelle configuration pour les données sources
 			 * Pas d'inquiétude concernant la mémoire, car C# gère automatiquement la gestion de la mémoire pour nous
 			 */
-			 
-			/*
-			imageSize = config.ImageSize.Value * 100;
-			imageSizePts = ImageSizePts();
-			*/
 			SetGroundAttr();
 			SetTurbulenceAttr();
 			lambda = Physics.Lambda(config.Frequency.Value);
@@ -71,21 +66,12 @@ namespace SswApplication.Components.Pages
 		/// <exception cref="ArgumentException"></exception>
 		private void SetGroundAttr()
 		{
-			switch (config.Ground.Value)
+			if (config.Ground.Value != "PEC") 
 			{
-				case "None":
-					disabledAttrGround[0] = disabledAttrGround[1] = disabledAttrGround[2] = true;
-					break;
-				case "PEC":
-					disabledAttrGround[0] = false;
-					disabledAttrGround[1] = disabledAttrGround[2] = true;
-					break;
-				case "Dielectric":
-					disabledAttrGround[0] = disabledAttrGround[1] = disabledAttrGround[2] = false;
-					break;
-				default:
-					throw new ArgumentException("Ground invalide");
+				throw new ArgumentException("Ground invalide");
 			}
+			disabledAttrGround[0] = false;
+			disabledAttrGround[1] = disabledAttrGround[2] = true;
 		}
 		
 		/// <summary>
@@ -110,8 +96,15 @@ namespace SswApplication.Components.Pages
 					List<double> zVals = DataPropa.ZValues(config);
 					double vMaxTotal = DataPropa.VMax(finalData);
 					double vMinTotal = DataPropa.VMin(config, vMaxTotal);
-					string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
-					await JSRuntime.InvokeVoidAsync("drawGraphPropa", dataTest, plottedGraph);
+					string x = DataPropa.SerializeToJson(xVals);
+					string y = DataPropa.SerializeToJson(zVals);
+					string z = DataPropa.SerializeToJson(finalData);
+					await PassDataInChunks(z);
+					string vMaxMin = DataPropa.SerializeToJson(vMaxTotal, vMinTotal);
+
+					//string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
+					
+					await JSRuntime.InvokeVoidAsync("drawGraphPropa", x, y, vMaxMin, plottedGraph);
 
 					plottedGraph = true;
 					await DrawFinal();
@@ -122,6 +115,21 @@ namespace SswApplication.Components.Pages
 				await JSRuntime.InvokeVoidAsync("resetCursor");
 			}
 		}
+
+		private async Task PassDataInChunks(string data)
+        {
+            // Define chunk size
+            int chunkSize = 1024 * 1024; // For example, 1MB
+            
+            for (int i = 0; i < data.Length; i += chunkSize)
+            {
+                string chunk = data.Substring(i, Math.Min(chunkSize, data.Length - i));
+                await JSRuntime.InvokeVoidAsync("receiveChunk", chunk);
+            }
+            
+            // Notify JavaScript that all chunks have been sent
+            await JSRuntime.InvokeVoidAsync("allChunksSent");
+        }
 
 		private async Task DrawFinal()
 		{
@@ -142,73 +150,21 @@ namespace SswApplication.Components.Pages
 				await JSRuntime.InvokeVoidAsync("resetCursor");
 			}
 		}
-
-		/*
-
-        /// <summary>
-        /// Une methode pour calculer la taille de l'image de la propagation.
-        /// Pts est points (Unit de Image size)
-        /// La formule est extrait du code python du projet ssw-2d
-        /// </summary>
-        /// <returns>image points en integer</returns>
-        private int ImageSizePts()
-		{
-			double wv_L = config.WaveletLevel.Value;
-			double n_z = config.N_z.Value;
-			double image_layer = config.ImageSize.Value;
-			int n_im = (int) Math.Round(n_z * image_layer);
-			double remain_im = n_im % Math.Pow(2, wv_L);
-			if (remain_im != 0)
-			{
-				n_im += (int)(Math.Pow(2, wv_L) - remain_im);
-            }
-			return n_im;
-		}
-		*/
-
+		
 		//Listeners
 
 		private void CheckFinalColumn()
 		{
 			disabledFinal = xCol < 0 || xCol >= x_max;
 		}
-		/*
-		private void Method()
-		{
-			ValueException.CheckMethod(config.Method.Value);
-			Listeners.UpdatePropagation(config.Method.Property, config.Method.Value);		
-		}
-
-		private void Language()
-		{
-			ValueException.CheckPyOrCy(config.PyOrCy.Value);
-			Listeners.UpdatePropagation(config.PyOrCy.Property, config.PyOrCy.Value);
-		}
-		*/
+		
 		private void GroundType()
 		{
 			ValueException.CheckGroundType(config.Ground.Value);
 			SetGroundAttr(); 
 			Listeners.UpdatePropagation(config.Ground.Property, config.Ground.Value);		
 		}
-		/*
-		private void ImageSize()
-		{
-			ValueException.CheckImageLayer(config.ImageSize.Value);
-			imageSizePts = ImageSizePts();
-			Listeners.UpdatePropagation(config.ImageSize.Property, imageSize/100);
-		}
-			
-		private void Epsr()
-		{
-			Listeners.UpdatePropagation(config.Epsr.Property, config.Epsr.Value);
-		}
-
-		private void Sigma()
-		{
-			Listeners.UpdatePropagation(config.Sigma.Property, config.Sigma.Value);
-		}
-		*/
+		
 		private void AtmosphereType()
 		{
 			ValueException.CheckAtmosphereType(config.Atmosphere.Value);
@@ -352,25 +308,7 @@ namespace SswApplication.Components.Pages
             ValueException.CheckApodisationSize(config.ApodisationSize.Value);
             Listeners.UpdatePropagation(config.ApodisationSize.Property, config.ApodisationSize.Value);
 		}
-		/*
-		private void WaveletFamily()
-		{
-			ValueException.CheckWaveletFamily(config.WaveletFamily.Value);
-			Listeners.UpdatePropagation(config.WaveletFamily.Property, config.WaveletFamily.Value);
-		}
-
-		private void WaveletLevel()
-		{
-			//ValueException.CheckNz(config.N_z.Value, config.WaveletLevel.Value);
-			imageSizePts = ImageSizePts();
-			Listeners.UpdatePropagation(config.WaveletLevel.Property, config.WaveletLevel.Value);
-		}
-
-		private void Compression()
-		{
-			Listeners.UpdatePropagation(config.MaxCompressionError.Property, config.MaxCompressionError.Value);
-		}
-		*/
+		
 		private void Output()
 		{
 			ValueException.CheckOutputType(output);

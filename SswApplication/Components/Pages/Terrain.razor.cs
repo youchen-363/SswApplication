@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SswApplication.CSharp.Functions;
 using SswApplication.CSharp.Source;
@@ -18,6 +17,9 @@ namespace SswApplication.Components.Pages
         private int colDel = -1, colAdd = -1;
         private string alertMsg = string.Empty, successMsg = string.Empty, res = string.Empty, btnAddStatus = "d-none", btnDelStatus = "d-none";
         private MarkupString resultat = new();
+        private string output = string.Empty, error = string.Empty;
+
+
         /// <summary>
         /// Initialiser toutes les variables nécessaires
         /// </summary>
@@ -61,17 +63,6 @@ namespace SswApplication.Components.Pages
             colDel = -1;
         }
         
-/*
-        private void AddColumn()
-        {
-            xVals.Add(0);
-            zVals.Add(0);
-            delete = CheckSize();
-            add = CheckMaxSize();
-            alertMsg = string.Empty;
-            successMsg = $"Column successfully added!";
-        }
-*/
         private async Task DeleteColumn()
         {
             if (await Confirm($"Do you want to delete column {colDel+1}?"))
@@ -106,55 +97,14 @@ namespace SswApplication.Components.Pages
 
         private async Task SaveCSV()
         {
-            if (await Confirm($"Do you want to save the data?"))
-            {
-				alertMsg = string.Empty;
-				successMsg = $"Data successfully saved!";
-			}
 			DataRelief.WriteColumnsTerrain(xVals, zVals);
+            // Mise a jour des données dans le fichier input du relief
+            DataRelief.WriteInputCSVTerrain(config);
+            // Execute main_terrain.exe
+            (output, error) = DataRelief.ExecuteRelief();
+            alertMsg = string.Empty;
+            successMsg = $"Data successfully saved!";
 		}
-
-        /*
-        private void SortXAndZ()
-        {
-            // Pair the xVals and zVals together
-            var pairs = xVals.Zip(zVals, (x, z) => (x, z)).ToList();
-
-            // Sort the pairs by the xVals
-            pairs.Sort((pair1, pair2) => pair1.x.CompareTo(pair2.x));
-
-            // Separate the pairs back into two lists
-            xVals = pairs.Select(pair => pair.x).ToList();
-            zVals = pairs.Select(pair => pair.z).ToList();
-        }
-        */
-
-        /*
-		/// <summary>
-		/// Affecte les valeurs de désactivation pour modifier l'état de grisage des éléments HTML input en fonction du type spécifié 
-		/// </summary>
-		/// <param name="type"></param>
-		/// <exception cref="Exception"></exception>
-		private void SetDisabledValues(string type)
-        {
-            switch (type)
-            {
-                case "Plane":
-                    disabledAttr[0] = disabledAttr[1] = disabledAttr[2] = disabledAttr[3] = true;
-                    break;
-                case "Triangle":
-                    disabledAttr[0] = disabledAttr[2] = disabledAttr[3] = false;
-                    disabledAttr[1] = true;
-                    break;
-                case "Superposed":
-                    disabledAttr[0] = disabledAttr[1] = false;
-                    disabledAttr[2] = disabledAttr[3] = true;
-                    break;
-                default:
-                    throw new Exception("Type invalide");
-            }
-        }
-        */
 
 		/// <summary>
 		/// Dessine un graphique de ligne représentant le relief.
@@ -165,19 +115,6 @@ namespace SswApplication.Components.Pages
         {
             try
             {
-                // Mise a jour des données dans le fichier input du relief
-                DataRelief.WriteInputCSVTerrain(config);
-                /*
-                Dictionary<double, double> xyDict = DataRelief.XZValues(xVals, zVals);
-                for (int i = 0; i < xVals.Count; i++)
-                {
-                    xyDict[xVals[i]] = zVals[i];
-                }
-                DataRelief.WriteInputCSVTerrain(xyDict);
-                */
-                
-                // Execute main_terrain.exe
-                (string output, string error) = DataRelief.ExecuteRelief();
                 res = output + '\n' + error;
                 resultat = CommonFns.ReplaceNToBr(res);
                 if (error == string.Empty)
@@ -206,39 +143,6 @@ namespace SswApplication.Components.Pages
             plottedTest = true;
         }
 
-        /*
-        private void Type()
-        {
-            ValueException.CheckTerrainType(config.Type.Value);
-            Listeners.UpdateRelief(config.Type.Property, config.Type.Value);
-            SetDisabledValues(config.Type.Value);
-        }
-
-        private void ZMax()
-        {
-            ValueException.CheckZMax(config.Z_max_relief.Value);
-            Listeners.UpdateRelief(config.Z_max_relief.Property, config.Z_max_relief.Value);
-        }
-
-        private void Iterations()
-        {
-            ValueException.CheckIterations((int)config.Iterations.Value);
-            Listeners.UpdateRelief(config.Iterations.Property, config.Iterations.Value);        
-        }    
-
-        private void Center()
-        {
-            ValueException.CheckCenter(config.Center.Value);
-            Listeners.UpdateRelief(config.Center.Property, config.Center.Value);
-        }            
-
-        private void Width()
-        {
-            ValueException.CheckWidth(config.Width.Value);
-            Listeners.UpdateRelief(config.Width.Property, config.Width.Value);
-            Listeners.UpdateRelief(config.X_step.Property, config.X_step.Value);
-        }
-        */
         private void XMax()
         {
             ValueException.CheckXStep(config.X_step.Value);

@@ -92,11 +92,6 @@
 	</div>
 </div>
 <div>
-	<!--
-	<span class="p-2">Delete</span>
-	<input type=number @bind="col" />
-	<button class="btn-primary m-2" @onclick="DeleteColumn" OnClientClick="return confirm('Do you want to delete?');" disabled="@delete">-</button>
-	-->
 	<button class="btn-primary m-2" @onclick="SaveCSV">Save</button>
 	@if (!string.IsNullOrEmpty(alertMsg))
 	{
@@ -111,11 +106,7 @@
 		</div>
 	}
 </div>
-<!--
-<div>
-	<button class="btn-primary m-2" @onclick="DrawTestGraph">Draw Test</button>
-</div>
--->
+
 @if (!string.IsNullOrEmpty(res))
 {
 	<div>

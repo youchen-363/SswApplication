@@ -14,7 +14,7 @@
                 measurement.Unit
             ];
         }
-        
+
         /// <summary>
         /// Mettre a jour les attributs avec les donnees dans le tableau d'entrée 
         /// </summary>
@@ -24,16 +24,6 @@
             Property = data[0];
             Value = data[1];
             Unit = data[2];
-        }
-
-        /// <summary>
-        /// Passer cet objet à une chaine de caracteres contenant tous les attributs et valeurs
-        /// </summary>
-        /// <returns>chaine de caractere contenant les valeurs de cette classe</returns>
-        override
-        public string ToString()
-        {
-            return $"name={Property}, value={Value}, unit={Unit}";
         }
     }
 }

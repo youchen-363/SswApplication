@@ -8,9 +8,6 @@ namespace SswApplication.CSharp.Propagation
 {
 	internal class DataPropa
 	{
-
-		// Propagation
-
 		/// <summary>
 		/// Extraire les donnees dans le fichier csv du input source
 		/// </summary>
@@ -144,7 +141,7 @@ namespace SswApplication.CSharp.Propagation
 		/// </summary>
 		public static (string, string) ExecutePropagation()
 		{
-			return FileFunctions.ExecuteExe("CodeSource/propagation/", "main_propagation.exe");
+			return FileFunctions.ExecuteExe("CodeSource/propagation/", "./dist/main_propagation/main_propagation.exe");
 		}
 
 		/// <summary>
@@ -188,7 +185,7 @@ namespace SswApplication.CSharp.Propagation
 			FileFunctions.WriteCSV("CodeSource/propagation/inputs/", "configuration.csv", fields);
 		}
 
-	private static List<double> AxesValues(int nbPts, double step)
+		private static List<double> AxesValues(int nbPts, double step)
 		{
 			List<double> res = [];
 			for (int i = 0; i < nbPts; i++)
@@ -233,6 +230,18 @@ namespace SswApplication.CSharp.Propagation
 			return max - config.Dynamic.Value;
 		}
 
+		// do for E (dB/v) first
+		public static Complex[][] E_Total_Data()
+		{
+			string[][] data = FileFunctions.ReadCSV("CodeSource/propagation/outputs/", "E_total.csv");
+			Complex[][] res = new Complex[data.Length][];
+			for (int i = 0; i < data.Length; i++)
+			{
+				res[i] = data[i].Select(CommonFns.ParseStringToComplexNumber).ToArray();
+			}
+			return res;
+		}
+
 		public static double[][] E_Total_Final()
 		{
 			Complex[][] data = E_Total_Data();
@@ -250,30 +259,35 @@ namespace SswApplication.CSharp.Propagation
 			return finalData;
 		}
 
-		public static string SerializeToJson(List<double> xValues, List<double> zValues, double[][] yValues, double vmax, double vmin)
+		public static string SerializeToJson(List<double> vals)
 		{
-			var data = new
+			var data = new 
 			{
-				v_max = vmax,
-				v_min = vmin,
-				x_values = xValues,
-				y_values = zValues,
-				z_values = yValues
+				value = vals
 			};
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}
 
-		// do for E (dB/v) first
-		public static Complex[][] E_Total_Data()
+		public static string SerializeToJson(double[][] vals)
 		{
-			string[][] data = FileFunctions.ReadCSV("CodeSource/propagation/outputs/", "E_total.csv");
-			Complex[][] res = new Complex[data.Length][];
-			for (int i = 0; i < data.Length; i++)
+			var data = new 
 			{
-				res[i] = data[i].Select(CommonFns.ParseStringToComplexNumber).ToArray();
-			}
-			return res;
+				value = vals
+			};
+			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}
+			
+		public static string SerializeToJson(double vmax, double vmin)
+		{
+			var data = new 
+			{
+				v_max = vmax,
+				v_min = vmin
+			};
+			return JsonConvert.SerializeObject(data, Formatting.Indented);
+		}
+
+
 
 		// for z_vect = np.linspace(0, ConfigSource.z_step*ConfigSource.n_z, num=ConfigSource.n_z, endpoint=False)
 		/// <summary>
@@ -304,7 +318,7 @@ namespace SswApplication.CSharp.Propagation
 			double[] res = new double[finalData.Length];
 			for (int i = 0; i < finalData.Length; i++)
 			{
-				int lastIdx = finalData[i].Length - 1;
+				//int lastIdx = finalData[i].Length - 1;
 				res[i] = finalData[i][col];
 			}
 			return res;

@@ -1,7 +1,5 @@
 numpy
 scipy
-pywavelets
-matplotlib
 cython
 pandas
 pyinstaller

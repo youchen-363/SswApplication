@@ -122,17 +122,6 @@
             }
         }
 
-        // Terrain 
-        /*
-        public static void CheckZMax(double zmax)
-        {
-            if (zmax<0 || zmax > 50000.0)
-            {
-                throw new ArgumentException("Max relief shoule be between 0 and 50000.0");
-            }
-        }
-        */
-
         // Source 
         public static void CheckTypeSource(string type)
         {

@@ -53,7 +53,6 @@
 
 
 from numpy import loadtxt, interp, arange, savetxt
-from os import fsync, path, remove
 #mport scipy.constants as cst
 #import matplotlib.pyplot as plt
 # import sys

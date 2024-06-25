@@ -42,24 +42,12 @@ namespace SswApplication.Components.Pages
 				// Mettre a jour les données dans le fichier CSV input config
 				DataSrc.WriteInputCSVSource(config);
 				DataSrc.WriteOutputConfigSource(config);
-				/*
-				// Execute main_source.exe
-				res = DataSrc.ExecuteSource();
-				resultat = CommonFns.ReplaceNToBr(res);
-
-				// Extrait de données nécessaires pour dessiner le graphe
-				data = DataSrc.InitialiseDataSrc();
-				await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
-				plotted = true;
-				*/
 				
 				List<Complex> eTotal = DataSrc.ETotal(config);
 				DataSrc.WriteETotal(eTotal);
-				//test1 += "efield db : " + CommonFns.DbToStr(DataSrc.EFieldToEFieldDB());
-				data = DataSrc.InitialiseTestData(config);
+				data = DataSrc.InitialiseData(config);
 				await JsRuntime.InvokeVoidAsync("drawSource", data, plotted);
 				plotted = true;
-				
 			}
 			catch (Exception ex)
 			{
@@ -68,13 +56,6 @@ namespace SswApplication.Components.Pages
 		}
 
 		// Listener
-		/*
-		private void Type()
-		{
-			ValueException.CheckTypeSource(config.Type.Value);
-			Listeners.UpdateSource(config.Type.Property, config.Type.Value);
-		}
-		*/
 
 		private void Zs()
 		{
@@ -88,15 +69,6 @@ namespace SswApplication.Components.Pages
 			ValueException.CheckXs(config.X_s.Value);
 			Listeners.UpdateSource(config.X_s.Property, config.X_s.Value);
 		}
-
-		/*
-		private void Width()
-		{
-			ValueException.CheckNegativeNumber(lambda);
-			config.W0.Value = width * lambda;
-			Listeners.UpdateSource(config.W0.Property, width * lambda); 
-		}
-		*/
 
 		private void Frequency()
 		{
