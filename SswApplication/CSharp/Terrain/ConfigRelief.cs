@@ -43,7 +43,6 @@ namespace SswApplication.CSharp.Terrain
         public MeasString Type { 
             get => type; 
             set {
-                //ValueException.CheckTerrainType(value.Value);
                 type = value;
             }  
         }

@@ -66,56 +66,7 @@ file_terrain = './inputs/conf_terrain.csv'
 # read the inputs
 config = read_config(file_terrain)
 
-"""
-# no relief = Plane relief
-if config.type == 'Plane':
-    # no relief
-    z_relief = zeros(config.N_x+1)  # N_x + 1 from 0 to N_x (included)
-
-# multiscale random relief
-elif config.type == 'Superposed':
-    # create the multiscale relief by superposition
-    z_relief = array(superposed(config))
-    # scale the relief between 0 and max relief
-    z_relief -= z_relief.min()
-    z_relief *= config.z_max_relief / z_relief.max()
-
-# triangle relief
-elif config.type == 'Triangle':
-    # scale the relief between 0 and max relief
-    z_relief = zeros(config.N_x+1)
-    triangle_start = int((config.center-config.width/2) / config.x_step)
-    triangle_end = int((config.center+config.width/2) / config.x_step)
-    triangle_top = int(config.center / config.x_step)
-    
-    x_tri = [0, triangle_start, triangle_top, triangle_end, config.N_x]
-    z_tri = [0, 0, config.z_max_relief, 0, 0]
-    
-    z_relief = interp(arange(0, config.N_x+1), x_tri, z_tri)
-
-# other terrains are not coded (yet?)
-else:
-    z_relief = zeros(config.N_x+1)
-    raise (ValueError(['terrain type not coded']))
-"""
-
-# MY CODE YC 
 xVals, zVals = loadtxt('./inputs/relief_in.csv', delimiter=',', unpack=True)
-
-"""
-x_trie = []
-z_trie = []
-if xVals[0] != 0:
-    x_trie.append(0)
-    z_trie.append(0)
-
-x_trie.extend(xVals)
-z_trie.extend(zVals)
-
-if xVals[len(xVals)-1] != config.N_x:
-    x_trie.append(config.N_x)
-    z_trie.append(0)
-"""
     
 # zreliefe = interp(arange(0, config.N_x+1), x_trie, z_trie)
 zrelief = interp(arange(0, config.N_x+1), xVals*1000/config.x_step, zVals)

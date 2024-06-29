@@ -113,15 +113,14 @@
 
 @if (columnDisplay)
 {
-	<div class="m-3">
-		Distance(km)
-		<input type="number" @bind="@xCol" step="0.1" @onfocusout="CheckFinalColumn">
-		<button class="btn-primary" @onclick="DrawFinal" disabled="@disabledFinal">Draw final</button>
-	</div>
 	if (disabledFinal) 
 	{
 		<div class="alert alert-danger" role="alert">
 			Column must be positive or less than x max.
 		</div>
 	} 
+	<div class="m-3">
+		Distance(km)
+		<input type="number" @bind="@xCol" step="0.1" @onfocusout="DrawFinal" @onclick="DrawFinal">
+	</div>
 }

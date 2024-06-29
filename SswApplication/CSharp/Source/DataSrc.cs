@@ -13,10 +13,8 @@ namespace SswApplication.CSharp.Source
 
 		public static string InitialiseData(ConfigSrc config)
 		{
-            //ConfigSrc config = ExtractOutputCSVSource();
 			ConfigPropa configP = DataPropa.ExtractInputCSVPropa();
 			double[] etotal = EFieldToEFieldDB();
-			//double[] etotal = eField.Select(x => x.Real + x.Imaginary).ToArray();
             double v_max = MaxInArray(etotal);
             double v_min = VMin(v_max, configP.Dynamic.Value);
             double[] z_vect = GenerateValues(config, false);
@@ -107,8 +105,6 @@ namespace SswApplication.CSharp.Source
 				z_vect = zvect,
 				config = conf
 			};
-
-			// Serialize the data object to JSON
 			return JsonConvert.SerializeObject(data, Formatting.Indented);
 		}
 
@@ -177,17 +173,8 @@ namespace SswApplication.CSharp.Source
         {
 			Complex[] e_field = EField();
             double[] e_field_db = e_field.Select(z => 20 * Math.Log10(z.Magnitude)).ToArray();
-            //double[] e_field_db = e_field.Select(z => z.Magnitude).ToArray();
 			return e_field_db;
         }
-
-		/// <summary>
-		/// Execute le fichier exe de source (main_source.exe)
-		/// </summary>
-		public static (string, string) ExecuteSource()
-		{
-			return FileFunctions.ExecuteExe("CodeSource/source/", "main_source.exe");
-		}
 
 		/// <summary>
 		/// Extraire les donnees dans le fichier csv du output source dans une instance configuration source

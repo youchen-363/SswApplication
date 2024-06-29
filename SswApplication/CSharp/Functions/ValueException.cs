@@ -80,15 +80,6 @@
                 throw new ArgumentException("X step should be between 0 and 50000.0");
             }
         }
-        /*
-        public static void CheckXMax(double xmax)
-        {
-            if (xmax<=0 || xmax>50000.0)
-            {
-                throw new ArgumentException("X max should be >0 and <=50000.0");
-            }
-        }
-        */
 
         public static void CheckAtmosphereType(string name)
         {

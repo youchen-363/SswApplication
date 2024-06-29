@@ -71,7 +71,6 @@ namespace SswApplication.CSharp.Terrain
 			{
 				throw new ArgumentException($"Data problem : {data}");
 			}
-			//config.N_x = new Measurement(data[1][0], Double.Parse(data[1][1], CultureInfo.InvariantCulture));
 			foreach (string[] str in data)
 			{
 				AssignValues(config, str);
@@ -81,6 +80,7 @@ namespace SswApplication.CSharp.Terrain
 
 		public static (string, string) ExecuteRelief()
 		{
+			//return FileFunctions.ExecuteExe("CodeSource/terrain/", "main_terrain.exe");
 			return FileFunctions.ExecuteExe("CodeSource/terrain/", "./dist/main_terrain/main_terrain.exe");
 		}
 

@@ -50,43 +50,5 @@ namespace SswApplication.CSharp.Functions
 			return (MarkupString)str.Replace("\n", "<br>");
 		}
 
-		// TODO: DELETE 
-
-		public static string[][] DbToStr(double[][] dtfinaldb)
-		{
-            string[][] strrrrrr = new string[dtfinaldb.Length][];
-
-            for (int i = 0; i < dtfinaldb.Length; i++)
-            {
-                int numCols = dtfinaldb[i].Length;
-                strrrrrr[i] = new string[numCols]; // Initialize inner array for current row
-
-                // Iterate through each column of the current row
-                for (int j = 0; j < numCols; j++)
-                {
-                    // Convert double value to its string representation and assign to string array
-                    strrrrrr[i][j] = dtfinaldb[i][j].ToString();
-                }
-            }
-            
-			return strrrrrr;
-        }
-
-		public static string DbToStr(double[] dtfinaldb)
-		{
-            string str = string.Empty;
-			foreach (double dt in dtfinaldb)
-			{
-				str += dt.ToString(CultureInfo.InvariantCulture) + "     ;;;     ";
-			}
-			return str;
-        }
-
-
-
-
-
-
-
 	}
 }

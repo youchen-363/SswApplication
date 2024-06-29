@@ -1,12 +1,6 @@
 var graphTerrain;
 var graphTest;
 
-window.addEventListener("resize", function () {
-    let canvas = document.getElementById("canvasTerrain");
-    canvas.style.width = window.innerWidth;
-    canvas.style.height = window.innerHeight;
-})
-
 function confirmMessage(message) {
     return confirm(message);
 }
@@ -21,7 +15,6 @@ function minValue(arr) {
 
 function drawTerrain(datastr, plotted) {
     data = JSON.parse(datastr);
-    //data.xVals = data.xVals.map(value=>value*data.deltax / 1000);
     if (!plotted) {
         drawGraphTerrain(data.xVals, data.zVals, data.xMax, data.zMax, data.id);
     } else {

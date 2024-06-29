@@ -94,7 +94,6 @@ namespace SswApplication.Components.Pages
 
 		private void Nz()
 		{
-			////ValueException.CheckNz(config.N_z.Value);
 			config.Z_step.Value = z_max / config.N_z.Value;
 			UpdateNz();
 			UpdateZStep();
@@ -104,7 +103,6 @@ namespace SswApplication.Components.Pages
 		{
 			ValueException.CheckZStep(config.Z_step.Value);
 			config.N_z.Value = (int) Math.Round(z_max/config.Z_step.Value);
-			//ValueException.CheckNz(config.N_z.Value);
 			UpdateNz();
 			UpdateZStep();
 		}
@@ -112,7 +110,6 @@ namespace SswApplication.Components.Pages
 		private void ZMax()
 		{
 			config.N_z.Value = (int) Math.Round(z_max / config.Z_step.Value);
-			//ValueException.CheckNz(config.N_z.Value);
 			UpdateNz();	
 		}
 

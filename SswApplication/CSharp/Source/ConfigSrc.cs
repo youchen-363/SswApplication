@@ -5,7 +5,6 @@ namespace SswApplication.CSharp.Source
 {
     internal class ConfigSrc
     {
-        //output 
         private MeasNumber n_z; // n_z && z_step && z_max
         private MeasNumber z_step; // z_step && n_z
         private MeasNumber x_s; // - x_s (negative)

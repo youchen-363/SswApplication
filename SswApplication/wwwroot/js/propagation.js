@@ -6,18 +6,13 @@ function receiveChunk(chunk) {
 }
 
 function allChunksSent() {
-    // Now `accumulatedData` contains the full data
-    // Parse JSON and use it as needed
     z_values = JSON.parse(accumulatedData);
-    
-    // Reset for next use
     accumulatedData = '';
 }
 
 function drawGraphPropa(x, y, v, plotted) {
     let x_values = JSON.parse(x);
     let y_values = JSON.parse(y);
-    //z_values = JSON.parse(z);
     range = JSON.parse(v);
     var data = [
         {

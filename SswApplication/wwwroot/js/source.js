@@ -1,11 +1,5 @@
 var myChartSource;
 
-window.addEventListener("resize", function () {
-    let canvas = document.getElementById("canvasSource");
-    canvas.style.width = window.innerWidth;
-    canvas.style.height = window.innerHeight;
-})
-
 window.setCursorLoading = function () {
     document.body.style.cursor = 'wait';
 }
@@ -20,11 +14,6 @@ function initialiseDataSource(data) {
 }
 
 function drawGraphSource(data, datapoints) {
-    //document.getElementById("parag").innerText = JSON.stringify(datapoints) + JSON.stringify(data);
-    console.log("in draw");
-    console.log(data.config.Z_step.Value * data.config.N_z.Value);
-    console.log("efield : \n"+ data.efield_db);
-    console.log("zvect : \n"+ data.z_vect);
     try {
         var config = {
             type: 'scatter',
@@ -59,12 +48,9 @@ function drawGraphSource(data, datapoints) {
                             text: 'Altitude (m)'
                         },
                         ticks: {
-                            //max: 1000, // Set maximum value for y-axis
                             beginAtZero: true,
                             stepSize: 10
-                            // stepSize: 200
                         },
-                        //max: data.config.Z_step.Value * data.config.N_z.Value
                         min: 0,
                         max: data.config.Z_step.Value * data.config.N_z.Value
                     }

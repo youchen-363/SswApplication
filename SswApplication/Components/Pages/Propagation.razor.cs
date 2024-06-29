@@ -20,7 +20,7 @@ namespace SswApplication.Components.Pages
 		// private int imageSizePts;
 		private string output = "E (dBV/m)", res = string.Empty;
 		private MarkupString resultat = new();
-		private bool plottedGraph = false, plottedFinal = false, disabledFinal, columnDisplay = false;
+		private bool plottedGraph = false, plottedFinal = false, disabledFinal = true, columnDisplay = false;
 		private double[][] finalData = [];
 		private double[] lastColumn = [];
 
@@ -29,11 +29,6 @@ namespace SswApplication.Components.Pages
 		/// </summary>
 		protected override void OnInitialized()
 		{
-			/* 
-			 * Étant donné que j'ai séparé les pages, pour exécuter la simulation, nous avons besoin des données sources
-			 * J'ai donc créé une nouvelle configuration pour les données sources
-			 * Pas d'inquiétude concernant la mémoire, car C# gère automatiquement la gestion de la mémoire pour nous
-			 */
 			SetGroundAttr();
 			SetTurbulenceAttr();
 			lambda = Physics.Lambda(config.Frequency.Value);
@@ -101,8 +96,6 @@ namespace SswApplication.Components.Pages
 					string z = DataPropa.SerializeToJson(finalData);
 					await PassDataInChunks(z);
 					string vMaxMin = DataPropa.SerializeToJson(vMaxTotal, vMinTotal);
-
-					//string dataTest = DataPropa.SerializeToJson(xVals, zVals, finalData, vMaxTotal, vMinTotal);
 					
 					await JSRuntime.InvokeVoidAsync("drawGraphPropa", x, y, vMaxMin, plottedGraph);
 
@@ -136,14 +129,18 @@ namespace SswApplication.Components.Pages
 			await JSRuntime.InvokeVoidAsync("setCursorLoading");
 			try
 			{
-				lastColumn = DataPropa.FinalData(finalData, xCol, config.X_step.Value);
-				double[] z_vect = DataPropa.GenerateValues(config, false);
-				double vMaxLast = DataPropa.VMax(lastColumn);
-				double vMinLast = DataPropa.VMin(config, vMaxLast);
-				string dataFinal = DataPropa.SerializeToJson(vMinLast, vMaxLast, lastColumn, z_vect, config);
-				await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plottedFinal);
+				CheckFinalColumn();
+				if (!disabledFinal)
+				{
+					lastColumn = DataPropa.FinalData(finalData, xCol, config.X_step.Value);
+					double[] z_vect = DataPropa.GenerateValues(config, false);
+					double vMaxLast = DataPropa.VMax(lastColumn);
+					double vMinLast = DataPropa.VMin(config, vMaxLast);
+					string dataFinal = DataPropa.SerializeToJson(vMinLast, vMaxLast, lastColumn, z_vect, config);
+					await JSRuntime.InvokeVoidAsync("drawFinal", dataFinal, plottedFinal);
 
-				plottedFinal = true;
+					plottedFinal = true;
+				}
 			}
 			finally
 			{

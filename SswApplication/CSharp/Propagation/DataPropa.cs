@@ -44,7 +44,6 @@ namespace SswApplication.CSharp.Propagation
 					config.N_x.UpdateMeasurement(data);
 					break;
 				case "N_z":
-					//ValueException.CheckNz(double.Parse(data[1], CultureInfo.InvariantCulture));
 					config.N_z.UpdateMeasurement(data);
 					break;
 				case "x_step":
@@ -67,7 +66,6 @@ namespace SswApplication.CSharp.Propagation
 					config.WaveletLevel.UpdateMeasurement(data);
 					break;
 				case "wavelet family":
-					//ValueException.CheckWaveletFamily(data[1]);
 					config.WaveletFamily.UpdateMeasurement(data);
 					break;
 				case "apodisation window":
@@ -128,7 +126,6 @@ namespace SswApplication.CSharp.Propagation
 					config.Dynamic.UpdateMeasurement(data);
 					break;
 				case "py_or_cy":
-					//ValueException.CheckPyOrCy(data[1]);
 					config.PyOrCy.UpdateMeasurement(data);
 					break;
 				default:
@@ -141,6 +138,7 @@ namespace SswApplication.CSharp.Propagation
 		/// </summary>
 		public static (string, string) ExecutePropagation()
 		{
+			// return FileFunctions.ExecuteExe("CodeSource/propagation/", "main_propagation.exe");
 			return FileFunctions.ExecuteExe("CodeSource/propagation/", "./dist/main_propagation/main_propagation.exe");
 		}
 
@@ -318,7 +316,6 @@ namespace SswApplication.CSharp.Propagation
 			double[] res = new double[finalData.Length];
 			for (int i = 0; i < finalData.Length; i++)
 			{
-				//int lastIdx = finalData[i].Length - 1;
 				res[i] = finalData[i][col];
 			}
 			return res;

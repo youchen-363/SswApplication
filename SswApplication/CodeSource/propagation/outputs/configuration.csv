@@ -1,9 +1,9 @@
 Property,Value,Unit
 method,SSF,
 N_x,500,Unnamed: 2
-N_z,15000,
+N_z,3750,
 x_step,10,m
-z_step,0.1,m
+z_step,0.4,m
 frequency,330,MHz
 polarisation,TE,
 Max compression error,-10,dB

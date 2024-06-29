@@ -36,7 +36,6 @@
 		</div>
 
 		<!-- Lambda (Wavelength) -->
-		<!-- not sure if finished -->
 		<div class="marge">
 			<label for="LambdaSrc"> Lambda (m) </label>
 			<input type="number" @bind="lambda" id="LambdaSrc" placeholder="Lambda" @onfocusout="Lambda" />
@@ -66,7 +65,7 @@
 	</div>
 </div>
 <div>
-	<button class="btn-primary" @onclick="DrawChart">Run Source</button>
+	<button class="btn-primary" @onclick="DrawChart">Draw Source</button>
 </div>
 
 @if (!string.IsNullOrEmpty(res))
